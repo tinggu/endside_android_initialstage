@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.GroupMgtActivity">
+
+    <include layout="@layout/user_element_top_bar" />
+
+    <include layout="@layout/gray_interval_style"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="你没有创建群组，请创建！"
+        android:id="@+id/user_prompt_no_create_group"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/user_group_list" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal" >
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/group_send_invite"
+            android:text="发出的邀请"
+            android:textSize="16dp" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/group_invite"
+            android:text="收到的邀请"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+</LinearLayout>

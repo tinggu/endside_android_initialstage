@@ -1,0 +1,117 @@
+if (isModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+
+def config_android = rootProject.ext.android
+def config_dependencies = rootProject.ext.dependencies
+
+apply plugin: 'org.greenrobot.greendao'
+
+android {
+    compileSdkVersion config_android.compileSdkVersion
+    buildToolsVersion config_android.buildToolsVersion
+
+    defaultConfig {
+        if (isModule.toBoolean()) {
+            applicationId "com.guoliang.module.keepwatch"
+        }
+        minSdkVersion config_android.minSdkVersion
+        targetSdkVersion config_android.targetSdkVersion
+        versionCode config_android.versionCode
+        versionName config_android.versionName
+
+        testInstrumentationRunner config_android.testInstrumentationRunner
+
+        // 组件路由配置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('..\\sign\\mykey.jks')
+            storePassword 'monitor666'
+            keyAlias = 'key0'
+            keyPassword 'monitor666'
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            // 是否混淆
+            minifyEnabled false
+//            // 是否移除无用的resource文件
+//            shrinkResources true
+//            // Zipalign优化，资源文件对齐
+//            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+    }
+
+    sourceSets {
+
+        main {
+            if (isModule.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                // 集成开发模式下排除debug文件夹中的所有Java文件
+                java {
+                    exclude 'debug/**'
+                }
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    greendao {
+        schemaVersion 1  //版本
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api config_dependencies["recyclerview"]
+    api project(':commonlib')
+//    api 'com.weigan:loopView:0.2.2'
+    api project(':module_keyevents')
+    api project(':module_camera')
+    api project(':module_soundrecord')
+    api project(':module_tms')
+    api project(':module_user')
+    api project(':module_upgrade')
+    api project(':module_fingerprint')
+    api project(':module_datapicker')
+    annotationProcessor config_dependencies["arouter_compiler"]
+
+    implementation files('libs/BaiduLBS_Android.jar')
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+
+    implementation 'com.lqr.recyclerview:library:1.0.2'
+    implementation 'com.lqr.adapter:library:1.0.2'
+    implementation 'com.lovedise:permissiongen:0.0.6'
+    implementation 'de.hdodenhof:circleimageview:2.0.0'
+
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.github.chrisbanes:PhotoView:1.2.6'
+
+    implementation 'cn.bingoogolapple:bga-qrcodecore:1.1.7@aar'
+    implementation 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
+}

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.GroupUserInfoActivity">
+
+    <include layout="@layout/user_element_top_bar1" />
+
+    <include layout="@layout/gray_interval_style" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="邀请人："
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="我邀请的人或被我邀请的人"
+            android:gravity="center_vertical"
+            android:id="@+id/group_invite_user_nickname"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="电话："
+            android:gravity="center_vertical"
+            android:textSize="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="123456789"
+            android:gravity="center_vertical"
+            android:id="@+id/group_invite_mobile"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="群组："
+            android:gravity="center_vertical"
+            android:textSize="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="实验群组"
+            android:gravity="center_vertical"
+            android:id="@+id/group_invite_group"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="日期时间："
+            android:gravity="center_vertical"
+            android:textSize="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="2020.2.22 15:35"
+            android:gravity="center_vertical"
+            android:id="@+id/group_invite_date_time"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#F2F3F5"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:id="@+id/group_invite_info_accept_refuse_linear_layout">
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="拒绝"
+            android:gravity="center"
+            android:id="@+id/group_invite_refuse"
+            android:textSize="16dp"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="接受"
+            android:gravity="center"
+            android:id="@+id/group_invite_accept"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_else_style" />
+
+</LinearLayout>

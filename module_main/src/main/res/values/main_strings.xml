@@ -1,0 +1,121 @@
+<resources>
+
+    <string name="splash_page">我是启动页</string>
+
+    <string name="splash_skip_to_other_page">跳到其他页面</string>
+
+
+
+
+
+    <string name="main_user_display_name_example">xieredy</string>
+
+    <string name="main_device_num_example">120</string>
+
+    <string name="main_device_num_str">设备个数</string>
+
+    <string name="main_monitor_point_num_example">245</string>
+
+    <string name="main_monitor_point_num_str">监测点</string>
+
+    <string name="main_had_no_device_on_monitor_now">当前暂无设备</string>
+
+    <string name="main_monitor_device_state_normal">正常</string>
+
+    <string name="main_monitor_device_state_repair">维修</string>
+
+    <string name="main_monitor_device_state_alarm">告警</string>
+
+    <string name="main_monitor_device_state_close">关闭</string>
+
+    <string name="main_monitor_device_state_normal_count">72</string>
+
+    <string name="main_monitor_device_state_repair_count">26</string>
+
+    <string name="main_monitor_device_state_alarm_count">15</string>
+
+    <string name="main_monitor_device_state_close_count">10</string>
+
+    <string name="main_monitor_device_24_hour_num">24小时设备状态（数量/个）</string>
+    
+    <string name="main_monitor_device_current_time">10月18日&#8194;9:00</string>
+
+    <string name="main_monitor_device_chart_normal">正常：</string>
+
+    <string name="main_monitor_device_chart_repair">维修：</string>
+
+    <string name="main_monitor_device_chart_alarm">告警：</string>
+
+    <string name="main_monitor_device_chart_close">关闭：</string>
+
+
+
+    <string name="main_setting_page_title">设置</string>
+
+    <string name="main_setting_item_my_info">我的信息</string>
+
+    <string name="main_setting_item_account_manager">账号管理</string>
+
+    <string name="main_setting_item_version_update">版本更新</string>
+
+    <string name="main_setting_item_about_app">关于控机宝</string>
+
+    <string name="main_setting_item_logout">退出登录</string>
+
+
+
+    <string name="main_add_device_page_title">添加设备</string>
+
+
+    <string name="main_add_device_page_device_id">设备ID</string>
+
+    <string name="main_add_device_page_device_id_hint">请输入设备ID号</string>
+
+
+    <string name="main_add_device_page_group_id">groupID</string>
+
+    <string name="main_add_device_page_group_id_hint">请选择</string>
+
+
+    <string name="main_add_device_page_type">类型</string>
+
+    <string name="main_add_device_page_type_hint">请选择</string>
+
+
+    <string name="main_add_device_page_name">名称</string>
+
+    <string name="main_add_device_page_name_hint">请输入设备名称</string>
+
+
+    <string name="main_add_device_page_longitude">经度</string>
+
+    <string name="main_add_device_page_longitude_hint">请输入设备所在位置的经度</string>
+
+
+    <string name="main_add_device_page_latitude">纬度</string>
+
+    <string name="main_add_device_page_latitude_hint">请输入设备所在位置的纬度</string>
+
+
+    <string name="main_add_device_page_address">地址</string>
+
+    <string name="main_add_device_page_address_hint">请输入设备所在地址</string>
+
+
+    <string name="main_add_device_page_sim">SIM卡号</string>
+
+    <string name="main_add_device_page_sim_hint">请输入设备SIM卡号</string>
+
+
+    <string name="main_add_device_page_tips">注：设备所在经纬度可以通过手机定位获取</string>
+
+    <string name="main_add_device_page_bottom_btn_str">完成</string>
+    
+    
+    
+    <string name="status_device_list_page_title">危险设备列表</string>
+    
+    <string name="status_device_electric_value">%1$.1fA</string>
+
+
+</resources>

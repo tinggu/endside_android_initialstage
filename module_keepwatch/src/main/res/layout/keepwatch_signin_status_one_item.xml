@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="49dp"
+    android:orientation="horizontal"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp">
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/keepwatch_day"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/keepwatch_signin_desk_circle_type"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:hint="编号"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:id="@+id/keepwatch_signin_desk_id"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:hint="签到点名称"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/keepwatch_signin_desk_name"/>
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@mipmap/keepwatch_unsignined"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/keepwatch_signin_status"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:hint="昵称"
+        android:gravity="center_vertical"
+        android:id="@+id/keepwatch_signin_nick_name"/>
+</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.KeyEventMonthEndListActivity"
+    android:orientation="vertical">
+
+    <include layout="@layout/sub_top_bar"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/keyevent_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <fragment
+        android:id="@+id/keepevent_list_fragment"
+        android:name="com.guoliang.module.keyevents.fragment.KeyEventListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.KeepWatchSettingActivity">
+
+    <include layout="@layout/sub_top_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/gray_interval_style" />
+
+            <LinearLayout style="@style/KeepWatchSettingListOneItem"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/keepwatch_setting_my_info">
+                <TextView style="@style/KeepWatchContentText" android:text="我的信息" />
+                <TextView style="@style/KeepWatchElseContentText" />
+                <ImageView style="@style/KeepWatchSettingSetImg" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/KeepWatchSettingListOneItem"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/keepwatch_setting_account">
+                <TextView style="@style/KeepWatchContentText" android:text="账号管理" />
+                <TextView style="@style/KeepWatchElseContentText" />
+                <ImageView style="@style/KeepWatchSettingSetImg" />
+            </LinearLayout>
+
+            <include layout="@layout/gray_interval_style" />
+
+            <LinearLayout style="@style/KeepWatchSettingListOneItem"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/setting_update_version">
+                <TextView style="@style/KeepWatchContentText" android:text="版本更新" />
+                <TextView style="@style/KeepWatchElseContentText" />
+                <TextView style="@style/KeepWatchContentText" android:id="@+id/keepwatch_setting_curr_version" android:textColor="@color/color_edit_hint" />
+                <ImageView style="@style/KeepWatchSettingSetImg" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/KeepWatchSettingListOneItem"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/setting_about">
+                <TextView style="@style/KeepWatchContentText" android:text="关于小松巡检" />
+                <TextView style="@style/KeepWatchElseContentText" />
+                <ImageView style="@style/KeepWatchSettingSetImg" />
+            </LinearLayout>
+
+            <include layout="@layout/gray_interval_style" />
+
+
+            <include layout="@layout/gray_interval_style" />
+
+            <include layout="@layout/keepwatch_setting_element_full_width_button" />
+
+            <include layout="@layout/gray_else_style" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

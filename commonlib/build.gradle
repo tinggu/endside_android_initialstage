@@ -1,0 +1,71 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
+
+def config_android = rootProject.ext.android
+def config_dependencies = rootProject.ext.dependencies
+
+android {
+    compileSdkVersion config_android.compileSdkVersion
+    buildToolsVersion config_android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion    config_android.minSdkVersion
+        targetSdkVersion config_android.targetSdkVersion
+        versionCode      config_android.versionCode
+        versionName      config_android.versionName
+    }
+
+    greendao {
+        schemaVersion 1  //版本
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api config_dependencies["appcompat"]
+    testImplementation config_dependencies["junit"]
+    androidTestImplementation config_dependencies["test_runner"]
+    androidTestImplementation config_dependencies["test_espresso"]
+
+    // utilCode
+    api config_dependencies["utilCode"]
+
+    // greenDAO
+    api config_dependencies["greenDAO"]
+
+    // Glide
+    api config_dependencies["glide"]
+    annotationProcessor config_dependencies["glide_compiler"]
+
+    // ARouter
+    api config_dependencies["arouter_api"]
+
+    // EventBus
+    api config_dependencies["eventBus"]
+
+    // retrofit&okHttp
+    api config_dependencies["retrofit"]
+    api config_dependencies["converter-gson"]
+    api config_dependencies["logging-interceptor"]
+
+    api config_dependencies["commons-lang"]
+
+    // RecyclerView
+    api config_dependencies["recyclerview"]
+
+    // MpAndroidChart
+    api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // supportDesign
+    api 'com.android.support:design:28.0.0'
+
+    api 'com.google.zxing:core:3.4.0'
+
+    api 'com.haibin:calendarview:3.6.9'
+
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'cn.bingoogolapple:bga-qrcodecore:1.1.7@aar'
+    implementation 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
+}

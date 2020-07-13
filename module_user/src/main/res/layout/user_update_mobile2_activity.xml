@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.LoginActivity">
+
+    <include layout="@layout/user_element_top_bar1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="90dp" />
+
+     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp" />
+
+    <include layout="@layout/user_element_mobile_edit" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <include layout="@layout/user_element_sms_edit" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp" />
+
+    <include layout="@layout/user_element_blue_button" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更换手机后，以后登录必须用新的手机号"
+        android:textSize="@dimen/text_size_16sp"
+        android:textColor="@color/color_black_100"
+        android:gravity="center_horizontal"/>
+
+</LinearLayout>

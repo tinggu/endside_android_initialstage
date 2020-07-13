@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.lqr.audio">
+
+    <!--录音权限，用于上报事件时录语音-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <!--屏幕保持唤醒，不锁屏-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+</manifest>

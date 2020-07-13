@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#F2F3F5">
+
+    <include layout="@layout/keepwatch_main_top_bar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/keepwatch_baidu_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#D4A8FFA9"
+            android:id="@+id/keepwatch_gps_sign_in">
+            <ImageView
+                android:id="@+id/keepwatch_gps_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/keepwatch_gps_signin"
+                android:layout_centerInParent="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GPS签到"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/keepwatch_gps_img"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="217dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="215dp"
+            android:background="#50A2FF"
+            android:layout_marginBottom="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/keepwatch_scan_signin">
+            <ImageView
+                android:id="@+id/keepwatch_qr_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/keepwatch_qr_signin"
+                android:layout_centerInParent="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="扫码签到"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/keepwatch_qr_img"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+        <TextView
+            android:layout_width="2dp"
+            android:layout_height="match_parent" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="215dp"
+            android:background="#E1E1E1"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/keepwatch_nfc_signin">
+            <ImageView
+                android:id="@+id/keepwatch_nfc_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/keepwatch_nfc_signin"
+                android:layout_centerInParent="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NFC签到"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/keepwatch_nfc_img"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

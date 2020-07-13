@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="horizontal"
+        android:id="@+id/keyevent_content_ll">
+        <LinearLayout
+            android:layout_width="50.85dp"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="18.25dp"
+                    android:text="06-05"
+                    android:textSize="13sp"
+                    android:textColor="#4A4A4A"
+                    android:id="@+id/keyevent_month_day"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="16.75dp"
+                    android:text="17:01"
+                    android:textColor="#9B9B9B"
+                    android:textSize="12sp"
+                    android:gravity="right"
+                    android:id="@+id/keyevent_hour_minute"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="15dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="12.8dp"
+                    android:layout_height="12.8dp"
+                    android:src="@drawable/keyevent_node"
+                    android:layout_gravity="center"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="#50A2FF"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/keyevent_line"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="21dp"
+                    android:text="执行的动作"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:id="@+id/keyevent_status"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/keyevent_app_round_icon"
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/keyevent_head"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="18.25dp"
+                        android:text="昵称"
+                        android:textSize="13sp"
+                        android:textColor="#4A4A4A"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/keyevent_nick_name"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

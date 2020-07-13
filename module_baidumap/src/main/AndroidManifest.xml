@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.guoliang.module.baidumap" >
+
+    <application android:theme="@style/AppTheme">
+
+        <activity android:name=".activity.BaiduMapActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="46zOUbhuSLvdy2SkIPvhdvVcfG9szzzL" />
+
+    </application>
+
+</manifest>

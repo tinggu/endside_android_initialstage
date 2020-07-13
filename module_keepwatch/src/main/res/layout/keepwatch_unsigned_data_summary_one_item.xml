@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/keepwatch_unsigned_data_summary_year_month"
+        android:background="#DFDFDF"
+        android:hint="填写年月"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:hint="填写月日"
+            android:gravity="center_vertical"
+            android:textSize="16dp"
+            android:id="@+id/keepwatch_unsigned_data_summary_time_tag"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="个数"
+            android:gravity="center_vertical"
+            android:textSize="16dp"
+            android:id="@+id/keepwatch_unsigned_data_summary_count"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_right"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+    <include layout="@layout/gray_line_style"/>
+
+</LinearLayout>

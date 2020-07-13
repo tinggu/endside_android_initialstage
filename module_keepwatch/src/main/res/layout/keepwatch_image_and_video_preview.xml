@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.KeepWatchImageAndVideoPreviewActivity">
+
+    <include layout="@layout/sub_top_bar" />
+
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/keepwatch_img_preview"
+        android:layout_marginTop="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+    <RelativeLayout
+        android:id="@+id/keepwatch_video_preview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <VideoView
+            android:id="@+id/keepwatch_video_preview"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

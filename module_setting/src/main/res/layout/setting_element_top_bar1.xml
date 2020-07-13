@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SettingTopBarStyle">
+
+    <ImageView style="@style/SettingTopBarImg" android:id="@+id/setting_back"/>
+    <TextView style="@style/SettingTopBarText" android:id="@+id/setting_top_bar_tittle"/>
+
+ </LinearLayout>

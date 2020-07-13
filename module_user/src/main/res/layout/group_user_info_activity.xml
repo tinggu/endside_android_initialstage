@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.GroupUserInfoActivity">
+
+    <include layout="@layout/user_element_top_bar1" />
+
+    <include layout="@layout/gray_interval_style" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:id="@+id/group_user_info_nickname_linear_layout">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="昵称："
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="成员昵称"
+            android:gravity="center_vertical"
+            android:id="@+id/group_user_info_nickname"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_right"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/group_user_info_nickname_img"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:id="@+id/group_user_info_mobile_linear_layout">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="电话："
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="123456789"
+            android:gravity="center_vertical"
+            android:id="@+id/group_user_info_mobile"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_right"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/group_user_info_mobile_img"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:id="@+id/group_user_info_role_linear_layout">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="角色："
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:hint="成员"
+            android:gravity="center_vertical"
+            android:id="@+id/group_user_info_role"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_right"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/group_user_info_role_img"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_else_style" />
+
+</LinearLayout>

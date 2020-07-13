@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.AccountActivity">
+
+    <include layout="@layout/user_element_top_bar1" />
+
+    <include layout="@layout/gray_interval_style"/>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:id="@+id/user_info_update_head"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <TextView style="@style/UserContentText"
+            android:text="头像" />
+        <TextView style="@style/UserElseWidthText" />
+        <ImageView android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/user_info_head"
+            android:src="@mipmap/user_default_head"/>
+        <ImageView style="@style/UserContentImg"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:id="@+id/user_info_update_nickname"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <TextView style="@style/UserContentText"
+            android:text="昵称" />
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText"
+            android:id="@+id/user_info_nickname"
+            android:hint="未设置"/>
+        <ImageView style="@style/UserContentImg"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:id="@+id/user_info_update_gender"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <TextView style="@style/UserContentText"
+            android:text="性别" />
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText"
+            android:id="@+id/user_info_gender"
+            android:hint="未设置"/>
+        <ImageView style="@style/UserContentImg"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:id="@+id/user_info_update_birthday"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <TextView style="@style/UserContentText"
+            android:text="生日" />
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText"
+            android:id="@+id/user_info_birthday"
+            android:hint="未设置"/>
+        <ImageView style="@style/UserContentImg"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:id="@+id/user_info_update_mobile"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <TextView style="@style/UserContentText"
+            android:text="电话" />
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText"
+            android:id="@+id/user_info_mobile"
+            android:hint="未设置"/>
+        <ImageView style="@style/UserContentImg"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_interval_style" />
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:id="@+id/user_info_update_email"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <TextView style="@style/UserContentText"
+            android:text="邮箱" />
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText"
+            android:id="@+id/user_info_email"
+            android:hint="未设置"/>
+        <ImageView style="@style/UserContentImg"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+</LinearLayout>

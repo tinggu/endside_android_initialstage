@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="275dp"
+        android:orientation="vertical"
+        android:background="@drawable/keyevent_shape_white_10"
+        android:id="@+id/keyevent_report_all_ll">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:hint="事件标题"
+            android:textColor="#9B9B9B"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:background="@null"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/keyevents_key_event_name"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.25dp"
+            android:background="#CCCCCC"/>
+
+        <EditText
+            android:id="@+id/keyevents_key_event_desc"
+            android:layout_width="match_parent"
+            android:layout_height="124.75dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="top"
+            android:background="@null"
+            android:hint="事件的详细内容"/>
+
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="73dp"
+                android:layout_height="73dp"
+                android:src="@mipmap/key_events_add_pic"
+                android:id="@+id/keyevent_add_pic"/>
+             <ImageView
+                 android:layout_width="73dp"
+                 android:layout_height="73dp"
+                 android:visibility="gone"
+                 android:id="@+id/keyevent_pic"/>
+
+            <ImageView
+                android:layout_width="73dp"
+                android:layout_height="73dp"
+                android:layout_marginLeft="11dp"
+                android:src="@mipmap/key_events_add_video"
+                android:id="@+id/keyevent_add_video"/>
+            <VideoView
+                android:layout_width="73dp"
+                android:layout_height="73dp"
+                android:layout_marginStart="11dp"
+                android:visibility="gone"
+                android:id="@+id/keyevent_video"/>
+
+             <ImageView
+                 android:layout_width="73dp"
+                 android:layout_height="73dp"
+                 android:src="@mipmap/keyevent_add_voice"
+                 android:layout_marginLeft="11dp"
+                 android:id="@+id/keyevent_add_voice"/>
+            <ImageView
+                android:layout_width="73dp"
+                android:layout_height="73dp"
+                android:src="@mipmap/keyevent_voice"
+                android:layout_marginLeft="11dp"
+                android:visibility="gone"
+                android:id="@+id/keyevent_voice"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

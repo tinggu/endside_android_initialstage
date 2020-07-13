@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity"
+    android:orientation="vertical"
+    android:background="@color/main_color_main_page_bg"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/main_user_head_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:src="@mipmap/main_head_img_example"
+            android:layout_centerVertical="true"
+            />
+
+        <TextView
+            android:id="@+id/main_user_nickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_user_display_name_example"
+            android:textSize="@dimen/text_size_16sp"
+            android:textColor="@color/color_white_100"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/main_user_head_img"
+            android:layout_marginStart="6dp"
+            />
+
+        <ImageView
+            android:id="@+id/main_setting_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/main_setting_icon"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            />
+
+        <ImageView
+            android:id="@+id/main_map_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/main_map_icon"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/main_setting_img"
+            android:layout_marginEnd="16dp"
+            />
+
+        <ImageView
+            android:id="@+id/main_add_device_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/main_add_device_icon"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/main_map_img"
+            android:layout_marginEnd="16dp"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="18dp"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/main_page_display_bg_corner_2"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_device_num_example"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_30sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_device_num_str"
+                android:textColor="#ABB6D4"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_size_12sp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/main_page_display_bg_corner_2"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_monitor_point_num_example"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_30sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_monitor_point_num_str"
+                android:textColor="#ABB6D4"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_size_12sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ProgressBar
+                android:id="@+id/main_page_circle_progress_bar_normal"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="20dp"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/main_circular_progress_bar_normal"
+                android:background="@drawable/main_circle_shape"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="100"
+                android:progress="65" />
+
+            <ProgressBar
+                android:id="@+id/main_page_circle_progress_bar_repair"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="20dp"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/main_circular_progress_bar_repair"
+                android:background="@drawable/main_circle_shape"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="100"
+                android:progress="85" />
+
+            <ProgressBar
+                android:id="@+id/main_page_circle_progress_bar_alarm"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="20dp"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/main_circular_progress_bar_alarm"
+                android:background="@drawable/main_circle_shape"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="100"
+                android:progress="65" />
+
+            <ProgressBar
+                android:id="@+id/main_page_circle_progress_bar_close"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/main_circular_progress_bar_close"
+                android:background="@drawable/main_circle_shape"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="100"
+                android:progress="65" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_centerVertical="true"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/main_monitor_device_state_normal_count"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_16sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/main_monitor_device_state_repair_count"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_16sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/main_monitor_device_state_alarm_count"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_16sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/main_monitor_device_state_close_count"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_16sp"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/main_monitor_device_state_normal"
+            android:textColor="@color/color_white_100"
+            android:textSize="@dimen/text_size_12sp"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/main_monitor_device_state_repair"
+            android:textColor="@color/color_white_100"
+            android:textSize="@dimen/text_size_12sp"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/main_monitor_device_state_alarm"
+            android:textColor="@color/color_white_100"
+            android:textSize="@dimen/text_size_12sp"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/main_monitor_device_state_close"
+            android:textColor="@color/color_white_100"
+            android:textSize="@dimen/text_size_12sp"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2.5dp"
+        android:layout_marginTop="22dp"
+        android:background="#2B354E"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_monitor_device_24_hour_num"
+        android:textColor="#ABB6D4"
+        android:textSize="@dimen/text_size_12sp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="347dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/main_page_device_chart_bg_corner_2">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:id="@+id/main_had_no_device_on_monitor_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/main_had_no_device_on_monitor"
+                android:layout_centerInParent="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_had_no_device_on_monitor_now"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="4dp"
+                android:layout_below="@+id/main_had_no_device_on_monitor_img"
+                android:textColor="#4E5A7C"
+                android:textSize="@dimen/text_size_13sp"
+                />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/main_monitor_device_current_time"
+                android:textColor="@color/color_white_100"
+                android:textSize="@dimen/text_size_12sp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_chart_alarm"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        android:drawableStart="@mipmap/main_monitor_device_alarm_icon"
+                        android:drawablePadding="3dp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_state_alarm_count"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_chart_repair"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        android:drawableStart="@mipmap/main_monitor_device_repair_icon"
+                        android:drawablePadding="3dp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_state_repair_count"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_chart_normal"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        android:drawableStart="@mipmap/main_monitor_device_normal_icon"
+                        android:drawablePadding="3dp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_state_normal_count"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_chart_close"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        android:drawableStart="@mipmap/main_monitor_device_close_icon"
+                        android:drawablePadding="3dp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_monitor_device_state_close_count"
+                        android:textColor="@color/color_white_100"
+                        android:textSize="@dimen/text_size_13sp"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.guoliang.module.main.view.DeviceMonitorLineChart
+                android:id="@+id/main_page_line_chart"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp">
+
+            </com.guoliang.module.main.view.DeviceMonitorLineChart>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.guoliang.module.main">
+
+    <application android:theme="@style/AppTheme">
+        <activity
+            android:name=".activity.DeviceElectricInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.StatusDeviceListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AddDeviceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

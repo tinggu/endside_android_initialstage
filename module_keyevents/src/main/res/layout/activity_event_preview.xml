@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.EventPreviewActivity">
+
+    <include layout="@layout/sub_top_bar" />
+
+<!--    <uk.co.senab.photoview.PhotoView-->
+<!--        android:id="@+id/event_preview_img_view"-->
+<!--        android:layout_marginTop="48dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:visibility="gone"-->
+<!--        />-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
+        android:visibility="gone"
+        android:id="@+id/keyevent_pic"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_preview_video"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <VideoView
+            android:id="@+id/event_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

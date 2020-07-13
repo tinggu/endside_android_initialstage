@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.DeviceInfoActivity">
+
+    <include layout="@layout/device_element_top_bar" />
+
+    <include layout="@layout/gray_interval_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="设备ID    " />
+        <EditText style="@style/DeviceElseWidthEdit" android:id="@+id/device_id_edit" />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_id_text" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:id="@+id/device_modify_group_id" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="groupID    " />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_group_id_text" android:text="0"/>
+        <ImageView style="@style/DeviceContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:id="@+id/device_modify_type" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="类型    " />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_type_text" />
+        <ImageView style="@style/DeviceContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="名称    " />
+        <EditText style="@style/DeviceElseWidthEdit" android:id="@+id/device_name_edit" />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_name_text" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="经度    " />
+        <EditText style="@style/DeviceElseWidthEdit" android:id="@+id/device_lng_edit" />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_lng_text" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="纬度    " />
+        <EditText style="@style/DeviceElseWidthEdit" android:id="@+id/device_lat_edit" />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_lat_text" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="地址    " />
+        <EditText style="@style/DeviceElseWidthEdit" android:id="@+id/device_addr_edit" />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_addr_text" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <LinearLayout style="@style/DeviceListOneItem" android:layout_marginStart="16dp" android:layout_marginEnd="16dp">
+        <TextView style="@style/DeviceContentText" android:text="SIM卡号    " />
+        <EditText style="@style/DeviceElseWidthEdit" android:id="@+id/device_sim_edit" />
+        <TextView style="@style/DeviceElseWidthText" android:id="@+id/device_sim_text" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <TextView style="@style/DevicePromptText" android:text="注：设备所在经纬度可通过手机定位获取~" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <include layout="@layout/device_element_blue_button" />
+
+</LinearLayout>

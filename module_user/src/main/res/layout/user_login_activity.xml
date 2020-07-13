@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.LoginActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="90dp" />
+
+    <TextView style="@style/UserTittleInPage"
+        android:text="@string/user_login_welcome_title"
+        android:id="@+id/user_tittle_in_page"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp" />
+
+    <include layout="@layout/user_element_mobile_edit" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <include layout="@layout/user_element_sms_login" />
+    <include android:visibility="gone" layout="@layout/user_element_password_login" />
+
+<!--    <include layout="@layout/user_element_clause_prompt" />-->
+
+</LinearLayout>

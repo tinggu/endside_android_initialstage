@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">小松巡检</string>
+
+    <string name="flash_auto">Flash auto</string>
+    <string name="flash_off">Flash off</string>
+    <string name="flash_on">Flash on</string>
+
+    <string name="switch_camera">Switch camera</string>
+
+    <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
+    <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
+
+    <string name="aspect_ratio">Aspect ratio</string>
+
+    <string name="community_chat_list_remove_above_cancel_send">手指上滑，取消发送</string>
+    <string name="community_chat_list_loosen_cancel_send">松开手指，取消发送</string>
+    <string name="community_chat_list_rec_voice_short">录音时间太短</string>
+    <string name="community_chat_list_rec_voice_failure">录音失败！</string>
+
+</resources>

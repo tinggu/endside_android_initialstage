@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/keepwatch_key_event_year_month"
+        android:background="#DFDFDF"
+        android:hint="填写年月"
+        android:visibility="visible"/>
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/keepwatch_key_event_report_time"
+        android:hint="填写月日与时间"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:id="@+id/keepwatch_key_event_level"
+            android:src="@mipmap/key_events_icon_remind" />
+
+        <TextView style="@style/KeepWatchElseContentText"
+            android:id="@+id/keepwatch_key_event_name"
+            android:text="事件名称" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:src="@mipmap/key_events_icon_person_name" />
+
+        <TextView style="@style/KeepWatchElseContentText"
+            android:id="@+id/keepwatch_report_person_name"
+            android:hint="上报人姓名" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:id="@+id/keepwatch_report_addition_linear_layout">
+
+        <ImageView
+            android:id="@+id/keepwatch_report_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/key_event_icon_pic" />
+
+        <ImageView
+            android:id="@+id/keepwatch_report_video"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:src="@mipmap/key_event_icon_video" />
+
+        <ImageView
+            android:id="@+id/keepwatch_report_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:src="@mipmap/key_event_icon_voice" />
+
+    </LinearLayout>
+
+</LinearLayout>

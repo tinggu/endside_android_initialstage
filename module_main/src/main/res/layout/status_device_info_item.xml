@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:background="#00000000">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/status_device_info_item_devId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备ID: 01010211"
+                android:textColor="@color/color_white_100"
+                />
+
+            <TextView
+                android:id="@+id/status_device_info_item_devName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名称: C0Y6V6TH"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/color_white_100"
+                />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@mipmap/ic_right"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/status_device_info_item_elecA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1A"
+                android:textColor="@color/color_white_50"
+                android:textSize="@dimen/text_size_22sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A相电流值"
+                android:textSize="@dimen/text_size_11sp"
+                android:textColor="@color/color_white_50"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/status_device_info_item_elecB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.5A"
+                android:textColor="@color/color_white_50"
+                android:textSize="@dimen/text_size_22sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_11sp"
+                android:text="B相电流值"
+                android:textColor="@color/color_white_50"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/status_device_info_item_elecC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.3A"
+                android:textColor="@color/color_white_50"
+                android:textSize="@dimen/text_size_22sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_11sp"
+                android:text="C相电流值"
+                android:textColor="@color/color_white_50"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/status_device_info_item_elecE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2A"
+                android:textColor="@color/color_white_50"
+                android:textSize="@dimen/text_size_22sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_11sp"
+                android:text="零线电流值"
+                android:textColor="@color/color_white_50"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/status_device_info_item_elecN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.6A"
+                android:textColor="@color/color_white_50"
+                android:textSize="@dimen/text_size_22sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_11sp"
+                android:text="地线电流值"
+                android:textColor="@color/color_white_50"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="#343F5D"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

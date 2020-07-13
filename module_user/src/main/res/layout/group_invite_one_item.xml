@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:id="@+id/group_invite_group"
+            android:gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:textSize="16dp"
+            android:hint="邀请的群"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/group_invite_status"
+            android:gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:textSize="16dp"
+            android:hint="已接受"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="接受"
+            android:id="@+id/group_invite_accept"
+            android:visibility="visible"
+            android:layout_marginRight="5dp"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/user_close"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/group_invite_delete"/>
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style" />
+</LinearLayout>

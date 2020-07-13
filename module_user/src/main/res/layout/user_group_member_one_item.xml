@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
+
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/group_member_head_img"
+        android:src="@mipmap/user_group_member_head"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:id="@+id/group_member_name"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:text="张三"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:id="@+id/group_member_mobile"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:text="135****5678"/>
+    <LinearLayout
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:id="@+id/group_member_role_ll">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/user_member"
+            android:layout_gravity="center_vertical|right"
+            android:id="@+id/group_member_role"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="删除"
+        android:id="@+id/group_member_delete"
+        android:visibility="gone"/>
+
+</LinearLayout>

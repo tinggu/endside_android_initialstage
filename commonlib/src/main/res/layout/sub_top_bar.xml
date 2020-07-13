@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#3081F4"
+    android:layout_height="56dp"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/top_back"
+        android:layout_marginLeft="16dp"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/top_back"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="标题"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="16dp"
+        android:id="@+id/top_tittle"/>
+    <TextView
+        android:layout_width="71.5dp"
+        android:layout_height="30.5dp"
+        android:background="@drawable/shape_blue_white_15"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:textSize="15sp"
+        android:visibility="gone"
+        android:layout_marginEnd="14dp"
+        android:id="@+id/top_addition" />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/top_addition_img" />
+
+
+</LinearLayout>

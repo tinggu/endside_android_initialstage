@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.OneValSetActivity">
+
+    <include layout="@layout/user_element_top_bar" />
+
+    <include layout="@layout/gray_interval_style" />
+
+    <include layout="@layout/user_element_full_width_edit" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
+    <include layout="@layout/gray_else_style" />
+
+ </LinearLayout>

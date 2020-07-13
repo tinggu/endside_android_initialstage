@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/user_login_with_sms_layout_all"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/user_element_sms_edit" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <Button style="@style/UserBlueButton"
+        android:id="@+id/user_sms_login_btn"
+        android:text="@string/user_login_submit_btn_str"
+        android:background="@drawable/user_login_submit_btn_bg_30"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="22dp" />
+
+    <TextView
+        android:id="@+id/user_login_switch_to_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/uer_login_with_password"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/text_size_16sp"
+        android:textColor="@color/user_text_login_switch"
+        android:visibility="visible"
+        />
+
+</LinearLayout>

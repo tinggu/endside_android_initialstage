@@ -1,0 +1,36 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="PageLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+
+
+    <style name="DialogTittle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/text_size_24sp</item>
+        <item name="android:textColor">@color/color_black_100</item>
+        <item name="android:layout_marginStart">30dp</item>
+    </style>
+
+    <style name="SpecialCheckBoxStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:drawableLeft">@drawable/special_check_box</item>
+        <item name="android:button">@null</item>
+    </style>
+    <style name="SpecialRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:drawableLeft">@drawable/special_radio_button</item>
+        <item name="android:button">@null</item>
+    </style>
+
+</resources>

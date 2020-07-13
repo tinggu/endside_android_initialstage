@@ -1,0 +1,25 @@
+<resources>
+    <style name="KeyEventsElseWidthEdit">
+        <item name="android:textColorHint">@color/color_edit_hint</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="KeyEventsContentText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:textColor">@color/color_black_100</item>
+        <item name="android:textColorHint">@color/color_edit_hint</item>
+    </style>
+    <style name="KeyEventsBlueButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+        <item name="android:textColor">@color/color_white_100</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:background">@drawable/keyevents_blue_btn_bg_100</item>
+    </style>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="color_black_100">#000000</color>
+
+    <color name="color_white_100">#FFFFFF</color>
+
+    <color name="color_white_50">#80FFFFFF</color>
+
+    <color name="color_white_30">#4DFFFFFF</color>
+    
+    
+    <color name="color_divider_line">#ECECEC</color>
+
+    <color name="color_edit_hint">#AAAAAA</color>
+
+    <color name="color_btn_bg_01_30">#4D50A2FF</color>
+    <color name="color_btn_bg_01_100">#FF50A2FF</color>
+
+    <color name="color_black_50">#80000000</color>
+
+    <color name="calendar_end_abnormal">#FF40db25</color>
+    <color name="calendar_leak_desk">#FFe69138</color>
+    <color name="caleandar_report_abnormal">#FFdf1356</color>
+    <color name="calendar_leak_signin">#FFedc56d</color>
+    <color name="calendar_signin">#FFaacc44</color>
+
+</resources>

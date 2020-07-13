@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/keepwatch_trace">
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/keepwatch_year_month"
+        android:background="#DFDFDF"
+        android:hint="填写年月"
+        android:visibility="visible"/>
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/keepwatch_month_day"
+        android:hint="填写月日"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:id="@+id/keepwatch_signin_start_end_time_linear_layout"
+        android:visibility="visible">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/keepwatch_time" />
+        <TextView style="@style/KeepWatchElseContentText"
+            android:id="@+id/keepwatch_signin_start_end_time"
+            android:text="任务时间" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:id="@+id/keepwatch_signin_desk_name_linear_layout"
+        android:visibility="visible">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/keepwatch_signin_desk" />
+        <TextView style="@style/KeepWatchElseContentText"
+            android:id="@+id/keepwatch_signin_desk_name"
+            android:hint="签到点名称" />
+    </LinearLayout>
+
+</LinearLayout>

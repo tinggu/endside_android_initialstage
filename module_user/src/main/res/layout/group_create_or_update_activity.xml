@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#F2F3F5"
+    tools:context=".activity.GroupCreateOrUpdateActivity">
+
+    <include layout="@layout/user_sub_top_bar" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@drawable/user_shape_white_10"
+        android:textSize="16sp"
+        android:textColor="#AEAEAE"
+        android:hint="请填写所创建群组的名称："
+        android:layout_marginTop="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:id="@+id/user_group_name"/>
+
+
+    <TextView
+        android:layout_width="298dp"
+        android:layout_height="42dp"
+        android:background="@drawable/user_shape_blue_8"
+        android:layout_marginTop="74dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="确定"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:id="@+id/user_confirm"/>
+
+</LinearLayout>

@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+
+def config_android = rootProject.ext.android
+
+android {
+
+    compileSdkVersion config_android.compileSdkVersion
+    buildToolsVersion config_android.buildToolsVersion
+    defaultConfig {
+        applicationId "com.guoliang.monitor"
+        minSdkVersion    config_android.minSdkVersion
+        targetSdkVersion config_android.targetSdkVersion
+        versionCode      config_android.versionCode
+        versionName      config_android.versionName
+
+        testInstrumentationRunner config_android.testInstrumentationRunner
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('..\\sign\\mykey.jks')
+            storePassword 'monitor666'
+            keyAlias = 'key0'
+            keyPassword 'monitor666'
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            // 是否混淆
+            minifyEnabled true
+
+            // 是否移除无用的resource文件
+            shrinkResources true
+
+            // Zipalign优化，资源文件对齐
+            zipAlignEnabled true
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+        }
+    }
+
+    android.applicationVariants.all {
+        variant -> variant.outputs.all {
+            outputFileName = "Monitor_${defaultConfig.versionName}.apk"
+        }
+    }
+
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    if (isModule.toBoolean()) {
+        api project(':commonlib')
+        api project(':module_tms')
+    } else {
+        api project(':module_user')
+//        api project(':module_main')
+//        api project(':module_device')
+//        api project(':module_setting')
+//        api project(':module_device')
+//        api project(':module_baidumap')
+        api project(':module_keepwatch')
+    }
+
+
+}

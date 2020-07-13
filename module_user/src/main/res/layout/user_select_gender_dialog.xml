@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_bg_shape">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="12dp" />
+
+    <TextView style="@style/UserTittleInPage" android:text="性别"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25dp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColorHint="@color/color_black_100"
+            android:textSize="@dimen/text_size_20sp"
+            android:background="@null"
+            android:text="男"
+            />
+
+        <ImageView
+            android:id="@+id/user_gender_img_unselected_male"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/unselected"/>
+
+        <ImageView
+            android:id="@+id/user_gender_img_selected_male"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/selected"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/gray_line_style" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp">
+
+        <TextView
+            android:id="@+id/user_gender_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColorHint="@color/color_black_100"
+            android:textSize="@dimen/text_size_20sp"
+            android:background="@null"
+            android:text="女"
+            />
+
+        <ImageView
+            android:id="@+id/user_gender_img_unselected_female"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/unselected"/>
+
+        <ImageView
+            android:id="@+id/user_gender_img_selected_female"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/selected"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+ </LinearLayout>

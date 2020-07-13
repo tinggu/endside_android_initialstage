@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="162dp"
+    android:layout_height="167dp"
+    android:background="@drawable/dialog_bg_shape">
+
+    <ImageView
+        android:id="@+id/keepwatch_success_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/keepwatch_prompt_success_img"/>
+
+    <TextView
+        android:layout_below="@id/keepwatch_success_img"
+        android:id="@+id/keepwatch_success_text"
+        android:text="签到成功"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+ </RelativeLayout>

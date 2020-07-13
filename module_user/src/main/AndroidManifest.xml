@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.guoliang.module.user">
+
+    <application android:theme="@style/AppTheme">
+
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <activity android:name=".activity.ForgetPasswordActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.SetPasswordActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.UserInfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.UpdateMobileActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activity.UpdateMobile2Activity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activity.OneValSetActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activity.AccountActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.GroupMgtActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.GroupCreateOrUpdateActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.GroupActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.GroupAddMemberActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.GroupUserInfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.UserSelectGroupActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.UserSelectUserActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.UserInviteActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+    </application>
+
+</manifest>

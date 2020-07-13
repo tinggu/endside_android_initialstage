@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/PageLinearLayout"
+    tools:context=".activity.AccountActivity">
+
+    <include layout="@layout/user_element_top_bar1" />
+
+    <include layout="@layout/gray_interval_style"/>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/user_info_update_mobile">
+        <TextView style="@style/UserContentText" android:text="电话"/>
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText" android:id="@+id/user_info_mobile" />
+        <ImageView style="@style/UserContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style"/>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/user_info_update_email">
+        <TextView style="@style/UserContentText" android:text="邮箱"/>
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText" android:id="@+id/user_info_email" android:hint="未设置" />
+        <ImageView style="@style/UserContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_line_style"/>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/user_info_update_password">
+        <TextView style="@style/UserContentText" android:text="密码"/>
+        <TextView style="@style/UserElseWidthText" />
+        <ImageView style="@style/UserContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_interval_style" />
+
+    <TextView style="@style/UserTittleInPage" android:text="@string/user_social_account"/>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/user_info_update_wechat">
+        <TextView style="@style/UserContentText" android:text="微信"/>
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText" android:id="@+id/user_info_wechat" android:hint="未绑定" />
+        <ImageView style="@style/UserContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/user_info_update_blog">
+        <TextView style="@style/UserContentText" android:text="微博"/>
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText" android:id="@+id/user_info_blog" android:hint="未绑定" />
+        <ImageView style="@style/UserContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/UserListOneItem"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/user_info_update_qq">
+        <TextView style="@style/UserContentText" android:text="QQ"/>
+        <TextView style="@style/UserElseWidthText" />
+        <TextView style="@style/UserContentText" android:id="@+id/user_info_qq" android:hint="未绑定" />
+        <ImageView style="@style/UserContentImg" android:src="@mipmap/ic_right" />
+    </LinearLayout>
+
+    <include layout="@layout/gray_interval_style" />
+
+    <include layout="@layout/user_element_full_width_button" />
+
+    <include layout="@layout/gray_else_style" />
+
+</LinearLayout>

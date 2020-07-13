@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+
+def config_android = rootProject.ext.android
+def config_dependencies = rootProject.ext.dependencies
+
+android {
+    compileSdkVersion config_android.compileSdkVersion
+    buildToolsVersion config_android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion    config_android.minSdkVersion
+        targetSdkVersion config_android.targetSdkVersion
+        versionCode      config_android.versionCode
+        versionName      config_android.versionName
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api config_dependencies["appcompat"]
+    testImplementation config_dependencies["junit"]
+    androidTestImplementation config_dependencies["test_runner"]
+    androidTestImplementation config_dependencies["test_espresso"]
+
+    api project(':commonlib')
+
+}
