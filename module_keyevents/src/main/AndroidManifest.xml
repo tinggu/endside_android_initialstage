@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guoliang.module.keyevents">
+    package="com.ctfww.module.keyevents">
 
     <application android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.EventPreviewActivity"
+            android:name="com.ctfww.module.keyevents.activity.EventPreviewActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.SoundRecord2Activity"
+            android:name="com.ctfww.module.keyevents.activity.SoundRecord2Activity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.ReportKeyEventActivity"
+            android:name="com.ctfww.module.keyevents.activity.ReportKeyEventActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.KeyEventNoEndListActivity"
+            android:name="com.ctfww.module.keyevents.activity.KeyEventNoEndListActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.KeyEventActivity"
+            android:name="com.ctfww.module.keyevents.activity.KeyEventActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.KeyEventEndListActivity"
+            android:name="com.ctfww.module.keyevents.activity.KeyEventEndListActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.KeyEventEndStatisticsByUserUnitActivity"
+            android:name="com.ctfww.module.keyevents.activity.KeyEventEndStatisticsByUserUnitActivity"
             android:screenOrientation="portrait"/>
     </application>
 

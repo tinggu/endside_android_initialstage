@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.entity;
+package com.ctfww.module.attend.entity;
 
 public class AttendPersonTrends {
     private String userId;

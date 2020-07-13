@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.fragment;
+package com.ctfww.module.attend.fragment;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,16 +27,16 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.guoliang.commonlib.activity.ScanActivity;
-import com.guoliang.commonlib.datahelper.IUIDataHelperCallback;
-import com.guoliang.commonlib.entity.MessageEvent;
-import com.guoliang.commonlib.location.GPSLocationManager;
-import com.guoliang.commonlib.location.MyLocation;
-import com.guoliang.commonlib.utils.DialogUtils;
-import com.guoliang.commonlib.utils.QRCodeUtils;
-import com.guoliang.module.attend.R;
-import com.guoliang.module.attend.entity.AttendSigninInfo;
-import com.guoliang.module.fingerprint.entity.DistResult;
+import com.ctfww.commonlib.activity.ScanActivity;
+import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.commonlib.location.GPSLocationManager;
+import com.ctfww.commonlib.location.MyLocation;
+import com.ctfww.commonlib.utils.DialogUtils;
+import com.ctfww.commonlib.utils.QRCodeUtils;
+import com.ctfww.module.attend.R;
+import com.ctfww.module.attend.entity.AttendSigninInfo;
+import com.ctfww.module.fingerprint.entity.DistResult;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -120,7 +120,7 @@ public class AttendSigninFragment extends Fragment {
                         return;
                     }
 
-                    DistResult distResult = com.guoliang.module.fingerprint.Utils.getGpsId(gpsLocation);
+                    DistResult distResult = com.ctfww.module.fingerprint.Utils.getGpsId(gpsLocation);
                     if (distResult.getLevel() > 2) {
                         DialogUtils.onlyPrompt("附近没有可用GPS匹配能签到的点，请选择其他签到方式！", v.getContext());
                         return;
@@ -191,7 +191,7 @@ public class AttendSigninFragment extends Fragment {
         if(result != null) {
             int deskId = QRCodeUtils.getQrDeskId(result.getContents(), getContext());
             if (deskId != 0) {
-                com.guoliang.module.fingerprint.Utils.startScan("calc");
+                com.ctfww.module.fingerprint.Utils.startScan("calc");
                 AttendSigninInfo attendSigninInfo = new AttendSigninInfo();
                 attendSigninInfo.setDeskId(deskId);
 //                Intent intent = new Intent(getContext(), KeepWatchReportSigninActivity.class);
@@ -282,7 +282,7 @@ public class AttendSigninFragment extends Fragment {
     }
 
     private void getUnreadcount() {
-        com.guoliang.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
+        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 int count = (int)obj;

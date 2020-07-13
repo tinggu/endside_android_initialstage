@@ -127,7 +127,7 @@
 
                 <fragment
                     android:id="@+id/keepwatch_person_trends_fragment"
-                    android:name="com.guoliang.module.keepwatch.fragment.KeepWatchPersonTrendsFragment"
+                    android:name="com.ctfww.module.keepwatch.fragment.KeepWatchPersonTrendsFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"

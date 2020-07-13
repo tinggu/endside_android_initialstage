@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.activity;
+package com.ctfww.module.attend.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,20 +19,20 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.guoliang.commonlib.datahelper.IUIDataHelperCallback;
-import com.guoliang.commonlib.entity.FileInfo;
-import com.guoliang.commonlib.entity.MessageEvent;
-import com.guoliang.commonlib.entity.MyPosition;
-import com.guoliang.commonlib.location.GPSLocationListener;
-import com.guoliang.commonlib.location.GPSLocationManager;
-import com.guoliang.commonlib.location.GPSProviderStatus;
-import com.guoliang.commonlib.utils.ApkUtils;
-import com.guoliang.commonlib.utils.FileUtils;
-import com.guoliang.commonlib.utils.PermissionUtils;
-import com.guoliang.module.attend.R;
-import com.guoliang.module.attend.fragment.AttendMyFragment;
-import com.guoliang.module.attend.fragment.AttendSigninFragment;
-import com.guoliang.module.attend.fragment.AttendStatisticsFragment;
+import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.FileInfo;
+import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.commonlib.entity.MyPosition;
+import com.ctfww.commonlib.location.GPSLocationListener;
+import com.ctfww.commonlib.location.GPSLocationManager;
+import com.ctfww.commonlib.location.GPSProviderStatus;
+import com.ctfww.commonlib.utils.ApkUtils;
+import com.ctfww.commonlib.utils.FileUtils;
+import com.ctfww.commonlib.utils.PermissionUtils;
+import com.ctfww.module.attend.R;
+import com.ctfww.module.attend.fragment.AttendMyFragment;
+import com.ctfww.module.attend.fragment.AttendSigninFragment;
+import com.ctfww.module.attend.fragment.AttendStatisticsFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -73,17 +73,17 @@ public class AttendMainActivity extends FragmentActivity implements View.OnClick
         initViews();
         setOnClickListener();
 
-        com.guoliang.module.fingerprint.Utils.init();
+        com.ctfww.module.fingerprint.Utils.init();
         refreshFingerprint();
 
         //注册一个eventbus
         EventBus.getDefault().register(this);
 
         // 开始刷新token
-        int cnt = com.guoliang.module.tms.datahelper.NetworkHelper.getInstance().getCnt();
+        int cnt = com.ctfww.module.tms.datahelper.NetworkHelper.getInstance().getCnt();
         LogUtils.i(TAG, "onCreate: cnt = " + cnt);
         if (cnt == 0) {
-            com.guoliang.module.tms.datahelper.NetworkHelper.getInstance().startTimedRefresh();
+            com.ctfww.module.tms.datahelper.NetworkHelper.getInstance().startTimedRefresh();
         }
         else {
             EventBus.getDefault().post(new MessageEvent("tms_first_token"));
@@ -112,7 +112,7 @@ public class AttendMainActivity extends FragmentActivity implements View.OnClick
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
-        com.guoliang.module.fingerprint.Utils.endScan();
+        com.ctfww.module.fingerprint.Utils.endScan();
     }
 
     @Override
@@ -250,8 +250,8 @@ public class AttendMainActivity extends FragmentActivity implements View.OnClick
 //            Utils.setFirstToken(true);
 //            LogUtils.i(TAG, "onGetMessage: tms_first_token");
 //            checkUpgrade();
-//            com.guoliang.module.user.datahelper.DataHelper.getInstance().startTimedSyn();
-//            com.guoliang.module.keyevents.datahelper.SynData.startTimedSyn();
+//            com.ctfww.module.user.datahelper.DataHelper.getInstance().startTimedSyn();
+//            com.ctfww.module.keyevents.datahelper.SynData.startTimedSyn();
 //            SynData.getAllDesk();
 //            SynData.startTimedSyn();
 //        }
@@ -302,7 +302,7 @@ public class AttendMainActivity extends FragmentActivity implements View.OnClick
 
     private void checkUpgrade() {
 //        String apkName = ApkUtils.getPackageTailName(this);
-//        com.guoliang.module.upgrade.datahelper.NetworkHelper.getInstance().getLatestApkVersion(apkName, new IUIDataHelperCallback() {
+//        com.ctfww.module.upgrade.datahelper.NetworkHelper.getInstance().getLatestApkVersion(apkName, new IUIDataHelperCallback() {
 //            @Override
 //            public void onSuccess(Object obj) {
 //                ApkVersionInfo apkVersionInfo = (ApkVersionInfo)obj;
@@ -370,7 +370,7 @@ public class AttendMainActivity extends FragmentActivity implements View.OnClick
 //            fingerPrintList.add(desk.getFingerPrint());
 //        }
 //
-//        com.guoliang.module.fingerprint.Utils.setDatabase(idList, fingerPrintList);
+//        com.ctfww.module.fingerprint.Utils.setDatabase(idList, fingerPrintList);
     }
 
     private void resetImage() {

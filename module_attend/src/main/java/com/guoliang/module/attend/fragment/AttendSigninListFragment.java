@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.fragment;
+package com.ctfww.module.attend.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.LogUtils;
-import com.guoliang.commonlib.datahelper.IUIDataHelperCallback;
-import com.guoliang.commonlib.entity.MyDateTimeUtils;
-import com.guoliang.module.attend.R;
-import com.guoliang.module.attend.adapter.AttendSigninListAdapter;
-import com.guoliang.module.attend.entity.AttendSigninInfo;
+import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MyDateTimeUtils;
+import com.ctfww.module.attend.R;
+import com.ctfww.module.attend.adapter.AttendSigninListAdapter;
+import com.ctfww.module.attend.entity.AttendSigninInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -27,7 +27,7 @@
         android:textColor="#333"
         android:textSize="16sp" />
 
-    <com.guoliang.commonlib.view.PickerScrollView
+    <com.ctfww.commonlib.view.PickerScrollView
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

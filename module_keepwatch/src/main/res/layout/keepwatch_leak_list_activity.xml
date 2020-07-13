@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/day_calendar_fragment"
-        android:name="com.guoliang.commonlib.fragment.DayCalendarFragment"
+        android:name="com.ctfww.commonlib.fragment.DayCalendarFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

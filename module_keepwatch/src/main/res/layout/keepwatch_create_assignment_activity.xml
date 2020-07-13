@@ -235,7 +235,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="84.5dp"
                 android:orientation="horizontal">
-                <com.guoliang.module.datapicker.time.HourAndMinutePicker
+                <com.ctfww.module.datapicker.time.HourAndMinutePicker
                     android:id="@+id/keepwatch_start_hour_minute"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -246,7 +246,7 @@
                     android:textSize="16sp"
                     android:text="——"
                     android:gravity="center_vertical"/>
-                <com.guoliang.module.datapicker.time.HourAndMinutePicker
+                <com.ctfww.module.datapicker.time.HourAndMinutePicker
                     android:id="@+id/keepwatch_end_hour_minute"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -281,7 +281,7 @@
                     android:textSize="13sp"
                     android:gravity="center_vertical"/>
             </LinearLayout>
-            <com.guoliang.module.datapicker.data.DataPicker
+            <com.ctfww.module.datapicker.data.DataPicker
                 android:id="@+id/keepwatch_frequcency"
                 android:layout_width="match_parent"
                 android:layout_height="84.5dp"/>

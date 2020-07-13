@@ -1,4 +1,4 @@
-package com.guoliang.module.baidumap;
+package com.ctfww.module.baidumap;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.guoliang.module.attend;
+package com.ctfww.module.attend;
 
 import org.junit.Test;
 

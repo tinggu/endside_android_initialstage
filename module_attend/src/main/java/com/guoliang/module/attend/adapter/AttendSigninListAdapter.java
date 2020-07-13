@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.adapter;
+package com.ctfww.module.attend.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.guoliang.commonlib.utils.GlobeFun;
-import com.guoliang.module.attend.R;
-import com.guoliang.module.attend.entity.AttendSigninInfo;
+import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.attend.R;
+import com.ctfww.module.attend.entity.AttendSigninInfo;
 
 import java.util.List;
 

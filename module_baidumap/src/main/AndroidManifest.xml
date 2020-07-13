@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guoliang.module.baidumap" >
+    package="com.ctfww.module.baidumap" >
 
     <application android:theme="@style/AppTheme">
 

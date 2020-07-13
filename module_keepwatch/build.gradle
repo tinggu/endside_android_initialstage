@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         if (isModule.toBoolean()) {
-            applicationId "com.guoliang.module.keepwatch"
+            applicationId "com.ctfww.module.keepwatch"
         }
         minSdkVersion config_android.minSdkVersion
         targetSdkVersion config_android.targetSdkVersion

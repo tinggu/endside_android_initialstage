@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.fragment;
+package com.ctfww.module.attend.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,11 +18,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.guoliang.commonlib.datahelper.IUIDataHelperCallback;
-import com.guoliang.commonlib.entity.MessageEvent;
-import com.guoliang.commonlib.entity.MyDateTimeUtils;
-import com.guoliang.commonlib.utils.DialogUtils;
-import com.guoliang.module.attend.R;
+import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.commonlib.entity.MyDateTimeUtils;
+import com.ctfww.commonlib.utils.DialogUtils;
+import com.ctfww.module.attend.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -267,7 +267,7 @@ public class AttendStatisticsFragment extends Fragment {
     }
 
     private void getNoEndKeyEventCount() {
-        com.guoliang.module.keyevents.datahelper.NetworkHelper.getInstance().getNoEndKeyEventCount(new IUIDataHelperCallback() {
+        com.ctfww.module.keyevents.datahelper.NetworkHelper.getInstance().getNoEndKeyEventCount(new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 int count = (int)obj;
@@ -307,7 +307,7 @@ public class AttendStatisticsFragment extends Fragment {
     }
 
     private void getUnreadcount() {
-        com.guoliang.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
+        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 int count = (int)obj;

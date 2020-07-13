@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/keepevent_list_fragment"
-        android:name="com.guoliang.module.keyevents.fragment.KeyEventListFragment"
+        android:name="com.ctfww.module.keyevents.fragment.KeyEventListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guoliang.commonlib" >
+    package="com.ctfww.commonlib" >
 
     <!--申明所有用到的权限-->
 
@@ -41,7 +41,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.guoliang.commonlib.utils.myprovider"
+            android:authorities="com.ctfww.commonlib.utils.myprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

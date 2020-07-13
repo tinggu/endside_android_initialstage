@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guoliang.module.user">
+    package="com.ctfww.module.user">
 
     <application android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.LoginActivity"
+        <activity android:name="com.ctfww.module.user.activity.LoginActivity"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -14,60 +14,60 @@
 
         </activity>
 
-        <activity android:name=".activity.ForgetPasswordActivity"
+        <activity android:name="com.ctfww.module.user.activity.ForgetPasswordActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.SetPasswordActivity"
+        <activity android:name="com.ctfww.module.user.activity.SetPasswordActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.UserInfoActivity"
+        <activity android:name="com.ctfww.module.user.activity.UserInfoActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.UpdateMobileActivity"
+        <activity android:name="com.ctfww.module.user.activity.UpdateMobileActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.UpdateMobile2Activity"
+        <activity android:name="com.ctfww.module.user.activity.UpdateMobile2Activity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.OneValSetActivity"
+        <activity android:name="com.ctfww.module.user.activity.OneValSetActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.AccountActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".activity.GroupMgtActivity"
+        <activity android:name="com.ctfww.module.user.activity.AccountActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.GroupCreateOrUpdateActivity"
+        <activity android:name="com.ctfww.module.user.activity.GroupMgtActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.GroupActivity"
+        <activity android:name="com.ctfww.module.user.activity.GroupCreateOrUpdateActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.GroupAddMemberActivity"
+        <activity android:name="com.ctfww.module.user.activity.GroupActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.GroupUserInfoActivity"
+        <activity android:name="com.ctfww.module.user.activity.GroupAddMemberActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.UserSelectGroupActivity"
+        <activity android:name="com.ctfww.module.user.activity.GroupUserInfoActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.UserSelectUserActivity"
+        <activity android:name="com.ctfww.module.user.activity.UserSelectGroupActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".activity.UserInviteActivity"
+        <activity android:name="com.ctfww.module.user.activity.UserSelectUserActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name="com.ctfww.module.user.activity.UserInviteActivity"
             android:screenOrientation="portrait">
         </activity>
 

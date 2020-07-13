@@ -12,13 +12,13 @@
 
     <fragment
         android:id="@+id/day_calendar_fragment"
-        android:name="com.guoliang.commonlib.fragment.DayCalendarFragment"
+        android:name="com.ctfww.commonlib.fragment.DayCalendarFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <fragment
         android:id="@+id/color_prompt_fragment"
-        android:name="com.guoliang.commonlib.fragment.ColorPromptFragment"
+        android:name="com.ctfww.commonlib.fragment.ColorPromptFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

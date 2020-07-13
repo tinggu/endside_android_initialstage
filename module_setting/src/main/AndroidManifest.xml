@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guoliang.module.setting">
+    package="com.ctfww.module.setting">
 
     <application android:theme="@style/AppTheme">
 
-    <activity android:name=".activity.SettingActivity"
+    <activity android:name="com.ctfww.module.setting.activity.SettingActivity"
         android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.AboutAppActivity"
+        <activity android:name="com.ctfww.module.setting.activity.AboutAppActivity"
             android:screenOrientation="portrait" />
 
     </application>

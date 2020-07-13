@@ -1,6 +1,6 @@
 package debug;
 
-import com.guoliang.commonlib.base.BaseApplication;
+import com.ctfww.commonlib.base.BaseApplication;
 
 /**
  *

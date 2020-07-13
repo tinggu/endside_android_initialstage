@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.fragment;
+package com.ctfww.module.attend.fragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,8 +20,8 @@ import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.guoliang.module.attend.R;
-import com.guoliang.module.attend.entity.AttendPersonTrends;
+import com.ctfww.module.attend.R;
+import com.ctfww.module.attend.entity.AttendPersonTrends;
 
 import org.greenrobot.eventbus.EventBus;
 

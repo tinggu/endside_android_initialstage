@@ -1,4 +1,4 @@
-package com.guoliang.module.baidumap.activity;
+package com.ctfww.module.baidumap.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -35,8 +35,8 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.guoliang.module.baidumap.R;
-import com.guoliang.module.baidumap.Utils;
+import com.ctfww.module.baidumap.R;
+import com.ctfww.module.baidumap.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

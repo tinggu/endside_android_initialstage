@@ -102,6 +102,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginLeft="14dp"
         android:layout_marginRight="14dp"
-        android:text="点击二维码图标可以查看此点对应的二维码，完成后，该二维码会存储于“android/data/com.guoliang.module_keepwatch/files/qrcode”，文件名称为编号.jpg"/>
+        android:text="点击二维码图标可以查看此点对应的二维码，完成后，该二维码会存储于“android/data/com.ctfww.module_keepwatch/files/qrcode”，文件名称为编号.jpg"/>
 
 </LinearLayout>

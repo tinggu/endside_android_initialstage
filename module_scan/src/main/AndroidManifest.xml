@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guoliang.module.scan" >
+    package="com.ctfww.module.scan" >
 
     <application android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.ScanActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.ctfww.module.scan.activity.ScanActivity"  android:screenOrientation="portrait"/>
 
     </application>
 

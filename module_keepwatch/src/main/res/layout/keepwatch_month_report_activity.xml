@@ -19,7 +19,7 @@
             android:orientation="vertical">
             <fragment
                 android:id="@+id/month_calendar_fragment"
-                android:name="com.guoliang.commonlib.fragment.MonthCalendarFragment"
+                android:name="com.ctfww.commonlib.fragment.MonthCalendarFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -278,7 +278,7 @@
 
             <fragment
                 android:id="@+id/keepwatch_danger_list_fragment"
-                android:name="com.guoliang.module.keepwatch.fragment.KeepWatchDangerListFragment"
+                android:name="com.ctfww.module.keepwatch.fragment.KeepWatchDangerListFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
@@ -287,7 +287,7 @@
 
             <fragment
                 android:id="@+id/keepwatch_ranking_fragment"
-                android:name="com.guoliang.module.keepwatch.fragment.KeepWatchRankingFragment"
+                android:name="com.ctfww.module.keepwatch.fragment.KeepWatchRankingFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"

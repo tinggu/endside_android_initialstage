@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.entity;
+package com.ctfww.module.attend.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

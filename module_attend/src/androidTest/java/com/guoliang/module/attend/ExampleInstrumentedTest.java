@@ -1,4 +1,4 @@
-package com.guoliang.module.attend;
+package com.ctfww.module.attend;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.guoliang.module.attend.test", appContext.getPackageName());
+        assertEquals("com.ctfww.module.attend.test", appContext.getPackageName());
     }
 }

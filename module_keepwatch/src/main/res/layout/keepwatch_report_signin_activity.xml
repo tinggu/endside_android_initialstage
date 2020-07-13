@@ -105,7 +105,7 @@
 
             <fragment
                 android:id="@+id/keyevent_report_fragment"
-                android:name="com.guoliang.module.keyevents.fragment.KeyEventReportFragment"
+                android:name="com.ctfww.module.keyevents.fragment.KeyEventReportFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"

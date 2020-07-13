@@ -484,7 +484,7 @@
 
             </LinearLayout>
 
-            <com.guoliang.module.main.view.DeviceMonitorLineChart
+            <com.ctfww.module.main.view.DeviceMonitorLineChart
                 android:id="@+id/main_page_line_chart"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
@@ -492,7 +492,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp">
 
-            </com.guoliang.module.main.view.DeviceMonitorLineChart>
+            </com.ctfww.module.main.view.DeviceMonitorLineChart>
 
         </LinearLayout>
 

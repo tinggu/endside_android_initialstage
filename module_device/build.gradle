@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         if (isModule.toBoolean()) {
-            applicationId "com.guoliang.module.device"
+            applicationId "com.ctfww.module.device"
         }
         minSdkVersion    config_android.minSdkVersion
         targetSdkVersion config_android.targetSdkVersion

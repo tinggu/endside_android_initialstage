@@ -245,7 +245,7 @@
 
                 <fragment
                     android:id="@+id/keepwatch_snatch_key_event_fragment"
-                    android:name="com.guoliang.module.keyevents.fragment.KeyEventSnatchFragment"
+                    android:name="com.ctfww.module.keyevents.fragment.KeyEventSnatchFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -254,7 +254,7 @@
 
                 <fragment
                     android:id="@+id/keepwatch_person_trends_fragment"
-                    android:name="com.guoliang.module.keepwatch.fragment.KeepWatchPersonTrendsFragment"
+                    android:name="com.ctfww.module.keepwatch.fragment.KeepWatchPersonTrendsFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -263,7 +263,7 @@
 
                 <fragment
                     android:id="@+id/keepwatch_ranking_fragment"
-                    android:name="com.guoliang.module.keepwatch.fragment.KeepWatchRankingFragment"
+                    android:name="com.ctfww.module.keepwatch.fragment.KeepWatchRankingFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"

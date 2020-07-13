@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         if (isModule.toBoolean()) {
-            applicationId "com.guoliang.module.baidumap"
+            applicationId "com.ctfww.module.baidumap"
         }
         minSdkVersion    config_android.minSdkVersion
         targetSdkVersion config_android.targetSdkVersion

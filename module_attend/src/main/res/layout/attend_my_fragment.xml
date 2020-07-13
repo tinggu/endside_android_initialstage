@@ -212,7 +212,7 @@
 
                 <fragment
                     android:id="@+id/attend_signin_list_fragment"
-                    android:name="com.guoliang.module.attend.fragment.AttendSigninListFragment"
+                    android:name="com.ctfww.module.attend.fragment.AttendSigninListFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"

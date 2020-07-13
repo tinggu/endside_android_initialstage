@@ -7,7 +7,7 @@ android {
     compileSdkVersion config_android.compileSdkVersion
     buildToolsVersion config_android.buildToolsVersion
     defaultConfig {
-        applicationId "com.guoliang.monitor"
+        applicationId "com.ctfww.monitor"
         minSdkVersion    config_android.minSdkVersion
         targetSdkVersion config_android.targetSdkVersion
         versionCode      config_android.versionCode

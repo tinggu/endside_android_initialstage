@@ -15,7 +15,7 @@
         android:layout_height="1dp"
         android:background="#ccc" />
 
-    <com.guoliang.module.keyevents.button.RecordAudioButton
+    <com.ctfww.module.keyevents.button.RecordAudioButton
         android:id="@+id/btnVoice"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"

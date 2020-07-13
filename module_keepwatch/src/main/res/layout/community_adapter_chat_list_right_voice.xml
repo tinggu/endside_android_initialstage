@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content" />
 
 
-            <com.guoliang.module.keepwatch.view.VoiceImageView
+            <com.ctfww.module.keepwatch.view.VoiceImageView
                 android:id="@+id/iv_voice"
                 android:layout_width="match_parent"
                 android:layout_height="28dp"

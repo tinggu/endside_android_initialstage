@@ -1,4 +1,4 @@
-package com.guoliang.module.attend.fragment;
+package com.ctfww.module.attend.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,10 +19,10 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
-import com.guoliang.commonlib.datahelper.IUIDataHelperCallback;
-import com.guoliang.commonlib.entity.MessageEvent;
-import com.guoliang.module.attend.R;
-import com.guoliang.module.user.entity.UserInfo;
+import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.module.attend.R;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -88,7 +88,7 @@ public class AttendMyFragment extends Fragment {
         mSetup = v.findViewById(R.id.top_addition);
         mSetup.setImageResource(R.drawable.attend_setup);
 
-        UserInfo userInfo = com.guoliang.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
         mUserInfoLL = v.findViewById(R.id.attend_user_info_ll);
         mHead = v.findViewById(R.id.attend_head);
         Glide.with(this).load(userInfo.getHeadUrl()).into(mHead);
@@ -317,7 +317,7 @@ public class AttendMyFragment extends Fragment {
 //    }
 
     private void getUnreadcount() {
-        com.guoliang.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
+        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 int count = (int)obj;
