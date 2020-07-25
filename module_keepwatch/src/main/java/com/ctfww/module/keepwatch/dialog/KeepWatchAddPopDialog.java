@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.module.keepwatch.R;
 
 public class KeepWatchAddPopDialog extends PopupWindow {
@@ -17,6 +18,7 @@ public class KeepWatchAddPopDialog extends PopupWindow {
     private LinearLayout mInviteMemberLL;
     private LinearLayout mAddDeskLL;
     private LinearLayout mCreateAssignmentLL;
+    private LinearLayout mCreateNoticeLL;
 
     public KeepWatchAddPopDialog(Context context) {
         super(context);
@@ -36,6 +38,7 @@ public class KeepWatchAddPopDialog extends PopupWindow {
         mInviteMemberLL = v.findViewById(R.id.keepwatch_invite_member_ll);
         mAddDeskLL = v.findViewById(R.id.keepwatch_add_desk_ll);
         mCreateAssignmentLL = v.findViewById(R.id.keepwatch_create_assignment_ll);
+        mCreateNoticeLL = v.findViewById(R.id.keepwatch_create_notice_ll);
     }
 
     public void setOnClickListener() {
@@ -66,7 +69,17 @@ public class KeepWatchAddPopDialog extends PopupWindow {
         mCreateAssignmentLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LogUtils.i(TAG, "mCreateAssignmentLL.onClick...");
                 ARouter.getInstance().build("/keepwatch/createAssignment").navigation();
+                dismiss();
+            }
+        });
+
+        mCreateNoticeLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtils.i(TAG, "mCreateNoticeLL.onClick...");
+                ARouter.getInstance().build("/user/createNotice").navigation();
                 dismiss();
             }
         });

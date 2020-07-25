@@ -4,6 +4,7 @@ import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.base.BaseApplication;
+import com.ctfww.commonlib.im.ConnectionStateMonitor;
 import com.ctfww.commonlib.network.CloudClient;
 import com.ctfww.commonlib.storage.sp.SPUtil;
 import com.ctfww.module.keepwatch.Utils;
@@ -11,6 +12,8 @@ import com.ctfww.module.user.datahelper.Util;
 
 public class KeepWatchApplication extends BaseApplication {
     private final static String TAG = "KeepWatchApplication";
+
+    private ConnectionStateMonitor connectionStateMonitor;
 
     @Override
     public void onCreate() {
@@ -35,6 +38,9 @@ public class KeepWatchApplication extends BaseApplication {
         SDKInitializer.setCoordType(CoordType.BD09LL);
 
         Utils.synData();
+
+        connectionStateMonitor = new ConnectionStateMonitor();
+        connectionStateMonitor.enable(this);
 
         LogUtils.getConfig().setLog2FileSwitch(true);
     }

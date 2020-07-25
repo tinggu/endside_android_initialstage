@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:orientation="vertical"
+    tools:context=".activity.UserCreateNoticeActivity">
+
+    <include layout="@layout/sub_top_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:orientation="vertical">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:hint="通知标题"
+            android:textColor="#9B9B9B"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:background="@drawable/rectangle_shape_white_10"
+            android:id="@+id/user_notice_tittle"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="124.75dp"
+            android:layout_marginTop="14dp"
+            android:gravity="top"
+            android:background="@drawable/rectangle_shape_white_10"
+            android:hint="通知的详细内容"
+            android:id="@+id/user_notice_desc"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,6 +1,8 @@
 package com.ctfww.module.keepwatch.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +18,13 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
+import com.ctfww.commonlib.im.BasicData;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
@@ -234,6 +238,36 @@ public class KeepWatchStatisticsFragment extends Fragment {
             String groupName= SPStaticUtils.getString("working_group_name");
             LogUtils.i(TAG, "onGetMessage: groupName = " + groupName);
             mGroupName.setText(SPStaticUtils.getString("working_group_name"));
+        }
+        else if ("udp_receive_data".equals(msg)) {
+            BasicData basicData = GsonUtils.fromJson(messageEvent.getValue(), BasicData.class);
+            LogUtils.i(TAG, "udp_receive_data: basicData = " + basicData.toString());
+            if (!basicData.isValid()) {
+                LogUtils.i(TAG, "udp_receive_data: !basicData.isValid()");
+                return;
+            }
+
+            if ("report_abnormal".equals(basicData.getType())) {
+                if (mKeyEventSnatchFragment.isDoing()) {
+                    LogUtils.i(TAG, "udp_receive_data: mKeyEventSnatchFragment.isDoing()");
+                    return;
+                }
+
+                LogUtils.i(TAG, "udp_receive_data: vibrator...");
+                Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                long[] patter = {1000, 2000, 2000, 50};
+                vibrator.vibrate(patter, -1);
+                mKeyEventSnatchFragment.getDoingKeyEvent();
+            }
+            else if ("person_trends".equals(basicData.getType())) {
+                mKeepWatchPersonTrendsFragment.getPersonTrends();
+            }
+            else if ("notice".equals(basicData.getType())) {
+                long[] patter = {1000, 50};
+                Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(patter, -1);
+                getUnreadcount();
+            }
         }
     }
 

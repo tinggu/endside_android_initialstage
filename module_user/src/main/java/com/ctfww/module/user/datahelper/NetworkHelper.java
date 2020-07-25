@@ -5,6 +5,10 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.im.UdpHelper;
+import com.ctfww.module.user.bean.NoticeBean;
+import com.ctfww.module.user.entity.NoticeInfo;
+import com.ctfww.module.user.entity.NoticeReadStatus;
 import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.network.ICloudCallback;
@@ -352,6 +356,9 @@ public class NetworkHelper {
                 LogUtils.i(TAG, "success data = " + data);
                 GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(data, GroupInviteInfo.class);
                 callback.onSuccess(groupInviteInfo);
+                if (!TextUtils.isEmpty(groupInviteInfo.getToUserId())) {
+                    UdpHelper.getInstance().sendBasicDataToOtherUser(groupInviteInfo.getFromUserId(), "invite", groupInviteInfo.getToUserId());
+                }
             }
 
             @Override
@@ -632,6 +639,124 @@ public class NetworkHelper {
                 if (callback != null) {
                     callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
                 }
+            }
+        });
+    }
+
+    public void addNotice(String tittle, String content, final IUIDataHelperCallback callback) {
+        final String groupId = SPStaticUtils.getString("working_group_id");
+        final String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        long timeStamp = System.currentTimeMillis();
+        CloudClient.getInstance().addNotice(groupId, userId, tittle, content, timeStamp, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                LogUtils.i(TAG, "success data = " + data);
+                NoticeInfo noticeInfo = GsonUtils.fromJson(data, NoticeInfo.class);
+                callback.onSuccess(noticeInfo);
+
+                UdpHelper.getInstance().sendBasicDataToGroup(userId, "notice", groupId);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "error code = " + code + " msg = " + errorMsg);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                LogUtils.i(TAG, "failure errorMsg = " + errorMsg);
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void getNotice(final IUIDataHelperCallback callback) {
+        String groupId = SPStaticUtils.getString("working_group_id");
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
+
+        String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        CloudClient.getInstance().getNotice(groupId, userId, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                LogUtils.i(TAG, "success data = " + data);
+                Type type = new TypeToken<List<NoticeInfo>>() {}.getType();
+                List<NoticeInfo> noticeInfoList = GsonUtils.fromJson(data, type);
+                callback.onSuccess(noticeInfoList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "error code = " + code + " msg = " + errorMsg);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                LogUtils.i(TAG, "failure errorMsg = " + errorMsg);
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void updateNoticeReadStatus(String noticeId, int flag, final IUIDataHelperCallback callback) {
+        String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        long timeStamp = System.currentTimeMillis();
+        CloudClient.getInstance().updateNoticeReadStatus(noticeId, userId, flag, timeStamp, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                LogUtils.i(TAG, "success data = " + data);
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "error code = " + code + " msg = " + errorMsg);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                LogUtils.i(TAG, "failure errorMsg = " + errorMsg);
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void getNoticeReadStatus(String noticeId, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().getNoticeReadStatus(noticeId, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                LogUtils.i(TAG, "success data = " + data);
+                Type type = new TypeToken<List<NoticeReadStatus>>() {}.getType();
+                List<NoticeReadStatus> noticeReadStatusList = GsonUtils.fromJson(data, type);
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "error code = " + code + " msg = " + errorMsg);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                LogUtils.i(TAG, "failure errorMsg = " + errorMsg);
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
             }
         });
     }

@@ -5,15 +5,19 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.bean.QueryConditionBean;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.user.bean.GroupInfoBean;
 import com.ctfww.module.user.bean.GroupInviteBean;
+import com.ctfww.module.user.bean.NoticeBean;
+import com.ctfww.module.user.bean.NoticeReadStatusBean;
 import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
 import com.ctfww.module.user.bean.User2GroupBean;
 import com.ctfww.module.user.bean.UserGroupBean;
 import com.ctfww.module.user.bean.UserInfoBean;
+import com.ctfww.module.user.entity.NoticeReadStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,6 +127,62 @@ public class CloudClient {
                 CloudRspData cloudRspData = parseRsp(response);
                 if (cloudRspData.getErrCode() == VALIDE_DATA) {
                     callback.onSuccess(cloudRspData.getBodyStr());
+                }
+                else {
+                    callback.onError(cloudRspData.getErrCode(), cloudRspData.getBodyStr());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    private void processSingleObjRsp(Call<ResponseBody> responseBodyCall, final ICloudCallback callback) {
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+                CloudRspData cloudRspData = parseRsp(response);
+                if (cloudRspData.getErrCode() == VALIDE_DATA) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(cloudRspData.getBodyStr());
+                        JSONObject jsonObjectData = jsonObject.getJSONObject("data");
+                        callback.onSuccess(jsonObjectData.toString());
+                    }
+                    catch (JSONException e) {
+                        LogUtils.e(TAG, "e.message = " + e.getMessage());
+                        callback.onError(-10, "数据格式错误");
+                    }
+                }
+                else {
+                    callback.onError(cloudRspData.getErrCode(), cloudRspData.getBodyStr());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    private void processListRsp(Call<ResponseBody> responseBodyCall, final ICloudCallback callback) {
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+                CloudRspData cloudRspData = parseRsp(response);
+                if (cloudRspData.getErrCode() == VALIDE_DATA) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(cloudRspData.getBodyStr());
+                        JSONArray jsonArray = jsonObject.getJSONArray("data");
+                        callback.onSuccess(jsonArray.toString());
+                    }
+                    catch (JSONException e) {
+                        LogUtils.e(TAG, "e.message = " + e.getMessage());
+                        callback.onError(-10, "数据格式错误");
+                    }
                 }
                 else {
                     callback.onError(cloudRspData.getErrCode(), cloudRspData.getBodyStr());
@@ -564,5 +624,41 @@ public class CloudClient {
 
         Call<ResponseBody> responseBodyCall = mCloudMethod.uploadFile(SPStaticUtils.getString("user_open_id"), part);
         processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void addNotice(String groupId, String userId, String tittle, String content, long timeStamp, final ICloudCallback callback) {
+        NoticeBean noticeBean = new NoticeBean();
+        noticeBean.setGroupId(groupId);
+        noticeBean.setUserId(userId);
+        noticeBean.setTittle(tittle);
+        noticeBean.setContent(content);
+        noticeBean.setTimeStamp(timeStamp);
+        LogUtils.i(TAG, "addNotice: noticeBean = " + noticeBean);
+        Call<ResponseBody> responseBodyCall = mCloudMethod.addNotice(noticeBean);
+        processSingleObjRsp(responseBodyCall, callback);
+    }
+
+    public void getNotice(String groupId, String userId, final ICloudCallback callback) {
+        QueryConditionBean condition = new QueryConditionBean(groupId, userId);
+        LogUtils.i(TAG, "getNotice: condition = " + condition);
+        Call<ResponseBody> responseBodyCall = mCloudMethod.getNotice(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
+    public void updateNoticeReadStatus(String noticeId, String userId, int flag, long timeStamp, final ICloudCallback callback) {
+        NoticeReadStatusBean info = new NoticeReadStatusBean();
+        info.setNoticeId(noticeId);
+        info.setUserId(userId);
+        info.setFlag(flag);
+        info.setTimeStamp(timeStamp);
+        LogUtils.i(TAG, "updateNoticeReadStatus: info = " + info.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.updateNoticeReadStatus(info);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void getNoticeReadStatus(String noticeId, final ICloudCallback callback) {
+        LogUtils.i(TAG, "getNoticeReadStatus: noticeId = " + noticeId);
+        Call<ResponseBody> responseBodyCall = mCloudMethod.getNoticeReadStatus(noticeId);
+        processListRsp(responseBodyCall, callback);
     }
 }

@@ -71,6 +71,10 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name="com.ctfww.module.user.activity.UserCreateNoticeActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 
 </manifest>

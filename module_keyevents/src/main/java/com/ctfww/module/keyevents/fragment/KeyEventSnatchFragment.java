@@ -221,4 +221,8 @@ public class KeyEventSnatchFragment extends Fragment {
         String time = String.format("%04d-%02d-%02d %02d:%02d", year, month, day, hour, minute);
         mDateTime.setText(time);
     }
+
+    public boolean isDoing() {
+        return mSnatch.getVisibility() == View.GONE;
+    }
 }

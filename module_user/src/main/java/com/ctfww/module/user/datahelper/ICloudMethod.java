@@ -1,11 +1,15 @@
 package com.ctfww.module.user.datahelper;
 
+import com.ctfww.commonlib.bean.QueryConditionBean;
 import com.ctfww.module.user.bean.GroupInfoBean;
 import com.ctfww.module.user.bean.GroupInviteBean;
+import com.ctfww.module.user.bean.NoticeBean;
+import com.ctfww.module.user.bean.NoticeReadStatusBean;
 import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
 import com.ctfww.module.user.bean.User2GroupBean;
 import com.ctfww.module.user.bean.UserInfoBean;
+import com.ctfww.module.user.entity.NoticeReadStatus;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -187,4 +191,36 @@ public interface ICloudMethod {
     @Multipart
     @POST("/microapkmgtserver/fileMgt/uploadFile")
     Call<ResponseBody> uploadFile(@Header("userId") String userId, @Part MultipartBody.Part file);
+
+    /**
+     * 增加通知
+     * @param info
+     * @return 返回值
+     */
+    @POST("/microusermanagement/messageMgt/addNotice")
+    Call<ResponseBody> addNotice(@Body NoticeBean info);
+
+    /**
+     * 获得通知信息
+     * @param condition 主要是groupId和userId
+     * @return 返回值
+     */
+    @POST("/microusermanagement/messageMgt/getNotice")
+    Call<ResponseBody> getNotice(@Body QueryConditionBean condition);
+
+    /**
+     * 更改通知信息阅读状态
+     * @param info 通知信息
+     * @return 返回值
+     */
+    @POST("/microusermanagement/messageMgt/updateNoticeReadStatus")
+    Call<ResponseBody> updateNoticeReadStatus(@Body NoticeReadStatusBean info);
+
+    /**
+     * 获得某条通知的阅读状态（管理员与发送人才有此权限）
+     * @param noticeId 通知编号
+     * @return 返回值
+     */
+    @POST("/microusermanagement/messageMgt/getNoticeReadStatus")
+    Call<ResponseBody> getNoticeReadStatus(@Body String noticeId);
 }

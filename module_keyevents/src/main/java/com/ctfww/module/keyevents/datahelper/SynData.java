@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.im.UdpHelper;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventReportRepaired;
@@ -230,6 +231,8 @@ public class SynData {
             @Override
             public void onSuccess(Object obj) {
                 LogUtils.i(TAG, "uploadSelf success!");
+                UdpHelper.getInstance().sendBasicDataToGroup(keyEvent.getUserId(), "report_abnormal", keyEvent.getGroupId());
+                UdpHelper.getInstance().sendBasicDataToGroup(keyEvent.getUserId(), "person_trends", keyEvent.getGroupId());
             }
 
             @Override

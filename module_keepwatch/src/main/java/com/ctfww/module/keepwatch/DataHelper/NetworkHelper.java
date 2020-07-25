@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.im.UdpHelper;
 import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.Consts;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
@@ -285,6 +286,8 @@ public class NetworkHelper {
                     List<FingerPrintHistory> fingerPrintHistoryList = GsonUtils.fromJson(data, type);
                     updateKeepWatchDeskFingerPrint(keepWatchSigninInfo.getDeskId(), keepWatchSigninInfo.getTimeStamp(), fingerPrintHistoryList);
                 }
+
+                UdpHelper.getInstance().sendBasicDataToGroup(keepWatchSigninInfo.getUserId(), "person_trends", keepWatchSigninInfo.getGroupId());
             }
 
             @Override
