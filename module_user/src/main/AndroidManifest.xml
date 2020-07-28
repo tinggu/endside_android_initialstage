@@ -75,6 +75,14 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name="com.ctfww.module.user.activity.NoticeActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name="com.ctfww.module.user.activity.NoticeDescActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 
 </manifest>

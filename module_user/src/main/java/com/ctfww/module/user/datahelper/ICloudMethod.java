@@ -197,7 +197,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/messageMgt/addNotice")
+    @POST("/microusermanagement/noticeMgt/addNotice")
     Call<ResponseBody> addNotice(@Body NoticeBean info);
 
     /**
@@ -205,7 +205,7 @@ public interface ICloudMethod {
      * @param condition 主要是groupId和userId
      * @return 返回值
      */
-    @POST("/microusermanagement/messageMgt/getNotice")
+    @POST("/microusermanagement/noticeMgt/getNotice")
     Call<ResponseBody> getNotice(@Body QueryConditionBean condition);
 
     /**
@@ -213,14 +213,14 @@ public interface ICloudMethod {
      * @param info 通知信息
      * @return 返回值
      */
-    @POST("/microusermanagement/messageMgt/updateNoticeReadStatus")
-    Call<ResponseBody> updateNoticeReadStatus(@Body NoticeReadStatusBean info);
+    @POST("/microusermanagement/noticeMgt/addNoticeReadStatus")
+    Call<ResponseBody> addNoticeReadStatus(@Body NoticeReadStatusBean info);
 
     /**
      * 获得某条通知的阅读状态（管理员与发送人才有此权限）
-     * @param noticeId 通知编号
+     * @param condition 通知编号以及所在的群组
      * @return 返回值
      */
-    @POST("/microusermanagement/messageMgt/getNoticeReadStatus")
-    Call<ResponseBody> getNoticeReadStatus(@Body String noticeId);
+    @POST("/microusermanagement/noticeMgt/getNoticeReadStatus")
+    Call<ResponseBody> getNoticeReadStatus(@Body QueryConditionBean condition);
 }

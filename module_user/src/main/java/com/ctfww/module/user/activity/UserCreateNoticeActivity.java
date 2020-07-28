@@ -36,7 +36,7 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
     private void initViews() {
         mBack = findViewById(R.id.top_back);
         mTittle = findViewById(R.id.top_tittle);
-        mTittle.setText("增加成员");
+        mTittle.setText("创建通知");
         mRelease = findViewById(R.id.top_addition);
         mRelease.setText("发布");
         mRelease.setVisibility(View.VISIBLE);

@@ -57,6 +57,7 @@ public class KeepWatchMyFragment extends Fragment {
     private LinearLayout mDayReportLL;
     private LinearLayout mWeekReportLL;
     private LinearLayout mMonthReportLL;
+    private LinearLayout mInviteLL;
 
     private KeepWatchSigninListFragment mKeepWatchSigninListFragment;
     private TextView mSigninListTittle;
@@ -117,6 +118,7 @@ public class KeepWatchMyFragment extends Fragment {
         mDayReportLL = v.findViewById(R.id.keepwatch_day_report_ll);
         mWeekReportLL = v.findViewById(R.id.keepwatch_week_report_ll);
         mMonthReportLL = v.findViewById(R.id.keepwatch_month_report_ll);
+        mInviteLL = v.findViewById(R.id.keepwatch_invite_ll);
 
         mKeepWatchSigninListFragment = (KeepWatchSigninListFragment)getChildFragmentManager().findFragmentById(R.id.keepwatch_signin_list_fragment);
         mSigninListTittle = mKeepWatchSigninListFragment.getView().findViewById(R.id.keepwatch_signin_list_tittle);
@@ -135,7 +137,7 @@ public class KeepWatchMyFragment extends Fragment {
         mInformationRL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/user/invite").navigation();
+                ARouter.getInstance().build("/user/notice").navigation();
             }
         });
 
@@ -241,6 +243,18 @@ public class KeepWatchMyFragment extends Fragment {
                 }
 
                 ARouter.getInstance().build("/keepwatch/monthReport").navigation();
+            }
+        });
+
+        mInviteLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                    ToastUtils.showShort("请先选择群组！");
+                    return;
+                }
+
+                ARouter.getInstance().build("/user/invite").navigation();
             }
         });
     }

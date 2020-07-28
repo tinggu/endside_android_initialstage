@@ -22,8 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:hint="通知标题"
-            android:textColor="#9B9B9B"
-            android:textSize="15sp"
+            android:textColor="#000000"
+            android:textSize="16sp"
             android:gravity="center_vertical"
             android:background="@drawable/rectangle_shape_white_10"
             android:id="@+id/user_notice_tittle"/>
@@ -35,6 +35,8 @@
             android:gravity="top"
             android:background="@drawable/rectangle_shape_white_10"
             android:hint="通知的详细内容"
+            android:textSize="14sp"
+            android:textColor="#4A4A4A"
             android:id="@+id/user_notice_desc"/>
     </LinearLayout>
 

@@ -134,7 +134,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mInformationRL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/user/invite").navigation();
+                ARouter.getInstance().build("/user/notice").navigation();
             }
         });
 

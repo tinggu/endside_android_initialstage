@@ -50,8 +50,6 @@
         android:layout_marginTop="14dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:ellipsize="none"
-        android:inputType="textMultiLine"
         android:singleLine="false"
         android:id="@+id/user_notice_content"/>
     <LinearLayout

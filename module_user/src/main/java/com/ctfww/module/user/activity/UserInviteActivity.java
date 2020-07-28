@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.ctfww.module.user.fragment.UserNoticeListFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.fragment.UserReceiveInviteListFragment;
@@ -54,11 +53,9 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
         TabLayout tabLayout = findViewById(R.id.user_invite_tab_layout);
         ViewPager viewPager = findViewById(R.id.user_invite_view_pager);
 
-        final String[] tableTitle = {"通知", "收到的邀请", "发出的邀请"};
+        final String[] tableTitle = {"收到的邀请", "发出的邀请"};
 
         final List<Fragment> fragmentList = new ArrayList<>();
-        UserNoticeListFragment userNoticeListFragment = new UserNoticeListFragment();
-        fragmentList.add(userNoticeListFragment);
         UserReceiveInviteListFragment userReceiveInviteListFragment = new UserReceiveInviteListFragment();
         fragmentList.add(userReceiveInviteListFragment);
         UserSendInviteListFragment userSendInviteListFragment = new UserSendInviteListFragment();

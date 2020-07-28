@@ -709,14 +709,14 @@ public class NetworkHelper {
         });
     }
 
-    public void updateNoticeReadStatus(String noticeId, int flag, final IUIDataHelperCallback callback) {
+    public void addNoticeReadStatus(String noticeId, int flag, final IUIDataHelperCallback callback) {
         String userId = SPStaticUtils.getString("user_open_id");
         if (TextUtils.isEmpty(userId)) {
             return;
         }
 
         long timeStamp = System.currentTimeMillis();
-        CloudClient.getInstance().updateNoticeReadStatus(noticeId, userId, flag, timeStamp, new ICloudCallback() {
+        CloudClient.getInstance().addNoticeReadStatus(noticeId, userId, flag, timeStamp, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 LogUtils.i(TAG, "success data = " + data);
@@ -738,13 +738,18 @@ public class NetworkHelper {
     }
 
     public void getNoticeReadStatus(String noticeId, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().getNoticeReadStatus(noticeId, new ICloudCallback() {
+        String groupId = SPStaticUtils.getString("working_group_id");
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
+
+        CloudClient.getInstance().getNoticeReadStatus(groupId, noticeId, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 LogUtils.i(TAG, "success data = " + data);
                 Type type = new TypeToken<List<NoticeReadStatus>>() {}.getType();
                 List<NoticeReadStatus> noticeReadStatusList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(data);
+                callback.onSuccess(noticeReadStatusList);
             }
 
             @Override

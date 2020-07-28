@@ -204,7 +204,21 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:id="@+id/keepwatch_invite_ll">
+                            <ImageView
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:src="@drawable/keepwatch_month_report"
+                                android:layout_gravity="center_horizontal|bottom"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:text="邀请"
+                                android:textSize="13.5sp"
+                                android:gravity="center_horizontal|top"
+                                android:textColor="#4A4A4A"/>
                         </LinearLayout>
                     </LinearLayout>
 

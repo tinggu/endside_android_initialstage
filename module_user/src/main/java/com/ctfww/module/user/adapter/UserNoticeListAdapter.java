@@ -1,5 +1,7 @@
 package com.ctfww.module.user.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.activity.NoticeDescActivity;
 import com.ctfww.module.user.entity.NoticeInfo;
 
 
@@ -16,10 +21,14 @@ import java.util.List;
 
 
 public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<NoticeInfo> list;
+    private static final String TAG = "UserNoticeListAdapter";
 
-    public UserNoticeListAdapter(List<NoticeInfo> list) {
+    private List<NoticeInfo> list;
+    private Context context;
+
+    public UserNoticeListAdapter(List<NoticeInfo> list, Context context) {
         this.list = list;
+        this.context = context;
     }
 
     public void setList(List<NoticeInfo> list) {
@@ -32,7 +41,7 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.user_notice_one_item, parent, false);
         final UserNoticeViewHolder holder = new UserNoticeViewHolder(view);
-
+        setOnClickListener(holder);
         return holder;
     }
 
@@ -51,28 +60,20 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return list.size();
     }
 
-    private void setOnClickListener(final UserSendInviteViewHolder holder) {
+    private void setOnClickListener(final UserNoticeViewHolder holder) {
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.delete.getVisibility() == View.VISIBLE) {
-                    holder.delete.setVisibility(View.GONE);
-                }
+                int position = holder.getAdapterPosition();
+                NoticeInfo noticeInfo = list.get(position);
+                noticeInfo.setFlag(2);
+                notifyDataSetChanged();
+                LogUtils.i(TAG, "onClick: noticeInfo = " + noticeInfo.toString());
+                Intent intent = new Intent(context, NoticeDescActivity.class);
+                intent.putExtra("notice_info", GsonUtils.toJson(noticeInfo));
+                context.startActivity(intent);
             }
         });
-
-        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                holder.delete.setVisibility(View.VISIBLE);
-                return true;
-            }
-        });
-    }
-
-    private void read(final int position) {
-        NoticeInfo noticeInfo = list.get(position);
-        noticeInfo.setFlag(2);
     }
 }
 

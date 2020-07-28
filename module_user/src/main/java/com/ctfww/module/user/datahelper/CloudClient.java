@@ -645,20 +645,23 @@ public class CloudClient {
         processListRsp(responseBodyCall, callback);
     }
 
-    public void updateNoticeReadStatus(String noticeId, String userId, int flag, long timeStamp, final ICloudCallback callback) {
+    public void addNoticeReadStatus(String noticeId, String userId, int flag, long timeStamp, final ICloudCallback callback) {
         NoticeReadStatusBean info = new NoticeReadStatusBean();
         info.setNoticeId(noticeId);
         info.setUserId(userId);
         info.setFlag(flag);
         info.setTimeStamp(timeStamp);
-        LogUtils.i(TAG, "updateNoticeReadStatus: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.updateNoticeReadStatus(info);
+        LogUtils.i(TAG, "addNoticeReadStatus: info = " + info.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.addNoticeReadStatus(info);
         processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void getNoticeReadStatus(String noticeId, final ICloudCallback callback) {
-        LogUtils.i(TAG, "getNoticeReadStatus: noticeId = " + noticeId);
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getNoticeReadStatus(noticeId);
+    public void getNoticeReadStatus(String groupId, String noticeId, final ICloudCallback callback) {
+        QueryConditionBean condition = new QueryConditionBean();
+        condition.setGroupId(groupId);
+        condition.setCondition(noticeId);
+        LogUtils.i(TAG, "getNoticeReadStatus: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.getNoticeReadStatus(condition);
         processListRsp(responseBodyCall, callback);
     }
 }
