@@ -223,4 +223,12 @@ public interface ICloudMethod {
      */
     @POST("/microusermanagement/noticeMgt/getNoticeReadStatus")
     Call<ResponseBody> getNoticeReadStatus(@Body QueryConditionBean condition);
+
+    /**
+     * 获得没有查看的通知个数
+     * @param condition groupId与userId
+     * @return 返回值
+     */
+    @POST("/microusermanagement/noticeMgt/getNoLookOverCount")
+    Call<ResponseBody> getNoLookOverCount(@Body QueryConditionBean condition);
 }

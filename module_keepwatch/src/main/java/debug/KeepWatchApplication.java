@@ -39,6 +39,7 @@ public class KeepWatchApplication extends BaseApplication {
 
         Utils.synData();
 
+        // 开启IM
         connectionStateMonitor = new ConnectionStateMonitor();
         connectionStateMonitor.enable(this);
 

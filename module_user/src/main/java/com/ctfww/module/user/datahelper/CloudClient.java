@@ -664,4 +664,13 @@ public class CloudClient {
         Call<ResponseBody> responseBodyCall = mCloudMethod.getNoticeReadStatus(condition);
         processListRsp(responseBodyCall, callback);
     }
+
+    public void getNoLookOverCount(String groupId, String userId, final ICloudCallback callback) {
+        QueryConditionBean condition = new QueryConditionBean();
+        condition.setGroupId(groupId);
+        condition.setUserId(userId);
+        LogUtils.i(TAG, "getNoLookOverCount: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.getNoLookOverCount(condition);
+        processGeneralRsp(responseBodyCall, callback);
+    }
 }

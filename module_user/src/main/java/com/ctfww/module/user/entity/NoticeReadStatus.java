@@ -31,10 +31,25 @@ public class NoticeReadStatus {
             ret = "未读";
         }
         else if (flag == 1) {
-            ret = "已查看";
+            ret = "未读";
         }
         else if (flag == 2) {
-            ret = "已阅读";
+            ret = "已读";
+        }
+
+        return ret;
+    }
+
+    public int getReadStatusTextColor() {
+        int ret = 0xFF4A4A4A;
+        if (flag == 0) {
+            ret = 0xFFFF0000;
+        }
+        else if (flag == 1) {
+            ret = 0xFFFF0000;
+        }
+        else if (flag == 2) {
+            ret = 0xFF4A4A4A;
         }
 
         return ret;

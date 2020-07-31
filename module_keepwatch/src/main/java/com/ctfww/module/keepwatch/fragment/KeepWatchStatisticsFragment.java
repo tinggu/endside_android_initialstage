@@ -42,13 +42,6 @@ public class KeepWatchStatisticsFragment extends Fragment {
 
     private View mV;
 
-    private RelativeLayout mInformationRL;
-    private TextView mUnreadCount;
-    private LinearLayout mGroupLL;
-    private ImageView mGroupSelect;
-    private TextView mGroupName;
-    private ImageView mAddPop;
-
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mKeepWatchLL;
     private ImageView mCompletionRatePrompt;
@@ -88,23 +81,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        mInformationRL = v.findViewById(R.id.top_information_rl);
-        mUnreadCount = v.findViewById(R.id.information_unread_count);
-        mGroupLL = v.findViewById(R.id.top_tittle_ll);
-        mGroupSelect = v.findViewById(R.id.top_select);
-        mGroupSelect.setVisibility(View.VISIBLE);
-        mGroupName = v.findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
-        if (TextUtils.isEmpty(groupName)) {
-            mGroupName.setText("请选择群组");
-        }
-        else {
-            mGroupName.setText(groupName);
-        }
-        mAddPop = v.findViewById(R.id.top_addition);
-        mAddPop.setImageResource(R.drawable.keepwatch_add_pop);
-
-        mSwipeRefreshLayout = v.findViewById(R.id.keepwatch_refresh);
+       mSwipeRefreshLayout = v.findViewById(R.id.keepwatch_refresh);
         mKeepWatchLL = v.findViewById(R.id.keepwatch_keep_watch_ll);
         mCompletionRatePrompt = v.findViewById(R.id.keepwatch_completion_rate_prompt);
         mCoverageRatePrompt = v.findViewById(R.id.keepwatch_coverage_rate_prompt);
@@ -131,31 +108,10 @@ public class KeepWatchStatisticsFragment extends Fragment {
     }
 
     private void setOnClickListener() {
-        mInformationRL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/user/notice").navigation();
-            }
-        });
-
         mKeepWatchLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ARouter.getInstance().build("/keepwatch/statisticsDetail").navigation();
-            }
-        });
-
-        mAddPop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupWindowUtil.showKeepWatchAddPopupWindow(getActivity(), mAddPop, -320);
-            }
-        });
-
-        mGroupLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/user/selectGroup").navigation();
             }
         });
 
@@ -167,7 +123,6 @@ public class KeepWatchStatisticsFragment extends Fragment {
                 mKeyEventSnatchFragment.getDoingKeyEvent();
                 mKeepWatchPersonTrendsFragment.getPersonTrends();
                 mKeepWatchRankingFragment.getTodayRanking();
-                getUnreadcount();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -226,7 +181,6 @@ public class KeepWatchStatisticsFragment extends Fragment {
             mKeyEventSnatchFragment.getDoingKeyEvent();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
-            getUnreadcount();
         }
         else if ("bind_group".equals(msg)) {
             LogUtils.i(TAG, "bind_group refresh!");
@@ -235,9 +189,6 @@ public class KeepWatchStatisticsFragment extends Fragment {
             mKeyEventSnatchFragment.getDoingKeyEvent();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
-            String groupName= SPStaticUtils.getString("working_group_name");
-            LogUtils.i(TAG, "onGetMessage: groupName = " + groupName);
-            mGroupName.setText(SPStaticUtils.getString("working_group_name"));
         }
         else if ("udp_receive_data".equals(msg)) {
             BasicData basicData = GsonUtils.fromJson(messageEvent.getValue(), BasicData.class);
@@ -266,7 +217,6 @@ public class KeepWatchStatisticsFragment extends Fragment {
                 long[] patter = {1000, 50};
                 Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(patter, -1);
-                getUnreadcount();
             }
         }
     }
@@ -281,7 +231,6 @@ public class KeepWatchStatisticsFragment extends Fragment {
             mKeyEventSnatchFragment.getDoingKeyEvent();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
-            getUnreadcount();
         }
     }
 
@@ -355,30 +304,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
 //        mAbnormalReportCount.setText("" + keepWatchInfo.getAbnormalReportCount());
     }
 
-    private void getUnreadcount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                if (count == 0) {
-                    return;
-                }
 
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
-    }
 
     @SuppressWarnings("ResourceType")
     private static int makeDropDownMeasureSpec(int measureSpec) {

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.entity.GeneralRsp;
 import com.ctfww.commonlib.im.UdpHelper;
 import com.ctfww.module.user.bean.NoticeBean;
 import com.ctfww.module.user.entity.NoticeInfo;
@@ -750,6 +751,36 @@ public class NetworkHelper {
                 Type type = new TypeToken<List<NoticeReadStatus>>() {}.getType();
                 List<NoticeReadStatus> noticeReadStatusList = GsonUtils.fromJson(data, type);
                 callback.onSuccess(noticeReadStatusList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "error code = " + code + " msg = " + errorMsg);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                LogUtils.i(TAG, "failure errorMsg = " + errorMsg);
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void getNoLookOverCount(final IUIDataHelperCallback callback) {
+        String groupId = SPStaticUtils.getString("working_group_id");
+        String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        CloudClient.getInstance().getNoLookOverCount(groupId, userId, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                LogUtils.i(TAG, "success data = " + data);
+                Type type = new TypeToken<GeneralRsp<Integer>>() {}.getType();
+                GeneralRsp<Integer> generalRsp = GsonUtils.fromJson(data, type);
+                callback.onSuccess(generalRsp.getData());
             }
 
             @Override

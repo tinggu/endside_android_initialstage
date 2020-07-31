@@ -11,10 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,12 +51,6 @@ public class KeepWatchSigninFragment extends Fragment {
 
     private View mV;
 
-    private RelativeLayout mInformationRL;
-    private TextView mUnreadCount;
-    private LinearLayout mGroupLL;
-    private ImageView mGroupSelect;
-    private TextView mGroupName;
-
     private RelativeLayout mGPSSignin;
     private RelativeLayout mScanSignin;
     private RelativeLayout mNfcSignin;
@@ -85,20 +76,6 @@ public class KeepWatchSigninFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        mInformationRL = v.findViewById(R.id.top_information_rl);
-        mUnreadCount = v.findViewById(R.id.information_unread_count);
-        mGroupLL = v.findViewById(R.id.top_tittle_ll);
-        mGroupSelect = v.findViewById(R.id.top_select);
-        mGroupSelect.setVisibility(View.VISIBLE);
-        mGroupName = v.findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
-        if (TextUtils.isEmpty(groupName)) {
-            mGroupName.setText("请选择群组");
-        }
-        else {
-            mGroupName.setText(groupName);
-        }
-
         mGPSSignin = v.findViewById(R.id.keepwatch_gps_sign_in);
         mScanSignin = v.findViewById(R.id.keepwatch_scan_signin);
         mNfcSignin = v.findViewById(R.id.keepwatch_nfc_signin);
@@ -111,20 +88,6 @@ public class KeepWatchSigninFragment extends Fragment {
     }
 
     private void setOnClickListener() {
-        mInformationRL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/user/notice").navigation();
-            }
-        });
-
-        mGroupLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/user/selectGroup").navigation();
-            }
-        });
-
         mGPSSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,17 +192,6 @@ public class KeepWatchSigninFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String groupName = SPStaticUtils.getString("working_group_name");
-        if (TextUtils.isEmpty(groupName)) {
-            mGroupName.setText("请选择群组");
-        }
-        else {
-            mGroupName.setText(groupName);
-        }
-
-        getUnreadcount();
-
-        LogUtils.i(TAG, "onResume()");
     }
 
     private String ByteArrayToHexString(byte[] inarray) {
@@ -300,42 +252,6 @@ public class KeepWatchSigninFragment extends Fragment {
     // 处理事件
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
-        if ("tms_first_token".equals(messageEvent.getMessage())) {
-            getUnreadcount();
-        }
-        else if ("bind_group".equals(messageEvent.getMessage())) {
-            String groupName = SPStaticUtils.getString("working_group_name");
-            if (TextUtils.isEmpty(groupName)) {
-                mGroupName.setText("请选择群组");
-            }
-            else {
-                mGroupName.setText(groupName);
-            }
-        }
-    }
 
-    private void getUnreadcount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                if (count == 0) {
-                    return;
-                }
-
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
     }
 }

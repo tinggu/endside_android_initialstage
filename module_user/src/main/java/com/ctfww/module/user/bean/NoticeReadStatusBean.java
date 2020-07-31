@@ -25,21 +25,6 @@ public class NoticeReadStatusBean {
         return String.format("%04d-%02d-%02d %02d:%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
 
-    public String getReadStatusText() {
-        String ret = "未读";
-        if (flag == 0) {
-            ret = "未读";
-        }
-        else if (flag == 1) {
-            ret = "已查看";
-        }
-        else if (flag == 2) {
-            ret = "已阅读";
-        }
-
-        return ret;
-    }
-
     public NoticeReadStatusBean() {
 
     }

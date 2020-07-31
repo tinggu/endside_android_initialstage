@@ -2,6 +2,7 @@ package com.ctfww.module.user.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.activity.NoticeDescActivity;
+import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.entity.NoticeInfo;
+import com.ctfww.module.user.entity.NoticeReadStatus;
 
 
 import java.util.List;
@@ -48,9 +54,28 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NoticeInfo noticeInfo = list.get(position);
-        ((UserNoticeViewHolder)holder).tittle.setText(noticeInfo.getTittle());
+        if (noticeInfo.getType() == 1) {
+            ((UserNoticeViewHolder)holder).tittle.setText("你有邀请");
+        }
+        else if (noticeInfo.getType() == 2) {
+            ((UserNoticeViewHolder)holder).tittle.setText("你的邀请被接受");
+        }
+        else if (noticeInfo.getType() == 2) {
+            ((UserNoticeViewHolder)holder).tittle.setText("你的邀请被拒绝");
+        }
+        else {
+            ((UserNoticeViewHolder)holder).tittle.setText(noticeInfo.getTittle());
+        }
+
         ((UserNoticeViewHolder)holder).readStatus.setText(noticeInfo.getReadStatusText());
-        ((UserNoticeViewHolder)holder).content.setText(noticeInfo.getContent());
+        ((UserNoticeViewHolder)holder).readStatus.setTextColor(noticeInfo.getReadStatusTextColor());
+        if (noticeInfo.getType() == 1 || noticeInfo.getType() == 2 || noticeInfo.getType() == 3) {
+            ((UserNoticeViewHolder)holder).content.setVisibility(View.GONE);
+        }
+        else {
+            ((UserNoticeViewHolder)holder).content.setVisibility(View.VISIBLE);
+            ((UserNoticeViewHolder)holder).content.setText(noticeInfo.getContent());
+        }
         ((UserNoticeViewHolder)holder).nickName.setText(noticeInfo.getNickName());
         ((UserNoticeViewHolder)holder).dateTime.setText(noticeInfo.getDateTime());
     }
@@ -66,12 +91,35 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 NoticeInfo noticeInfo = list.get(position);
+                addNoticeReadStatus(noticeInfo);
+            }
+        });
+    }
+
+    private void addNoticeReadStatus(final NoticeInfo noticeInfo) {
+        String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+
+        NetworkHelper.getInstance().addNoticeReadStatus(noticeInfo.getNoticeId(), 2, new IUIDataHelperCallback() {
+            @Override
+            public void onSuccess(Object obj) {
                 noticeInfo.setFlag(2);
                 notifyDataSetChanged();
-                LogUtils.i(TAG, "onClick: noticeInfo = " + noticeInfo.toString());
-                Intent intent = new Intent(context, NoticeDescActivity.class);
-                intent.putExtra("notice_info", GsonUtils.toJson(noticeInfo));
-                context.startActivity(intent);
+                if (noticeInfo.getType() == 1 || noticeInfo.getType() == 2 || noticeInfo.getType() == 3) {
+                    ARouter.getInstance().build("/user/invite").navigation();
+                }
+                else {
+                    Intent intent = new Intent(context, NoticeDescActivity.class);
+                    intent.putExtra("notice_info", GsonUtils.toJson(noticeInfo));
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onError(int code) {
+                LogUtils.i(TAG, "addNoticeReadStatus fail: code = " + code);
             }
         });
     }

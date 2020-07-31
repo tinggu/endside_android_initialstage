@@ -101,8 +101,6 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
                 mNoticeReadStatusListAdapter.setList(mNoticeReadStatusList);
                 mNoticeReadStatusListAdapter.notifyDataSetChanged();
                 mNoticeReadStatusListView.setVisibility(View.VISIBLE);
-
-                addNoticeReadStatus();
             }
 
             @Override
@@ -110,27 +108,5 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
                 LogUtils.i(TAG, "getNoticeReadStatus fail: code = " + code);
             }
         });
-    }
-
-    private void addNoticeReadStatus() {
-        String userId = SPStaticUtils.getString("user_open_id");
-        for (int i = 0; i < mNoticeReadStatusList.size(); ++i) {
-            final NoticeReadStatus noticeReadStatus = mNoticeReadStatusList.get(i);
-            if (userId.equals(noticeReadStatus.getUserId())) {
-                NetworkHelper.getInstance().addNoticeReadStatus(noticeReadStatus.getNoticeId(), 2, new IUIDataHelperCallback() {
-                    @Override
-                    public void onSuccess(Object obj) {
-                        mNoticeReadStatusListAdapter.setList(mNoticeReadStatusList);
-                        mNoticeReadStatusListAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(int code) {
-                        LogUtils.i(TAG, "addNoticeReadStatus fail: code = " + code);
-                    }
-                });
-                break;
-            }
-        }
     }
 }

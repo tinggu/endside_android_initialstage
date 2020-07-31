@@ -61,10 +61,10 @@ public class UserNoticeReadStatusListAdapter extends RecyclerView.Adapter<Recycl
             ret = "未读";
         }
         else if (flag == 1) {
-            ret = "已查看";
+            ret = "未读";
         }
         else if (flag == 2) {
-            ret = "已阅读";
+            ret = "已读";
         }
 
         return ret;

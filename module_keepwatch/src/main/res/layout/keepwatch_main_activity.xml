@@ -11,6 +11,7 @@
     tools:context=".activity.KeepWatchMainActivity">
 
 <!--    <include layout="@layout/keepwatch_main_top_bar" />-->
+    <include layout="@layout/main_top_bar"/>
 
     <androidx.viewpager.widget.ViewPager
         android:layout_width="fill_parent"

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,13 +34,6 @@ public class KeepWatchMyFragment extends Fragment {
     private final static String TAG = "KeepWatchFragment";
 
     private View mV;
-
-    private RelativeLayout mInformationRL;
-    private TextView mUnreadCount;
-    private LinearLayout mGroupLL;
-    private ImageView mGroupSelect;
-    private TextView mGroupName;
-    private ImageView mSetup;
 
     private LinearLayout mUserInfoLL;
     private ImageView mHead;
@@ -76,22 +68,6 @@ public class KeepWatchMyFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        mInformationRL = v.findViewById(R.id.top_information_rl);
-        mUnreadCount = v.findViewById(R.id.information_unread_count);
-        mGroupLL = v.findViewById(R.id.top_tittle_ll);
-        mGroupSelect = v.findViewById(R.id.top_select);
-        mGroupSelect.setVisibility(View.VISIBLE);
-        mGroupName = v.findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
-        if (TextUtils.isEmpty(groupName)) {
-            mGroupName.setText("请选择群组");
-        }
-        else {
-            mGroupName.setText(groupName);
-        }
-        mSetup = v.findViewById(R.id.top_addition);
-        mSetup.setImageResource(R.drawable.keepwatch_setup);
-
         UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
         mUserInfoLL = v.findViewById(R.id.keepwatch_user_info_ll);
         mHead = v.findViewById(R.id.keepwatch_head);
@@ -134,27 +110,6 @@ public class KeepWatchMyFragment extends Fragment {
     }
 
     private void setOnClickListener() {
-        mInformationRL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/user/notice").navigation();
-            }
-        });
-
-        mGroupLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/user/selectGroup").navigation();
-            }
-        });
-
-        mSetup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/setting").navigation();
-            }
-        });
-
         mUserInfoLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -266,18 +221,10 @@ public class KeepWatchMyFragment extends Fragment {
         if ("tms_first_token".equals(msg)) {
             getGroupSummary();
             mKeepWatchSigninListFragment.getTodaySigninList();
-            getUnreadcount();
         }
         else if ("bind_group".equals(msg)) {
             getGroupSummary();
             mKeepWatchSigninListFragment.getTodaySigninList();
-            String groupName = SPStaticUtils.getString("working_group_name");
-            if (TextUtils.isEmpty(groupName)) {
-                mGroupName.setText("请选择群组");
-            }
-            else {
-                mGroupName.setText(groupName);
-            }
         }
     }
 
@@ -288,15 +235,6 @@ public class KeepWatchMyFragment extends Fragment {
             LogUtils.i(TAG, "onResume: Utils.isFirstToken()");
             getGroupSummary();
             mKeepWatchSigninListFragment.getTodaySigninList();
-            getUnreadcount();
-        }
-
-        String groupName = SPStaticUtils.getString("working_group_name");
-        if (TextUtils.isEmpty(groupName)) {
-            mGroupName.setText("请选择群组");
-        }
-        else {
-            mGroupName.setText(groupName);
         }
     }
 
@@ -331,30 +269,5 @@ public class KeepWatchMyFragment extends Fragment {
     private void updateGroupSummaryToUI(KeepWatchGroupSummary keepWatchGroupSummary) {
         mMemberCount.setText("" + keepWatchGroupSummary.getMemberCount());
         mDeskCount.setText("" + keepWatchGroupSummary.getDeskCount());
-    }
-
-    private void getUnreadcount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                if (count == 0) {
-                    return;
-                }
-
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
     }
 }

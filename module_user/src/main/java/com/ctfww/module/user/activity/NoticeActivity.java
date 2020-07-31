@@ -112,13 +112,13 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void addNoticeReadStatus() {
-        boolean isChange = false;
         for (int i = 0; i < mNoticeInfoList.size(); ++i) {
             final NoticeInfo noticeInfo = mNoticeInfoList.get(i);
-            if (noticeInfo.getFlag() == 0) {
+            if (noticeInfo.getFlag() != 0) {
                 continue;
             }
 
+            LogUtils.i(TAG, "addNoticeReadStatus: noticeInfo = " + noticeInfo.toString());
             NetworkHelper.getInstance().addNoticeReadStatus(noticeInfo.getNoticeId(), 1, new IUIDataHelperCallback() {
                 @Override
                 public void onSuccess(Object obj) {

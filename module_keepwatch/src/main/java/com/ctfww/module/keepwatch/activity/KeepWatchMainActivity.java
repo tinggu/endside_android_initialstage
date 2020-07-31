@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -15,6 +18,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
@@ -30,6 +34,7 @@ import com.ctfww.commonlib.utils.ApkUtils;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.keepwatch.DataHelper.DBHelper;
+import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
 import com.ctfww.module.keepwatch.DataHelper.SynData;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
@@ -37,6 +42,7 @@ import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.fragment.KeepWatchMyFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchSigninFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchStatisticsFragment;
+import com.ctfww.module.keepwatch.util.PopupWindowUtil;
 import com.ctfww.module.upgrade.entity.ApkVersionInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,6 +59,13 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
     private final static String TAG = "KeepWatchMainActivity";
 
     private final static int REQUEST_CODE_ADD_SIGNIN_DESK = 1;
+
+    private RelativeLayout mInformationRL;
+    private TextView mUnreadCount;
+    private LinearLayout mGroupLL;
+    private ImageView mGroupSelect;
+    private TextView mGroupName;
+    private ImageView mAddition;
 
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter; //ViewPager适配器
@@ -152,6 +165,22 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
 //    }
 
     private void initViews() {
+        mInformationRL = findViewById(R.id.top_information_rl);
+        mUnreadCount = findViewById(R.id.information_unread_count);
+        mGroupLL = findViewById(R.id.top_tittle_ll);
+        mGroupSelect = findViewById(R.id.top_select);
+        mGroupSelect.setVisibility(View.VISIBLE);
+        mGroupName = findViewById(R.id.top_tittle);
+        String groupName = SPStaticUtils.getString("working_group_name");
+        if (TextUtils.isEmpty(groupName)) {
+            mGroupName.setText("请选择群组");
+        }
+        else {
+            mGroupName.setText(groupName);
+        }
+        mAddition = findViewById(R.id.top_addition);
+        mAddition.setImageResource(R.drawable.keepwatch_add_pop);
+
         mViewPager = (ViewPager) findViewById(R.id.keepwatch_viewpager);
 
         mStatisticsTab = (LinearLayout) findViewById(R.id.keepwatch_statistics);
@@ -224,6 +253,9 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         mStatisticsTab.setOnClickListener(this);
         mKeepWatchTab.setOnClickListener(this);
         mMyTab.setOnClickListener(this);
+        mInformationRL.setOnClickListener(this);
+        mGroupLL.setOnClickListener(this);
+        mAddition.setOnClickListener(this);
     }
 
     @Override
@@ -244,6 +276,20 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             setSelectImage(2);
             mViewPager.setCurrentItem(2);
         }
+        else if (id == mInformationRL.getId()) {
+            ARouter.getInstance().build("/user/notice").navigation();
+        }
+        else if (id == mGroupLL.getId()) {
+            ARouter.getInstance().build("/user/selectGroup").navigation();
+        }
+        else if (id == mAddition.getId()) {
+            if (mViewPager.getCurrentItem() == 0) {
+                PopupWindowUtil.showKeepWatchAddPopupWindow(this, mAddition, -320);
+            }
+            else if (mViewPager.getCurrentItem() == 2) {
+                ARouter.getInstance().build("/keepwatch/setting").navigation();
+            }
+        }
     }
 
     // 处理事件
@@ -259,6 +305,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             com.ctfww.module.keyevents.datahelper.SynData.startTimedSyn();
             SynData.getAllDesk();
             SynData.startTimedSyn();
+            getNoLookOverCount();
         }
         else if ("update_location".equals(msg)) {
             mMyPos = GsonUtils.fromJson(messageEvent.getValue(), MyPosition.class);
@@ -267,6 +314,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         }
         else if ("bind_group".equals(msg)) {
             SynData.getAllDesk();
+            String groupName= SPStaticUtils.getString("working_group_name");
+            mGroupName.setText(SPStaticUtils.getString("working_group_name"));
         }
     }
 
@@ -388,12 +437,17 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
     private void setSelectImage(int select) {
         switch (select) {
             case 0:
+                mAddition.setImageResource(R.drawable.add_pop);
+                mAddition.setVisibility(View.VISIBLE);
                 mStatisticsImg.setImageResource(R.drawable.keepwatch_statistics_pressed);
                 break;
             case 1:
+                mAddition.setVisibility(View.GONE);
                 mKeepWatchImg.setImageResource(R.drawable.keepwatch_keep_watch_pressed);
                 break;
             case 2:
+                mAddition.setImageResource(R.drawable.keepwatch_setup);
+                mAddition.setVisibility(View.VISIBLE);
                 mMyImg.setImageResource(R.drawable.keepwatch_my_pressed);
                 break;
             default:
@@ -450,5 +504,31 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
                     break;
             }
         }
+    }
+
+    private void getNoLookOverCount() {
+        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNoLookOverCount(new IUIDataHelperCallback() {
+            @Override
+            public void onSuccess(Object obj) {
+                int count = (int)obj;
+                LogUtils.i(TAG, "getNoLookOverCount: count = " + count);
+                if (count == 0) {
+                    return;
+                }
+
+                mUnreadCount.setVisibility(View.VISIBLE);
+                if (count <= 9) {
+                    mUnreadCount.setText("" + count);
+                }
+                else {
+                    mUnreadCount.setText("9+");
+                }
+            }
+
+            @Override
+            public void onError(int code) {
+
+            }
+        });
     }
 }

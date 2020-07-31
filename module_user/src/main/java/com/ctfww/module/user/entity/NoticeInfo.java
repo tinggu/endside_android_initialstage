@@ -12,6 +12,7 @@ public class NoticeInfo {
     private String nickName;
     private String tittle;
     private String content;
+    private int type;
     private long timeStamp;
     private int flag;
 
@@ -22,6 +23,7 @@ public class NoticeInfo {
                 + ", nickName = " + nickName
                 + ", tittle = " + tittle
                 + ", content = " + content
+                + ", type = " + type
                 + ", timeStamp = " + timeStamp
                 + ", flag = " + flag;
     }
@@ -39,10 +41,25 @@ public class NoticeInfo {
             ret = "未读";
         }
         else if (flag == 1) {
-            ret = "已查看";
+            ret = "未读";
         }
         else if (flag == 2) {
-            ret = "已阅读";
+            ret = "已读";
+        }
+
+        return ret;
+    }
+
+    public int getReadStatusTextColor() {
+        int ret = 0xFF4A4A4A;
+        if (flag == 0) {
+            ret = 0xFFFF0000;
+        }
+        else if (flag == 1) {
+            ret = 0xFFFF0000;
+        }
+        else if (flag == 2) {
+            ret = 0xFF4A4A4A;
         }
 
         return ret;
@@ -98,6 +115,14 @@ public class NoticeInfo {
 
     public String getContent() {
         return content;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public void setTimeStamp(long timeStamp) {
