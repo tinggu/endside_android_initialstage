@@ -99,10 +99,12 @@ dependencies {
     api project(':module_upgrade')
     api project(':module_fingerprint')
     api project(':module_datapicker')
+    api project(':module_useim')
     annotationProcessor config_dependencies["arouter_compiler"]
 
     implementation files('libs/BaiduLBS_Android.jar')
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation "com.alibaba:fastjson:1.2.49"
 
     implementation 'com.lqr.recyclerview:library:1.0.2'
     implementation 'com.lqr.adapter:library:1.0.2'

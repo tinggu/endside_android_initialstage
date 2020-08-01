@@ -3,13 +3,11 @@ package com.ctfww.module.keepwatch.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
@@ -30,8 +27,8 @@ import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
-import com.ctfww.module.keepwatch.util.PopupWindowUtil;
 import com.ctfww.module.keyevents.fragment.KeyEventSnatchFragment;
+import com.ctfww.module.useim.entity.Head;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -190,33 +187,21 @@ public class KeepWatchStatisticsFragment extends Fragment {
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
         }
-        else if ("udp_receive_data".equals(msg)) {
-            BasicData basicData = GsonUtils.fromJson(messageEvent.getValue(), BasicData.class);
-            LogUtils.i(TAG, "udp_receive_data: basicData = " + basicData.toString());
-            if (!basicData.isValid()) {
-                LogUtils.i(TAG, "udp_receive_data: !basicData.isValid()");
-                return;
-            }
-
-            if ("report_abnormal".equals(basicData.getType())) {
-                if (mKeyEventSnatchFragment.isDoing()) {
-                    LogUtils.i(TAG, "udp_receive_data: mKeyEventSnatchFragment.isDoing()");
-                    return;
+        else if ("im_received_data".equals(msg)) {
+            Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
+            if (head.getMsgType() == 3001) {
+                if (head.getMsgContentType() == 2) {
+                    mKeyEventSnatchFragment.getDoingKeyEvent();
+                    mKeepWatchPersonTrendsFragment.getPersonTrends();
+                    if (!mKeyEventSnatchFragment.isDoing()) {
+                        Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        long[] patter = {1000, 2000, 2000, 50};
+                        vibrator.vibrate(patter, -1);
+                    }
                 }
-
-                LogUtils.i(TAG, "udp_receive_data: vibrator...");
-                Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                long[] patter = {1000, 2000, 2000, 50};
-                vibrator.vibrate(patter, -1);
-                mKeyEventSnatchFragment.getDoingKeyEvent();
-            }
-            else if ("person_trends".equals(basicData.getType())) {
-                mKeepWatchPersonTrendsFragment.getPersonTrends();
-            }
-            else if ("notice".equals(basicData.getType())) {
-                long[] patter = {1000, 50};
-                Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(patter, -1);
+                else if (head.getMsgContentType() == 3) {
+                    mKeepWatchPersonTrendsFragment.getPersonTrends();
+                }
             }
         }
     }

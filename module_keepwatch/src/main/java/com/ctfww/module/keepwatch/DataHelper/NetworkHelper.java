@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.im.UdpHelper;
 import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.Consts;
@@ -25,6 +26,8 @@ import com.ctfww.module.keepwatch.entity.KeepWatchSigninStatistics;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByUser;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -287,7 +290,7 @@ public class NetworkHelper {
                     updateKeepWatchDeskFingerPrint(keepWatchSigninInfo.getDeskId(), keepWatchSigninInfo.getTimeStamp(), fingerPrintHistoryList);
                 }
 
-                UdpHelper.getInstance().sendBasicDataToGroup(keepWatchSigninInfo.getUserId(), "person_trends", keepWatchSigninInfo.getGroupId());
+                EventBus.getDefault().post(new MessageEvent("send_signin_success"));
             }
 
             @Override

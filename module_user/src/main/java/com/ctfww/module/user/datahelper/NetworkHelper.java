@@ -25,6 +25,7 @@ import com.ctfww.module.user.entity.UserGroupInfo;
 import com.ctfww.module.user.entity.UserInfo;
 import com.ctfww.module.user.storage.sp.SPConstant;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -357,9 +358,6 @@ public class NetworkHelper {
                 LogUtils.i(TAG, "success data = " + data);
                 GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(data, GroupInviteInfo.class);
                 callback.onSuccess(groupInviteInfo);
-                if (!TextUtils.isEmpty(groupInviteInfo.getToUserId())) {
-                    UdpHelper.getInstance().sendBasicDataToOtherUser(groupInviteInfo.getFromUserId(), "invite", groupInviteInfo.getToUserId());
-                }
             }
 
             @Override

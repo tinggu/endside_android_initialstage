@@ -127,7 +127,7 @@ public class UserReceiveInviteListAdapter extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onSuccess(Object obj) {
                 groupInviteInfo.setStatus("accept");
-                EventBus.getDefault().post(new MessageEvent("user_update_receive_invite", GsonUtils.toJson(groupInviteInfo)));
+                EventBus.getDefault().post(new MessageEvent("send_update_receive_invite_success", GsonUtils.toJson(groupInviteInfo)));
 
                 String groupId = SPStaticUtils.getString("working_group_id");
                 if (TextUtils.isEmpty(groupId)) {
@@ -150,7 +150,7 @@ public class UserReceiveInviteListAdapter extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onSuccess(Object obj) {
                 groupInviteInfo.setStatus("refuse");
-                EventBus.getDefault().post(new MessageEvent("user_update_receive_invite", GsonUtils.toJson(groupInviteInfo)));
+                EventBus.getDefault().post(new MessageEvent("send_update_receive_invite_success", GsonUtils.toJson(groupInviteInfo)));
             }
 
             @Override

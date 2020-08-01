@@ -10,6 +10,7 @@ import com.ctfww.commonlib.utils.SynDB;
 import com.ctfww.module.keepwatch.DataHelper.CloudClient;
 import com.ctfww.module.keepwatch.DataHelper.DBHelper;
 import com.ctfww.module.keepwatch.DataHelper.ICloudMethod;
+import com.ctfww.module.useim.im.IMSClientBootstrap;
 
 import java.util.Calendar;
 

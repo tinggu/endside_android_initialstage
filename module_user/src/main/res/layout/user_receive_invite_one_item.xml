@@ -112,16 +112,17 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
+
         <TextView
+            android:id="@+id/user_invite_accept"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:layout_height="30dp"
-            android:text="接受"
             android:background="@drawable/user_shape_white_border_15"
             android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:textColor="#000000"
-            android:id="@+id/user_invite_accept"/>
+            android:text="接受"
+            android:textColor="#000000" />
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"

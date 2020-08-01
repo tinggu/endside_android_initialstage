@@ -9,11 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.entity.GroupInviteInfo;
+
+import org.greenrobot.eventbus.EventBus;
 
 @Route(path = "/user/inviteMember")
 public class GroupAddMemberActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,6 +63,8 @@ public class GroupAddMemberActivity extends AppCompatActivity implements View.On
                 @Override
                 public void onSuccess(Object obj) {
                     ToastUtils.showShort("成功发送邀请，等待对方接受");
+                    GroupInviteInfo groupInviteInfo = (GroupInviteInfo)obj;
+                    EventBus.getDefault().post(new MessageEvent("send_invite_success", GsonUtils.toJson(groupInviteInfo)));
                     finish();
                 }
 

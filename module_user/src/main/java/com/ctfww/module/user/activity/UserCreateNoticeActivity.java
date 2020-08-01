@@ -12,8 +12,11 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 @Route(path = "/user/createNotice")
 public class UserCreateNoticeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -60,6 +63,7 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
                 @Override
                 public void onSuccess(Object obj) {
                     ToastUtils.showShort("通知发布成功");
+                    EventBus.getDefault().post(new MessageEvent("send_notice_success"));
                     finish();
                 }
 

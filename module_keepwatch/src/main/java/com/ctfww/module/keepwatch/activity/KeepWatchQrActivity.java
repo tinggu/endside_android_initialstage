@@ -15,7 +15,7 @@ import com.ctfww.commonlib.utils.QRCodeUtils;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
-import com.ctfww.module.keepwatch.util.QRHelper;
+import com.ctfww.module.keepwatch.utils.QRHelper;
 
 import java.util.Calendar;
 

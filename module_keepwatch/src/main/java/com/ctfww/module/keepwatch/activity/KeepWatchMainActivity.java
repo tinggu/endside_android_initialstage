@@ -1,9 +1,11 @@
 package com.ctfww.module.keepwatch.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
@@ -34,7 +36,6 @@ import com.ctfww.commonlib.utils.ApkUtils;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.keepwatch.DataHelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
 import com.ctfww.module.keepwatch.DataHelper.SynData;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
@@ -42,8 +43,11 @@ import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.fragment.KeepWatchMyFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchSigninFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchStatisticsFragment;
-import com.ctfww.module.keepwatch.util.PopupWindowUtil;
+import com.ctfww.module.keepwatch.utils.IM;
+import com.ctfww.module.keepwatch.utils.PopupWindowUtil;
 import com.ctfww.module.upgrade.entity.ApkVersionInfo;
+import com.ctfww.module.useim.entity.Head;
+import com.ctfww.module.user.entity.GroupInviteInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -111,6 +115,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
 
         mGPSLocationManager = GPSLocationManager.getInstances(this);
         mGPSLocationManager.start(new MyListener());
+
+        IM.startIM(this);
     }
 
     @Override
@@ -316,6 +322,51 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             SynData.getAllDesk();
             String groupName= SPStaticUtils.getString("working_group_name");
             mGroupName.setText(SPStaticUtils.getString("working_group_name"));
+        }
+        else if ("send_invite_success".equals(msg)) {
+            GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
+            if (groupInviteInfo.getToMobile().equals(groupInviteInfo.getToUserId())) {
+                return;
+            }
+
+            IM.invite(groupInviteInfo.getToUserId());
+        }
+        else if ("send_update_receive_invite_success".equals(msg)) {
+            GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
+            if ("accept".equals(groupInviteInfo.getStatus())) {
+                IM.acceptInvite(groupInviteInfo.getFromUserId());
+            }
+            else if ("refuse".equals(groupInviteInfo.getStatus())) {
+                IM.refuseInvite(groupInviteInfo.getFromUserId());
+            }
+        }
+        else if ("send_notice_success".equals(msg)) {
+            IM.releaseNotice();
+        }
+        else if ("send_report_abnormal_success".equals(msg)) {
+            IM.reportAbnormal();
+        }
+        else if ("send_signin_success".equals(msg)) {
+            IM.reportSignin();
+        }
+        else if ("im_received_data".equals(msg)) {
+            Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
+            if (head.getMsgType() == 2001) {
+                if (head.getMsgContentType() == 1 || head.getMsgContentType() == 2 || head.getMsgContentType() == 3) {
+                    getNoLookOverCount();
+                    long[] patter = {1000, 50};
+                    Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(patter, -1);
+                }
+            }
+            else if (head.getMsgType() == 3001) {
+                if (head.getMsgContentType() == 1) {
+                    getNoLookOverCount();
+                    long[] patter = {1000, 50};
+                    Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(patter, -1);
+                }
+            }
         }
     }
 

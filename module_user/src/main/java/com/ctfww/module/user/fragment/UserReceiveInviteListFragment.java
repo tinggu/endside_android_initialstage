@@ -98,7 +98,7 @@ public class UserReceiveInviteListFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
         String msg = messageEvent.getMessage();
-        if ("user_update_receive_invite".equals(msg)) {
+        if ("send_update_receive_invite_success".equals(msg)) {
             GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
             updateData(groupInviteInfo);
             mUserReceiveInviteListAdapter.setList(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
