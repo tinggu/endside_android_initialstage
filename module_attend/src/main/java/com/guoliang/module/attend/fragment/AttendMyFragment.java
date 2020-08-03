@@ -249,7 +249,6 @@ public class AttendMyFragment extends Fragment {
 //        if ("tms_first_token".equals(msg)) {
 //            getGroupSummary();
 //            mKeepWatchSigninListFragment.getTodaySigninList();
-//            getUnreadcount();
 //        }
 //        else if ("bind_group".equals(msg)) {
 //            getGroupSummary();
@@ -271,7 +270,6 @@ public class AttendMyFragment extends Fragment {
 //            LogUtils.i(TAG, "onResume: Utils.isFirstToken()");
 //            getGroupSummary();
 //            mKeepWatchSigninListFragment.getTodaySigninList();
-//            getUnreadcount();
 //        }
 //
 //        String groupName = SPStaticUtils.getString("working_group_name");
@@ -315,29 +313,4 @@ public class AttendMyFragment extends Fragment {
 //        mMemberCount.setText("" + keepWatchGroupSummary.getMemberCount());
 //        mDeskCount.setText("" + keepWatchGroupSummary.getDeskCount());
 //    }
-
-    private void getUnreadcount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                if (count == 0) {
-                    return;
-                }
-
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
-    }
 }

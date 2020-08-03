@@ -148,7 +148,6 @@ public class AttendStatisticsFragment extends Fragment {
                 mKeyEventSnatchFragment.getDoingKeyEvent();
                 mKeepWatchPersonTrendsFragment.getPersonTrends();
                 mKeepWatchRankingFragment.getTodayRanking();
-                getUnreadcount();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -207,7 +206,6 @@ public class AttendStatisticsFragment extends Fragment {
             mKeyEventSnatchFragment.getDoingKeyEvent();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
-            getUnreadcount();
         }
         else if ("bind_group".equals(msg)) {
             LogUtils.i(TAG, "bind_group refresh!");
@@ -232,7 +230,6 @@ public class AttendStatisticsFragment extends Fragment {
             mKeyEventSnatchFragment.getDoingKeyEvent();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
-            getUnreadcount();
         }
     }
 
@@ -304,31 +301,6 @@ public class AttendStatisticsFragment extends Fragment {
         mTodayLeakCount.setText("" + (keepWatchStatisticsByPeriod.getShouldDeskCount() - keepWatchStatisticsByPeriod.getDeskCount()));
 
 //        mAbnormalReportCount.setText("" + keepWatchInfo.getAbnormalReportCount());
-    }
-
-    private void getUnreadcount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                if (count == 0) {
-                    return;
-                }
-
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
     }
 
     @SuppressWarnings("ResourceType")

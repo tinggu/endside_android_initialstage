@@ -76,10 +76,14 @@ public class IM {
     }
 
     public static void reportAbnormal() {
-        sendBaseMsgToThisGroup(3001, 2);
+        sendBaseMsgToThisGroup(3001, 10);
+    }
+
+    public static void reportEndAbnormal() {
+        sendBaseMsgToThisGroup(3001, 11);
     }
 
     public static void reportSignin() {
-        sendBaseMsgToThisGroup(3001, 3);
+        sendBaseMsgToThisGroup(3001, 20);
     }
 }

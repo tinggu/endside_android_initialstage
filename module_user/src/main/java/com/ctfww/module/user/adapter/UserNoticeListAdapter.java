@@ -60,7 +60,7 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         else if (noticeInfo.getType() == 2) {
             ((UserNoticeViewHolder)holder).tittle.setText("你的邀请被接受");
         }
-        else if (noticeInfo.getType() == 2) {
+        else if (noticeInfo.getType() == 3) {
             ((UserNoticeViewHolder)holder).tittle.setText("你的邀请被拒绝");
         }
         else {

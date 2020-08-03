@@ -216,8 +216,6 @@ public class AttendSigninFragment extends Fragment {
             mGroupName.setText(groupName);
         }
 
-        getUnreadcount();
-
         LogUtils.i(TAG, "onResume()");
     }
 
@@ -268,7 +266,7 @@ public class AttendSigninFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
         if ("tms_first_token".equals(messageEvent.getMessage())) {
-            getUnreadcount();
+
         }
         else if ("bind_group".equals(messageEvent.getMessage())) {
             String groupName = SPStaticUtils.getString("working_group_name");
@@ -279,30 +277,5 @@ public class AttendSigninFragment extends Fragment {
                 mGroupName.setText(groupName);
             }
         }
-    }
-
-    private void getUnreadcount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNewMessageCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                if (count == 0) {
-                    return;
-                }
-
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
     }
 }

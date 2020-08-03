@@ -327,6 +327,8 @@ public class NetworkHelper {
                     List<FingerPrintHistory> fingerPrintHistoryList = GsonUtils.fromJson(data, type);
                     updateKeepWatchDeskFingerPrint(keepWatchSigninInfo.getDeskId(), keepWatchSigninInfo.getTimeStamp(), fingerPrintHistoryList);
                 }
+
+                EventBus.getDefault().post(new MessageEvent("send_signin_success"));
             }
 
             @Override

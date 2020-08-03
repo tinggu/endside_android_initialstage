@@ -283,6 +283,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             mViewPager.setCurrentItem(2);
         }
         else if (id == mInformationRL.getId()) {
+            mUnreadCount.setVisibility(View.GONE);
             ARouter.getInstance().build("/user/notice").navigation();
         }
         else if (id == mGroupLL.getId()) {
@@ -346,10 +347,14 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         else if ("send_report_abnormal_success".equals(msg)) {
             IM.reportAbnormal();
         }
+        else if ("send_end_key_event_success".equals(msg)) {
+            IM.reportEndAbnormal();
+        }
         else if ("send_signin_success".equals(msg)) {
             IM.reportSignin();
         }
         else if ("im_received_data".equals(msg)) {
+            LogUtils.i(TAG, "im_received_data: messageEvent.getValue() = " + messageEvent.getValue());
             Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
             if (head.getMsgType() == 2001) {
                 if (head.getMsgContentType() == 1 || head.getMsgContentType() == 2 || head.getMsgContentType() == 3) {
@@ -578,7 +583,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
 
             @Override
             public void onError(int code) {
-
+                LogUtils.i(TAG, "getNoLookOverCount fail: code = " + code);
             }
         });
     }

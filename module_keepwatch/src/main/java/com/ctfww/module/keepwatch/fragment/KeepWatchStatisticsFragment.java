@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
@@ -190,7 +191,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
         else if ("im_received_data".equals(msg)) {
             Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
             if (head.getMsgType() == 3001) {
-                if (head.getMsgContentType() == 2) {
+                if (head.getMsgContentType() == 10) {
                     mKeyEventSnatchFragment.getDoingKeyEvent();
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
                     if (!mKeyEventSnatchFragment.isDoing()) {
@@ -198,9 +199,30 @@ public class KeepWatchStatisticsFragment extends Fragment {
                         long[] patter = {1000, 2000, 2000, 50};
                         vibrator.vibrate(patter, -1);
                     }
+                    String role = SPStaticUtils.getString("role");
+                    if ("admin".equals(role)) {
+                        getNoEndKeyEventCount();
+                    }
                 }
-                else if (head.getMsgContentType() == 3) {
+                else if (head.getMsgContentType() == 11) {
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
+                    String userId = SPStaticUtils.getString("user_open_id");
+                    String role = SPStaticUtils.getString("role");
+                    if (userId.equals(head.getFromId()) || "admin".equals(role)) {
+                        getNoEndKeyEventCount();
+                    }
+
+                    if (userId.equals(head.getFromId())) {
+                        mKeyEventSnatchFragment.getDoingKeyEvent();
+                    }
+                }
+                else if (head.getMsgContentType() == 20) {
+                    mKeepWatchPersonTrendsFragment.getPersonTrends();
+                    String role = SPStaticUtils.getString("role");
+                    String userId = SPStaticUtils.getString("user_open_id");
+                    if ("admin".equals(role) || userId.equals(head.getFromId())) {
+                        getTodayKeepWatchStatistics();
+                    }
                 }
             }
         }

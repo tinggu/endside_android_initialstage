@@ -398,6 +398,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             public void onSuccess(Object obj) {
                 LogUtils.i(TAG, "uploadKeyEventTrace success!");
                 getActionList(mKeyEvent.getEventId());
+                EventBus.getDefault().post(new MessageEvent("send_end_key_event_success", GsonUtils.toJson(mKeyEvent)));
             }
 
             @Override
