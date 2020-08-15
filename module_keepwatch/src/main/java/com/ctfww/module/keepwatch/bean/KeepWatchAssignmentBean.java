@@ -3,6 +3,7 @@ package com.ctfww.module.keepwatch.bean;
 public class KeepWatchAssignmentBean {
     private String groupId;
     private int deskId;
+    private String routeId;
     private String userId;
     private String circleType;
     private long startTime;
@@ -28,6 +29,14 @@ public class KeepWatchAssignmentBean {
 
     public int getDeskId() {
         return deskId;
+    }
+
+    public void setRouteId(String routeId) {
+        this.routeId = routeId;
+    }
+
+    public String getRouteId() {
+        return routeId;
     }
 
     public void setUserId(String userId) {

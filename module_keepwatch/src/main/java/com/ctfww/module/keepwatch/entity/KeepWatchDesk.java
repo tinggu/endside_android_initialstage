@@ -1,17 +1,18 @@
 package com.ctfww.module.keepwatch.entity;
 
+import com.ctfww.commonlib.entity.EntityInterface;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class KeepWatchDesk {
+public class KeepWatchDesk implements EntityInterface {
     @Id
     private String id;
     private int deskId;
     private String deskName;
-    private long createTimeStamp;
-    private long modifyTimeStamp;
+    private long timeStamp;
     private double lat;
     private double lng;
     private String deskAddress;
@@ -48,16 +49,15 @@ public class KeepWatchDesk {
         return "1".equals(gps.substring(index + 1)) ? true : false;
     }
 
-    @Generated(hash = 2074194470)
-    public KeepWatchDesk(String id, int deskId, String deskName,
-            long createTimeStamp, long modifyTimeStamp, double lat, double lng,
-            String deskAddress, String groupId, String fingerPrint, String deskType,
-            String status, String synTag, boolean isAssignmented) {
+    @Generated(hash = 1870682067)
+    public KeepWatchDesk(String id, int deskId, String deskName, long timeStamp,
+            double lat, double lng, String deskAddress, String groupId,
+            String fingerPrint, String deskType, String status, String synTag,
+            boolean isAssignmented) {
         this.id = id;
         this.deskId = deskId;
         this.deskName = deskName;
-        this.createTimeStamp = createTimeStamp;
-        this.modifyTimeStamp = modifyTimeStamp;
+        this.timeStamp = timeStamp;
         this.lat = lat;
         this.lng = lng;
         this.deskAddress = deskAddress;
@@ -77,8 +77,7 @@ public class KeepWatchDesk {
         return "groupId = " + groupId
                 + ", deskId = " + deskId
                 + ", deskName = " + deskName
-                + ", createTimeStamp = " + createTimeStamp
-                + ", modifyTimeStamp = " + modifyTimeStamp
+                + ", timeStamp = " + timeStamp
                 + ", lat = " + lat
                 + ", lng = " + lng
                 + ", deskAddress = " + deskAddress
@@ -114,22 +113,6 @@ public class KeepWatchDesk {
 
     public void setDeskName(String deskName) {
         this.deskName = deskName;
-    }
-
-    public long getCreateTimeStamp() {
-        return this.createTimeStamp;
-    }
-
-    public void setCreateTimeStamp(long createTimeStamp) {
-        this.createTimeStamp = createTimeStamp;
-    }
-
-    public long getModifyTimeStamp() {
-        return this.modifyTimeStamp;
-    }
-
-    public void setModifyTimeStamp(long modifyTimeStamp) {
-        this.modifyTimeStamp = modifyTimeStamp;
     }
 
     public double getLat() {
@@ -202,6 +185,14 @@ public class KeepWatchDesk {
 
     public void setIsAssignmented(boolean isAssignmented) {
         this.isAssignmented = isAssignmented;
+    }
+
+    public long getTimeStamp() {
+        return this.timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
 }

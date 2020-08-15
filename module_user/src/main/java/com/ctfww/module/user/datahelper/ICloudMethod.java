@@ -1,6 +1,6 @@
 package com.ctfww.module.user.datahelper;
 
-import com.ctfww.commonlib.bean.QueryConditionBean;
+import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.user.bean.GroupInfoBean;
 import com.ctfww.module.user.bean.GroupInviteBean;
 import com.ctfww.module.user.bean.NoticeBean;
@@ -9,7 +9,6 @@ import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
 import com.ctfww.module.user.bean.User2GroupBean;
 import com.ctfww.module.user.bean.UserInfoBean;
-import com.ctfww.module.user.entity.NoticeReadStatus;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -206,7 +205,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microusermanagement/noticeMgt/getNotice")
-    Call<ResponseBody> getNotice(@Body QueryConditionBean condition);
+    Call<ResponseBody> getNotice(@Body QueryCondition condition);
 
     /**
      * 更改通知信息阅读状态
@@ -222,7 +221,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microusermanagement/noticeMgt/getNoticeReadStatus")
-    Call<ResponseBody> getNoticeReadStatus(@Body QueryConditionBean condition);
+    Call<ResponseBody> getNoticeReadStatus(@Body QueryCondition condition);
 
     /**
      * 获得没有查看的通知个数
@@ -230,5 +229,5 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microusermanagement/noticeMgt/getNoLookOverCount")
-    Call<ResponseBody> getNoLookOverCount(@Body QueryConditionBean condition);
+    Call<ResponseBody> getNoLookOverCount(@Body QueryCondition condition);
 }

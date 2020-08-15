@@ -14,8 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.activity.KeepWatchDeskListActivity;
 import com.ctfww.module.keepwatch.activity.KeepWatchQrActivity;
 import com.ctfww.module.keepwatch.activity.KeepWatchViewSigninDeskActivity;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
@@ -87,10 +88,16 @@ public class KeepWatchDeskListAdapter extends RecyclerView.Adapter<RecyclerView.
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.delete.setVisibility(View.GONE);
+
                 int position = holder.getAdapterPosition();
                 KeepWatchDesk desk = list.get(position);
-                ((KeepWatchDeskListActivity)mContext).deleteSigninDesk(desk.getDeskId());
-                holder.delete.setVisibility(View.GONE);
+                DBHelper.getInstance().deleteKeepWatchDesk(desk);
+                list.remove(position);
+
+                notifyDataSetChanged();
+
+                Airship.getInstance().synKeepWatchDeskToCloud();
             }
         });
 

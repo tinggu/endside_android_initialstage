@@ -12,96 +12,15 @@
 
         <include layout="@layout/sub_top_bar" />
 
-        <EditText style="@style/KeyEventsElseWidthEdit"
-            android:id="@+id/keyevents_key_event_name"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="事件标题" />
-
-        <include layout="@layout/gray_line_style" />
-
-        <EditText style="@style/KeyEventsElseWidthEdit"
-            android:id="@+id/keyevents_key_event_desc"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="top"
-            android:hint="事件的详细内容"/>
-
-        <include layout="@layout/gray_line_style" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/keyevents_take_pic"
-                android:text="拍照"
-                android:textSize="16sp" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/keyevents_video_record"
-                android:text="录视频"
-                android:textSize="16sp" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/keyevents_sound_record"
-                android:text="录音"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <fragment
+            android:id="@+id/keyevent_report_fragment"
+            android:name="com.ctfww.module.keyevents.fragment.KeyEventReportFragment"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="14dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"/>
 
-            <ImageView
-                android:id="@+id/key_events_pic_img"
-                android:layout_width="73dp"
-                android:layout_height="73dp"
-                android:src="@mipmap/key_events_add_pic"
-                />
-
-            <ImageView
-                android:id="@+id/key_events_video_img"
-                android:layout_width="73dp"
-                android:layout_height="73dp"
-                android:layout_marginStart="12dp"
-                android:src="@mipmap/key_events_add_video"
-                />
-
-            <VideoView
-                android:id="@+id/key_events_video_view"
-                android:layout_width="73dp"
-                android:layout_height="73dp"
-                android:layout_marginStart="12dp"
-                android:visibility="gone"
-                />
-
-        </LinearLayout>
-
-        <include layout="@layout/keyevents_element_blue_button" />
 
     </LinearLayout>
 </ScrollView>

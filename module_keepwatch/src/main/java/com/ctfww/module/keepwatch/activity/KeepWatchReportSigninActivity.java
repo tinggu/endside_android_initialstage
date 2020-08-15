@@ -19,20 +19,19 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.Consts;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.location.GPSLocationManager;
 import com.ctfww.commonlib.location.MyLocation;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.fingerprint.entity.DistResult;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
 import com.ctfww.module.keyevents.fragment.KeyEventReportFragment;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -120,7 +119,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
         mReportContentLL.setVisibility(View.GONE);
 
         String groupId = SPStaticUtils.getString("working_group_id");
-        KeepWatchDesk desk = DBHelper.getInstance().getDesk(groupId, mKeepWatchSigninInfo.getDeskId());
+        KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(groupId, mKeepWatchSigninInfo.getDeskId());
         if (desk != null) {
             mDeskName.setText("[" + desk.getDeskId() + "]" + "  " + desk.getDeskName());
         }
@@ -140,14 +139,6 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
             finish();
         }
         else if (id == mFinish.getId()) {
-            String status = getStatus();
-            if (TextUtils.isEmpty(status)) {
-                DialogUtils.onlyPrompt("请选择签到类型！", this);
-                return;
-            }
-
-            mKeepWatchSigninInfo.setStatus(status);
-
             if (mAbnormal.isChecked()) {
                 ((KeyEventReportFragment)mReportFragment).setDeskId(mKeepWatchSigninInfo.getDeskId());
                 if (!((KeyEventReportFragment)mReportFragment).reportKeyEvent()) {
@@ -239,40 +230,33 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
     }
 
     private void processSignin() {
-        NetworkHelper.getInstance().addKeepWatchSignin(mKeepWatchSigninInfo, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                ToastUtils.showShort("" + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
-                LogUtils.i(TAG, "processSignin: " + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "processSignin: fail, code = " + code);
-
-                if (code == Consts.REST_FAIL) {
-                    ToastUtils.showShort("签到点编号无效，签到失败！");
-                }
-                else if (code == Consts.REST_BELONG_FAIL) {
-                    ToastUtils.showShort("这个签到点不属于你的任务！");
-                }
-                else {
-                    ToastUtils.showShort("网络异常，进行了离线签到，统计信息在网络正常后刷新！");
-                }
-            }
-        });
-    }
-
-    private String getStatus() {
-        String ret = "";
-        if (mNormal.isChecked()) {
-            ret = "nomal";
-        }
-        else if (mAbnormal.isChecked()) {
-            ret = "abnormal";
+        mKeepWatchSigninInfo.setUserId(SPStaticUtils.getString("user_open_id"));
+        mKeepWatchSigninInfo.setTimeStamp(System.currentTimeMillis());
+        mKeepWatchSigninInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
+        mKeepWatchSigninInfo.setSynTag("new");
+        KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(mKeepWatchSigninInfo.getGroupId(), mKeepWatchSigninInfo.getDeskId());
+        if (desk != null) {
+            mKeepWatchSigninInfo.setDeskName(desk.getDeskName());
+            mKeepWatchSigninInfo.setDeskType(desk.getDeskType());
         }
 
-        return ret;
+        UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+        if (userInfo != null) {
+            mKeepWatchSigninInfo.setNickName(userInfo.getNickName());
+        }
+
+        // 要判断是否是自己的签到点
+
+        // 要更新签到点指纹
+//        com.ctfww.module.fingerprint.Utils.synthesizeFingerPrint()
+
+        mKeepWatchSigninInfo.setSynTag("new");
+        DBHelper.getInstance().addKeepWatchSignin(mKeepWatchSigninInfo);
+
+        Airship.getInstance().synKeepWatchSigninToCloud();
+
+        ToastUtils.showShort("" + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
+        LogUtils.i(TAG, "processSignin: " + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
     }
 
     private void processLocation() {

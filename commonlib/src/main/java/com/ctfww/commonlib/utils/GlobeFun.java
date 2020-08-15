@@ -3,9 +3,12 @@ package com.ctfww.commonlib.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.text.TextUtils;
+import android.widget.EditText;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.ctfww.commonlib.entity.LocationGson;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -228,5 +231,33 @@ public class GlobeFun {
 
         return pattern.matcher(str).matches();
 
+    }
+
+    public static double calcLocationDist(Location locationStart, Location locationEnd) {
+        return calcLocationDist(locationStart.getLatitude(), locationStart.getLongitude(), locationEnd.getLatitude(), locationEnd.getLongitude());
+    }
+
+    public static double calcLocationDist(LocationGson locationStart, LocationGson locationEnd) {
+        return calcLocationDist(locationStart.getLat(), locationStart.getLng(), locationEnd.getLat(), locationEnd.getLng());
+    }
+
+    public static double calcLocationDist(double lat1, double lng1, double lat2, double lng2) {
+        final double r = 6371000.0;
+        double detLat = lat2 - lat1;
+        double avgLat = (lat1 + lat2) / 2;
+        double detLng = lng2 - lng1;
+        double detX = r * detLng * Math.PI / 180 * Math.cos(avgLat * Math.PI / 180);
+        double detY = r * detLat * Math.PI / 180;
+        return Math.sqrt(detX * detX + detY * detY);
+    }
+
+    public static void setEditTextReadOnly(EditText view){
+        view.setBackgroundColor(0xFFFAFAFA);   //设置只读时的文字颜色
+        view.setTextColor(0xFF9B9B9B);   //设置只读时的文字颜色
+        if (view instanceof android.widget.EditText){
+            view.setCursorVisible(false);             //设置输入框中的光标不可见
+            view.setFocusable(false);                 //无焦点
+            view.setFocusableInTouchMode(false);      //触摸时也得不到焦点
+        }
     }
 }

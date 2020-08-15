@@ -40,11 +40,13 @@ public class PopupWindowUtil {
         LinearLayout mCreateGroupLL = contentView.findViewById(R.id.keepwatch_create_group_ll);
         LinearLayout mInviteMemberLL = contentView.findViewById(R.id.keepwatch_invite_member_ll);
         LinearLayout mAddDeskLL = contentView.findViewById(R.id.keepwatch_add_desk_ll);
+        LinearLayout mAddRouteLL = contentView.findViewById(R.id.keepwatch_add_route_ll);
         LinearLayout mCreateAssignmentLL = contentView.findViewById(R.id.keepwatch_create_assignment_ll);
         LinearLayout mCreateNoticeLL = contentView.findViewById(R.id.keepwatch_create_notice_ll);
         if (!"admin".equals(SPStaticUtils.getString("role"))) {
             mInviteMemberLL.setVisibility(View.GONE);
             mAddDeskLL.setVisibility(View.GONE);
+            mAddRouteLL.setVisibility(View.GONE);
             mCreateAssignmentLL.setVisibility(View.GONE);
         }
 
@@ -71,6 +73,14 @@ public class PopupWindowUtil {
             @Override
             public void onClick(View v) {
                 ARouter.getInstance().build("/keepwatch/addDesk").navigation();
+                popupWindow.dismiss();
+            }
+        });
+
+        mAddRouteLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ARouter.getInstance().build("/keepwatch/addRoute").navigation();
                 popupWindow.dismiss();
             }
         });

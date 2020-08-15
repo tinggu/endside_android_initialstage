@@ -81,7 +81,7 @@ public class KeyEventReportFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.keyevent_report_fragment, container, false);
 
-        mEventId = GlobeFun.getSHA(SPStaticUtils.getString("open_id") + System.currentTimeMillis());
+        mEventId = GlobeFun.getSHA(SPStaticUtils.getString("user_open_id") + System.currentTimeMillis());
         initViews(view);
         setOnClickListener();
 

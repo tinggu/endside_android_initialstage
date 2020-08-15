@@ -1,6 +1,6 @@
-package com.ctfww.commonlib.bean;
+package com.ctfww.commonlib.entity;
 
-public class QueryConditionBean {
+public class QueryCondition {
     private String groupId;
     private String userId;
     private long startTime;
@@ -15,16 +15,16 @@ public class QueryConditionBean {
                 + ", condition = " + condition;
     }
 
-    public QueryConditionBean() {
+    public QueryCondition() {
 
     }
 
-    public QueryConditionBean(String groupId, String userId) {
+    public QueryCondition(String groupId, String userId) {
         this.groupId = groupId;
         this.userId = userId;
     }
 
-    public QueryConditionBean(String groupId, String userId, long startTime, long endTime) {
+    public QueryCondition(String groupId, String userId, long startTime, long endTime) {
         this.groupId = groupId;
         this.userId = userId;
         this.startTime = startTime;

@@ -48,14 +48,6 @@ public class KeepWatchSigninListAdapter extends RecyclerView.Adapter<RecyclerVie
         KeepWatchSigninInfo keepWatchSigninInfo =  list.get(position);
         LogUtils.i(TAG, "onBindViewHolder: keepWatchSigninInfo = " + keepWatchSigninInfo.toString());
         ((KeepWatchSigninViewHolder) holder).deskName.setText("[" + keepWatchSigninInfo.getDeskId() + "] " + keepWatchSigninInfo.getDeskName());
-        if ("normal".equals(keepWatchSigninInfo.getStatus())) {
-            ((KeepWatchSigninViewHolder) holder).status.setText("正常");
-            ((KeepWatchSigninViewHolder) holder).status.setTextColor(0xFF7ED321);
-        }
-        else if ("abnomal".equals(keepWatchSigninInfo.getStatus())) {
-            ((KeepWatchSigninViewHolder) holder).status.setText("异常");
-            ((KeepWatchSigninViewHolder) holder).status.setTextColor(0xFFF65066);
-        }
 
         if ("excellent".equals(keepWatchSigninInfo.getMatchLevel())) {
             ((KeepWatchSigninViewHolder) holder).matchLevel.setText("优");
@@ -104,14 +96,13 @@ public class KeepWatchSigninListAdapter extends RecyclerView.Adapter<RecyclerVie
 class KeepWatchSigninViewHolder extends RecyclerView.ViewHolder {
 
     View view;
-    TextView deskName, status, matchLevel;
+    TextView deskName, matchLevel;
     TextView nickName, dateTime;
 
     KeepWatchSigninViewHolder(View itemView) {
         super(itemView);
         view = itemView;
         deskName = itemView.findViewById(R.id.keepwatch_desk_name);
-        status = itemView.findViewById(R.id.keepwatch_status);
         matchLevel = itemView.findViewById(R.id.keepwatch_match_level);
         nickName = itemView.findViewById(R.id.keepwatch_nick_name);
         dateTime = itemView.findViewById(R.id.keepwatch_date_time);

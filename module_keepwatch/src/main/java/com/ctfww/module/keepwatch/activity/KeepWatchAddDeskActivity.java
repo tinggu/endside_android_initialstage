@@ -18,23 +18,19 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.location.GPSLocationManager;
 import com.ctfww.commonlib.location.MyLocation;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import static com.ctfww.commonlib.Consts.REST_FAIL;
 
 @Route(path = "/keepwatch/addDesk")
 public class KeepWatchAddDeskActivity extends AppCompatActivity implements View.OnClickListener {
@@ -67,6 +63,8 @@ public class KeepWatchAddDeskActivity extends AppCompatActivity implements View.
 
         processLocation();
         com.ctfww.module.fingerprint.Utils.startScan("create");
+
+        Airship.getInstance().synKeepWatchDeskFromCloud();
     }
 
     private void initViews() {
@@ -126,21 +124,14 @@ public class KeepWatchAddDeskActivity extends AppCompatActivity implements View.
             }
 
             String groupId = SPStaticUtils.getString("working_group_id");
-            KeepWatchDesk desk = DBHelper.getInstance().getDesk(groupId, deskId);
+            KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(groupId, deskId);
             if (desk != null) {
                 DialogUtils.onlyPrompt("在一个群里面不能创建重复编号的签到点！", this);
                 return;
             }
 
             mConfirm.setEnabled(false);
-
-            LogUtils.i("aaaaaaaaaaaa", "deskId = " + mDeskId.getText().toString() + ", mWifiFingerPrintStr = " + mWifiFingerPrintStr);
-            String gpsFingerPrintStr = com.ctfww.module.fingerprint.Utils.combineGpsStandardFingerPrint(mLocation);
-            String fingerPrintStr = com.ctfww.module.fingerprint.Utils.appendOtherFingerPrint(mWifiFingerPrintStr, gpsFingerPrintStr);
-            LogUtils.i(TAG, "onGetMessage: fingerPrintStr = " + fingerPrintStr);
-            String deskType = getDeskType();
-            LogUtils.i("bbbbbbbbbbbb", "onClick; provider = " + mLocation.getProvider() + ", lat = " + mLocation.getLatitude() + ", lng = " + mLocation.getLongitude());
-            addSigninDesk(deskId, mDeskName.getText().toString(), mDeskAddress.getText().toString(), mLocation.getLatitude(), mLocation.getLongitude(), deskType, fingerPrintStr);
+            addDesk();
         }
         else if (id == mQr.getId()) {
             String deskIdStr = mDeskId.getText().toString();
@@ -190,29 +181,28 @@ public class KeepWatchAddDeskActivity extends AppCompatActivity implements View.
 //        dialog.show();
 //    }
 
-    private void addSigninDesk(final int deskId, final String deskName, final String address, double lat, double lng, String deskType, String fingerPrint) {
-        NetworkHelper.getInstance().addKeepWatchDesk(deskId, deskName, address, lat, lng, deskType, fingerPrint, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                ToastUtils.showShort("创建成功！");
-                Utils.produceSigninDeskQrFile(KeepWatchAddDeskActivity.this, deskId, deskName);
-                finish();
-            }
+    private void addDesk() {
+        KeepWatchDesk desk = new KeepWatchDesk();
+        desk.setGroupId(SPStaticUtils.getString("working_group_id"));
+        desk.setDeskId(GlobeFun.parseInt(mDeskId.getText().toString()));
+        desk.setDeskName(mDeskName.getText().toString());
+        desk.setDeskAddress(mDeskAddress.getText().toString());
+        desk.setLat(mLocation.getLatitude());
+        desk.setLng(mLocation.getLongitude());
+        desk.setDeskType(getDeskType());
+        String gpsFingerPrintStr = com.ctfww.module.fingerprint.Utils.combineGpsStandardFingerPrint(mLocation);
+        String fingerPrintStr = com.ctfww.module.fingerprint.Utils.appendOtherFingerPrint(mWifiFingerPrintStr, gpsFingerPrintStr);
+        desk.setFingerPrint(fingerPrintStr);
+        desk.setSynTag("new");
 
-            @Override
-            public void onError(int code) {
-                mConfirm.setEnabled(true);
-                if (code == REST_FAIL) {
-                    ToastUtils.showShort("在一个群组中不能增加编号重复的签到点！");
-                }
-                else {
-                    Intent intent = new Intent();
-                    intent.putExtra("syg_tag", "new");
-                    ToastUtils.showShort("上云失败，已转存本地数据库，会进行后台同步！");
-                    finish();
-                }
-            }
-        });
+        if (!DBHelper.getInstance().addKeepWatchDesk(desk)) {
+            DialogUtils.onlyPrompt("该群组中该点号已经存在，请填写新的点号！", this);
+            return;
+        }
+
+        Airship.getInstance().synKeepWatchDeskToCloud();
+
+        finish();
     }
 
     private boolean isExistNFC() {

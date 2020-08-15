@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchDeskListAdapter;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,9 @@ public class KeepWatchDeskListActivity extends AppCompatActivity implements View
         initViews();
         setOnClickListener();
 
-        getDeskList();
+        EventBus.getDefault().register(this);
+
+        Airship.getInstance().synKeepWatchDeskFromCloud();
     }
 
     private void initViews() {
@@ -70,7 +75,7 @@ public class KeepWatchDeskListActivity extends AppCompatActivity implements View
 
     private void getDeskList() {
         String groupId = SPStaticUtils.getString("working_group_id");
-        List<KeepWatchDesk> deskList = DBHelper.getInstance().getDesk(groupId);
+        List<KeepWatchDesk> deskList = DBHelper.getInstance().getKeepWatchDeskList(groupId);
         LogUtils.i(TAG, "getDeskList: deskList.size() = " + deskList.size());
         mKeepWatchDeskListAdapter.setList(deskList);
         mKeepWatchDeskListAdapter.notifyDataSetChanged();
@@ -88,23 +93,11 @@ public class KeepWatchDeskListActivity extends AppCompatActivity implements View
         }
     }
 
-    public void deleteSigninDesk(final int deskId) {
-        NetworkHelper.getInstance().deleteKeepWatchDesk(deskId, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                String groupId = SPStaticUtils.getString("working_group_id");
-                DBHelper.getInstance().deleteDesk(groupId, deskId);
-                List<KeepWatchDesk> signinDeskList = DBHelper.getInstance().getDesk(groupId);
-                mKeepWatchDeskListAdapter.setList(signinDeskList);
-                mKeepWatchDeskListAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "deleteSigninDesk faile: code = " + code);
-                ToastUtils.showShort("删除签到点失败，请确认网络是否正常！");
-            }
-        });
+    @Subscribe(threadMode= ThreadMode.MAIN)
+    public void onGetMessage(MessageEvent messageEvent) {
+        if ("finish_desk_syn".equals(messageEvent.getMessage())) {
+            getDeskList();
+        }
     }
 
     @Override
@@ -115,10 +108,13 @@ public class KeepWatchDeskListActivity extends AppCompatActivity implements View
                 return;
             }
 
-            String groupId = SPStaticUtils.getString("working_group_id");
-            List<KeepWatchDesk> signinDeskList = DBHelper.getInstance().getDesk(groupId);
-            mKeepWatchDeskListAdapter.setList(signinDeskList);
-            mKeepWatchDeskListAdapter.notifyDataSetChanged();
+            getDeskList();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -17,7 +17,8 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.activity.ViewMapActivity;
@@ -98,7 +99,7 @@ public class KeepWatchAssignmentListAdapter extends RecyclerView.Adapter<Recycle
                 int position = holder.getAdapterPosition();
                 KeepWatchAssignment keepWatchAssignment = list.get(position);
                 String groupId = SPStaticUtils.getString("working_group_id");
-                KeepWatchDesk keepWatchDesk = DBHelper.getInstance().getDesk(groupId, keepWatchAssignment.getDeskId());
+                KeepWatchDesk keepWatchDesk = DBHelper.getInstance().getKeepWatchDesk(groupId, keepWatchAssignment.getDeskId());
                 if (keepWatchDesk != null) {
                     Intent intent = new Intent(v.getContext(), ViewMapActivity.class);
                     intent.putExtra("type", "center");
@@ -164,19 +165,10 @@ public class KeepWatchAssignmentListAdapter extends RecyclerView.Adapter<Recycle
 
     public void deleteData(int position) {
         KeepWatchAssignment keepWatchAssignment = list.get(position);
-        NetworkHelper.getInstance().deleteKeepWatchAssignment(keepWatchAssignment.getUserId(), keepWatchAssignment.getDeskId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                EventBus.getDefault().post(new MessageEvent("keepwatch_has_delete_assignment", GsonUtils.toJson(keepWatchAssignment)));
-                LogUtils.i(TAG, "deleteData success: position = " + position);
-            }
+        DBHelper.getInstance().deleteKeepWatchAssignment(keepWatchAssignment);
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "delete fail: code = " + code);
-                ToastUtils.showShort("由于网络等原因，删除失败！");
-            }
-        });
+        list.remove(position);
+        notifyDataSetChanged();
     }
 }
 

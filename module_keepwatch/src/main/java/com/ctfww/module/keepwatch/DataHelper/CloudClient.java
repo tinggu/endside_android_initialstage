@@ -3,19 +3,26 @@ package com.ctfww.module.keepwatch.DataHelper;
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.bean.QueryConditionBean;
+import com.ctfww.commonlib.entity.CargoToCloud;
+import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.commonlib.entity.Cargo;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.utils.NetworkUtils;
 import com.ctfww.module.keepwatch.bean.KeepWatchAssignmentBean;
-import com.ctfww.module.keepwatch.bean.KeepWatchDeskBean;
-import com.ctfww.module.keepwatch.bean.KeepWatchSigninBean;
+import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
+import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
+import com.ctfww.module.keepwatch.entity.KeepWatchRoute;
+import com.ctfww.module.keepwatch.entity.KeepWatchRouteDesk;
+import com.ctfww.module.keepwatch.entity.KeepWatchRouteSummary;
+import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -189,75 +196,76 @@ public class CloudClient {
         });
     }
 
-    public void updateKeepWatchDeskAddition(String groupId,
-                String deskName, String deskAddress,
-                int deskId, String deskType, String fingerPrint,
-                long modifyTimestamp, final ICloudCallback callback) {
-        KeepWatchDeskBean keepWatchDeskBean = new KeepWatchDeskBean();
-        keepWatchDeskBean.setGroupId(groupId);
-        keepWatchDeskBean.setDeskId(deskId);
-        keepWatchDeskBean.setDeskName(deskName);
-        keepWatchDeskBean.setDeskAddress(deskAddress);
-        keepWatchDeskBean.setDeskType(deskType);
-        keepWatchDeskBean.setFingerPrint(fingerPrint);
-        keepWatchDeskBean.setModifyTimeStamp(modifyTimestamp);
-        LogUtils.i(TAG, "modifyDesk: keepWatchDeskBean = " + keepWatchDeskBean.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.updateKeepWatchDeskAddition(keepWatchDeskBean);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void updateKeepWatchDeskFingerPrint(String groupId, int deskId, long timeStamp, String fingerPrint, final ICloudCallback callback) {
-        KeepWatchDeskBean keepWatchDeskBean = new KeepWatchDeskBean();
-        keepWatchDeskBean.setGroupId(groupId);
-        keepWatchDeskBean.setDeskId(deskId);
-        keepWatchDeskBean.setFingerPrint(fingerPrint);
-        keepWatchDeskBean.setModifyTimeStamp(timeStamp);
-        LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: keepWatchDeskBean = " + keepWatchDeskBean.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.updateKeepWatchDeskFingerPrint(keepWatchDeskBean);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void addKeepWatchDesk(String groupId,
-                              double lat, double lng, String deskName, String address,
-                              int deskId,  String deskType, String fingerPrint,
-                              long timeStamp, long modifyTimestamp, final ICloudCallback callback) {
-        KeepWatchDeskBean keepWatchDeskBean = new KeepWatchDeskBean();
-        keepWatchDeskBean.setGroupId(groupId);
-
-        keepWatchDeskBean.setLat(lat);
-        keepWatchDeskBean.setLng(lng);
-        keepWatchDeskBean.setDeskName(deskName);
-        keepWatchDeskBean.setDeskAddress(address);
-
-        keepWatchDeskBean.setDeskId(deskId);
-        keepWatchDeskBean.setDeskType(deskType);
-        keepWatchDeskBean.setFingerPrint(fingerPrint);
-        keepWatchDeskBean.setCreateTimeStamp(timeStamp);
-        keepWatchDeskBean.setModifyTimeStamp(modifyTimestamp);
-        keepWatchDeskBean.setStatus("reserve");
-
-        LogUtils.i(TAG, "addDesk: keepWatchDeskBean = " + keepWatchDeskBean.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.addKeepWatchDesk(keepWatchDeskBean);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
     /****************************new*****************************************/
 
-    public void addKeepWatchSignin(KeepWatchSigninBean keepWatchSigninBean, final ICloudCallback callback) {
-        LogUtils.i(TAG, "addKeepWatchSignin: keepWatchSigninBean = " + keepWatchSigninBean.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.addKeepWatchSignin(keepWatchSigninBean);
-        processListRsp(responseBodyCall, callback);
-    }
-
-    public void getTodayKeepWatchInfo(String groupId, String userId, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(groupId, userId);
-        LogUtils.i(TAG, "getTodayKeepWatchInfo: condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getTodayKeepWatchInfo(condition);
+    public void synKeepWatchDesk(Cargo<KeepWatchDesk> deskCargo, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchDesk: deskCargo = " + deskCargo.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchDesk(deskCargo);
         processSingleObjRsp(responseBodyCall, callback);
     }
 
+    public void synKeepWatchDeskToCloud(CargoToCloud<KeepWatchDesk> cargo, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchDeskToCloud: cargo = " + cargo.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchDeskToCloud(cargo);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchDeskFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchDeskFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchDeskFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchRouteSummaryToCloud(CargoToCloud<KeepWatchRouteSummary> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchRouteSummaryToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchRouteSummaryToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchRouteSummaryFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchRouteSummaryFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchRouteSummaryFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchRouteDeskToCloud(CargoToCloud<KeepWatchRouteDesk> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchRouteDeskToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchRouteDeskToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchRouteDeskFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchRouteDeskFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchRouteDeskFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchSigninToCloud(CargoToCloud<KeepWatchSigninInfo> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchSigninToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchSigninToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchSigninFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchSigninFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchSigninFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchAssignmentToCloud(CargoToCloud<KeepWatchAssignment> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchAssignmentToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchAssignmentToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synKeepWatchAssignmentFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeepWatchAssignmentFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchAssignmentFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
     public void getPersonTrends(String groupId, long startTime, long endTime, int count, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(groupId, "", startTime, endTime);
+        QueryCondition condition = new QueryCondition(groupId, "", startTime, endTime);
         condition.setCondition("" + count);
         LogUtils.i(TAG, "getPersonTrends: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getPersonTrends(condition);
@@ -265,30 +273,14 @@ public class CloudClient {
     }
 
     public void getKeepWatchRanking(String groupId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(groupId, "", startTime, endTime);
+        QueryCondition condition = new QueryCondition(groupId, "", startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchRanking: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchRanking(condition);
         processListRsp(responseBodyCall, callback);
     }
 
-    public void addKeepWatchAssignment(KeepWatchAssignmentBean info, final ICloudCallback callback) {
-        LogUtils.i(TAG, "addKeepWatchAssignment: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.addKeepWatchAssignment(info);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void deleteKeepWatchAssignment(String groupId, String userId, int deskId, final ICloudCallback callback) {
-        KeepWatchAssignmentBean info = new KeepWatchAssignmentBean();
-        info.setGroupId(groupId);
-        info.setUserId(userId);
-        info.setDeskId(deskId);
-        LogUtils.i(TAG, "deleteKeepWatchAssignment: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.deleteKeepWatchAssignment(info);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
     public void transferKeepWatchAssignment(String groupId, String userId, String toUserId, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean();
+        QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
         condition.setUserId(userId);
         condition.setCondition(toUserId);
@@ -298,42 +290,12 @@ public class CloudClient {
     }
 
     public void takeBackKeepWatchAssignment(String groupId, String userId, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean();
+        QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
         condition.setUserId(userId);
         LogUtils.i(TAG, "takeBackKeepWatchAssignment: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.takeBackKeepWatchAssignment(condition);
         processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void addKeepWatchDesk(KeepWatchDeskBean info, final ICloudCallback callback) {
-        LogUtils.i(TAG, "addKeepWatchDesk: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.addKeepWatchDesk(info);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void deleteKeepWatchDesk(String groupId, int deskId, final ICloudCallback callback) {
-        KeepWatchDeskBean info = new KeepWatchDeskBean();
-        info.setGroupId(groupId);
-        info.setDeskId(deskId);
-        LogUtils.i(TAG, "deleteKeepWatchDesk: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.deleteKeepWatchDesk(info);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void updateKeepWatchDeskAddition(KeepWatchDeskBean info, final ICloudCallback callback) {
-        LogUtils.i(TAG, "updateKeepWatchDeskAddition: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.updateKeepWatchDeskAddition(info);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void getKeepWatchDesk(String groupId, int deskId, final ICloudCallback callback) {
-        KeepWatchDeskBean info = new KeepWatchDeskBean();
-        info.setGroupId(groupId);
-        info.setDeskId(deskId);
-        LogUtils.i(TAG, "getKeepWatchDesk: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchDesk(info);
-        processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchGroupSummary(String groupId, final ICloudCallback callback) {
@@ -343,79 +305,91 @@ public class CloudClient {
     }
 
     public void getKeepWatchSigninLeak(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchSigninLeak: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchSigninLeak(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchSigninStatistics(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchSigninStatistics: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchSigninStatistics(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchSigninList(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchSigninList: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchSigninList(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchAssignmentList(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchAssignmentList: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchAssignmentList(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchPeriodAssignmentList(String groupId, String userId, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId);
         LogUtils.i(TAG, "getKeepWatchPeriodAssignmentList: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchPeriodAssignmentList(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchStatistics(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchStatistics: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchStatistics(queryConditionBean);
         processSingleObjRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchAssignmentAndSigninStatisticsForDesk(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchAssignmentAndSigninStatisticsForDesk: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchAssignmentAndSigninStatisticsForDesk(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchStatisticsByPeriodByDayUnit(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchStatisticsByPeriodByDayUnit: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchStatisticsByPeriodByDayUnit(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchLeakStatisticsForDesk(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchLeakStatisticsForDesk: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchLeakStatisticsForDesk(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchSigninStatisticsForDesk(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getKeepWatchSigninStatisticsForDesk: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchSigninStatisticsForDesk(queryConditionBean);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getHistoryEveryDayStatistics(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean queryConditionBean = new QueryConditionBean(groupId, userId, startTime, endTime);
+        QueryCondition queryConditionBean = new QueryCondition(groupId, userId, startTime, endTime);
         LogUtils.i(TAG, "getHistoryEveryDayStatistics: queryConditionBean = " + queryConditionBean.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getHistoryEveryDayStatistics(queryConditionBean);
+        processListRsp(responseBodyCall, callback);
+    }
+
+    public void addKeepWatchRoute(KeepWatchRoute keepWatchRouteTemp, final ICloudCallback callback) {
+        LogUtils.i(TAG, "addKeepWatchRoute: keepWatchRouteTemp = " + keepWatchRouteTemp.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.addKeepWatchRoute(keepWatchRouteTemp);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void getKeepWatchRoute(String groupId, final ICloudCallback callback) {
+        LogUtils.i(TAG, "getKeepWatchRoute: groupId = " + groupId);
+        Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchRoute(groupId);
         processListRsp(responseBodyCall, callback);
     }
 }

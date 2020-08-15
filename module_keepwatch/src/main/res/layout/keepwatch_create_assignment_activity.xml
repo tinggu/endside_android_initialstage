@@ -24,11 +24,11 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:id="@+id/keepwatch_select_desk_ll">
+            android:id="@+id/keepwatch_select_object_ll">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="签到点"
+                android:text="签到对象"
                 android:textSize="16sp"
                 android:textColor="#000000"
                 android:textStyle="bold"/>
@@ -39,13 +39,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="22.5dp"
-                android:hint="点击选择点位"
+                android:hint="点击选择签到对象"
                 android:textSize="13sp"
                 android:textColor="#4A4A4A"
                 android:textStyle="bold"
                 android:gravity="center_vertical|right"
                 android:layout_marginLeft="6dp"
-                android:id="@+id/keepwatch_desk_id_list"/>
+                android:id="@+id/keepwatch_object_id_list"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="22.5dp"

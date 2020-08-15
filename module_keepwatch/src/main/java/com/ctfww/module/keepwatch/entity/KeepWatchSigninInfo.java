@@ -1,19 +1,21 @@
 package com.ctfww.module.keepwatch.entity;
 
+import com.ctfww.commonlib.entity.EntityInterface;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class KeepWatchSigninInfo {
-    private String userId;
+public class KeepWatchSigninInfo implements EntityInterface {
     @Id
-    private Long timeStamp;
+    private String id;
+
+    private String userId;
+    private long timeStamp;
     private int deskId;
     private String groupId;
     private String finishType;
-    private String status;
-    private String reportId;
     private String matchLevel;
     private String synTag;
 
@@ -22,24 +24,30 @@ public class KeepWatchSigninInfo {
     private String nickName;
     private String fingerPrint;
 
-    @Generated(hash = 1386308716)
-    public KeepWatchSigninInfo(String userId, Long timeStamp, int deskId,
-            String groupId, String finishType, String status, String reportId,
-            String matchLevel, String synTag, String deskName, String deskType,
-            String nickName, String fingerPrint) {
+    private String status;
+
+    public void combineId() {
+        id = userId + timeStamp;
+    }
+
+    @Generated(hash = 645362104)
+    public KeepWatchSigninInfo(String id, String userId, long timeStamp, int deskId,
+            String groupId, String finishType, String matchLevel, String synTag,
+            String deskName, String deskType, String nickName, String fingerPrint,
+            String status) {
+        this.id = id;
         this.userId = userId;
         this.timeStamp = timeStamp;
         this.deskId = deskId;
         this.groupId = groupId;
         this.finishType = finishType;
-        this.status = status;
-        this.reportId = reportId;
         this.matchLevel = matchLevel;
         this.synTag = synTag;
         this.deskName = deskName;
         this.deskType = deskType;
         this.nickName = nickName;
         this.fingerPrint = fingerPrint;
+        this.status = status;
     }
 
     @Generated(hash = 519721089)
@@ -52,8 +60,6 @@ public class KeepWatchSigninInfo {
                 + ", deskId = " + deskId
                 + ", groupId = " + groupId
                 + ", finishType = " + finishType
-                + ", status = " + status
-                + ", reportId = " + reportId
                 + ", matchLevel = " + matchLevel
                 + ", synTag = " + synTag
                 + ", deskName =" + deskName
@@ -70,11 +76,11 @@ public class KeepWatchSigninInfo {
         this.userId = userId;
     }
 
-    public Long getTimeStamp() {
+    public long getTimeStamp() {
         return this.timeStamp;
     }
 
-    public void setTimeStamp(Long timeStamp) {
+    public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -100,22 +106,6 @@ public class KeepWatchSigninInfo {
 
     public void setFinishType(String finishType) {
         this.finishType = finishType;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getReportId() {
-        return this.reportId;
-    }
-
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
     }
 
     public String getMatchLevel() {
@@ -164,5 +154,21 @@ public class KeepWatchSigninInfo {
 
     public void setFingerPrint(String fingerPrint) {
         this.fingerPrint = fingerPrint;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -3,8 +3,7 @@ package com.ctfww.module.keepwatch.bean;
 public class KeepWatchDeskBean {
     private int deskId;
     private String deskName;
-    private long createTimeStamp;
-    private long modifyTimeStamp;
+    private long timeStamp;
     private double lat;
     private double lng;
     private String deskAddress;
@@ -33,20 +32,12 @@ public class KeepWatchDeskBean {
         return deskName;
     }
 
-    public void setCreateTimeStamp(long createTimeStamp) {
-        this.createTimeStamp = createTimeStamp;
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
-    public long getCreateTimeStamp() {
-        return createTimeStamp;
-    }
-
-    public void setModifyTimeStamp(long modifyTimeStamp) {
-        this.modifyTimeStamp = modifyTimeStamp;
-    }
-
-    public long getModifyTimeStamp() {
-        return modifyTimeStamp;
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
     public void setLat(double lat) {

@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.bean.QueryConditionBean;
+import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.user.bean.GroupInfoBean;
@@ -17,7 +17,6 @@ import com.ctfww.module.user.bean.SMSLoginBean;
 import com.ctfww.module.user.bean.User2GroupBean;
 import com.ctfww.module.user.bean.UserGroupBean;
 import com.ctfww.module.user.bean.UserInfoBean;
-import com.ctfww.module.user.entity.NoticeReadStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -639,7 +638,7 @@ public class CloudClient {
     }
 
     public void getNotice(String groupId, String userId, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(groupId, userId);
+        QueryCondition condition = new QueryCondition(groupId, userId);
         LogUtils.i(TAG, "getNotice: condition = " + condition);
         Call<ResponseBody> responseBodyCall = mCloudMethod.getNotice(condition);
         processListRsp(responseBodyCall, callback);
@@ -657,7 +656,7 @@ public class CloudClient {
     }
 
     public void getNoticeReadStatus(String groupId, String noticeId, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean();
+        QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
         condition.setCondition(noticeId);
         LogUtils.i(TAG, "getNoticeReadStatus: condition = " + condition.toString());
@@ -666,7 +665,7 @@ public class CloudClient {
     }
 
     public void getNoLookOverCount(String groupId, String userId, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean();
+        QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
         condition.setUserId(userId);
         LogUtils.i(TAG, "getNoLookOverCount: condition = " + condition.toString());

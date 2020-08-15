@@ -1,5 +1,6 @@
 package com.ctfww.module.keepwatch.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,21 +14,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.DialogUtils;
+import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.datapicker.data.DataPicker;
 import com.ctfww.module.datapicker.time.HourAndMinutePicker;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
+import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
+import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
+import com.ctfww.module.keepwatch.entity.KeepWatchRouteSummary;
 import com.ctfww.module.user.entity.GroupUserInfo;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,8 +46,8 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
     private TextView mTittle;
     private TextView mRelease;
 
-    private LinearLayout mSelectDeskLL;
-    private TextView mDeskIdList;
+    private LinearLayout mSelectObjectLL;
+    private TextView mObjectIdList;
 
     private CheckBox mMonday;
     private CheckBox mTuesday;
@@ -59,6 +66,9 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
     private DataPicker mFrequency;
 
     private GroupUserInfo mUserInfo;
+
+    private List<String> mDeskIdList = new ArrayList<>();
+    private List<String> mRouteIdList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +90,8 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
         mRelease.setVisibility(View.VISIBLE);
         mRelease.setText("发布");
 
-        mSelectDeskLL = findViewById(R.id.keepwatch_select_desk_ll);
-        mDeskIdList = findViewById(R.id.keepwatch_desk_id_list);
+        mSelectObjectLL = findViewById(R.id.keepwatch_select_object_ll);
+        mObjectIdList = findViewById(R.id.keepwatch_object_id_list);
 
         mMonday = findViewById(R.id.keepwatch_monday);
         mTuesday = findViewById(R.id.keepwatch_tuesday);
@@ -108,7 +118,7 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
 
     private void setOnClickListener() {
         mBack.setOnClickListener(this);
-        mSelectDeskLL.setOnClickListener(this);
+        mSelectObjectLL.setOnClickListener(this);
         mRelease.setOnClickListener(this);
 
         mStartHourMinute.setOnTimeSelectedListener(new HourAndMinutePicker.OnTimeSelectedListener() {
@@ -137,8 +147,8 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
         else if (id == mRelease.getId()) {
             createAssignment();
         }
-        else if (id == mSelectDeskLL.getId()) {
-            ARouter.getInstance().build("/keepwatch/selectDesk").navigation();
+        else if (id == mSelectObjectLL.getId()) {
+            startActivityForResult(new Intent(this, KeepWatchSelectSigninObjectActivity.class), 1);
         }
 
         else if (id == mSelectMemberLL.getId()) {
@@ -149,19 +159,15 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
     // 处理事件
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
-        if ("selected_desk".equals(messageEvent.getMessage())) {
-            LogUtils.i(TAG, "onGetMessage: messageEvent.getValue() = " + messageEvent.getValue());
-            mDeskIdList.setText(messageEvent.getValue());
-        }
-        else if ("selected_user".equals(messageEvent.getMessage())) {
+        if ("selected_user".equals(messageEvent.getMessage())) {
             mUserInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupUserInfo.class);
             mNickName.setText(mUserInfo.getNickName());
         }
     }
 
     private void createAssignment() {
-        if (TextUtils.isEmpty(mDeskIdList.getText().toString())) {
-            DialogUtils.onlyPrompt("请选择签到点！", this);
+        if (mDeskIdList.isEmpty() && mRouteIdList.isEmpty()) {
+            DialogUtils.onlyPrompt("请选择签到点或签到线路！", this);
             return;
         }
 
@@ -188,18 +194,52 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
             return;
         }
 
-        NetworkHelper.getInstance().addKeepWatchAssignment(mDeskIdList.getText().toString(), circleType, startTime, endTime, mUserInfo.getUserId(), frequency, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                ToastUtils.showShort("创建成功！");
-                finish();
+        KeepWatchAssignment assignment = new KeepWatchAssignment();
+
+        String groupId = SPStaticUtils.getString("working_group_id");
+        assignment.setGroupId(groupId);
+        assignment.setUserId(mUserInfo.getUserId());
+        assignment.setCircleType(circleType);
+        assignment.setStartTime(startTime);
+        assignment.setEndTime(endTime);
+        assignment.setFrequency(frequency);
+        assignment.setTimeStamp(System.currentTimeMillis());
+        assignment.setStatus("reserve");
+        assignment.setNickName(mUserInfo.getNickName());
+        assignment.setSynTag("new");
+        for (int i = 0; i < mDeskIdList.size(); ++i) {
+            int deskId = GlobeFun.parseInt(mDeskIdList.get(i));
+            assignment.setDeskId(deskId);
+            assignment.setRouteId("");
+            KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(groupId, deskId);
+            if (desk == null) {
+                continue;
             }
 
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("创建失败！");
+            assignment.setDeskName(desk.getDeskName());
+            assignment.setDeskType(desk.getDeskType());
+
+            assignment.combineAssignmentId();
+            DBHelper.getInstance().addKeepWatchAssignment(assignment);
+        }
+
+        for (int i = 0; i < mRouteIdList.size(); ++i) {
+            assignment.setDeskId(0);
+            String routeId = mRouteIdList.get(i);
+            assignment.setRouteId(routeId);
+            KeepWatchRouteSummary routeSummary = DBHelper.getInstance().getKeepWatchRouteSummary(routeId);
+            if (routeSummary == null) {
+                continue;
             }
-        });
+
+            assignment.setDeskName(routeSummary.getRouteName());
+            assignment.setDeskType("");
+
+            assignment.combineAssignmentId();
+            DBHelper.getInstance().addKeepWatchAssignment(assignment);
+        }
+
+        Airship.getInstance().synKeepWatchAssignmentToCloud();
     }
 
     private String getCircleType() {
@@ -257,5 +297,29 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode != RESULT_OK) {
+                return;
+            }
+
+            String deskList = SPStaticUtils.getString("select_desk");
+            if (!TextUtils.isEmpty(deskList)) {
+                Type type = new TypeToken<List<String>>() {}.getType();
+                mDeskIdList = GsonUtils.fromJson(deskList, type);
+            }
+
+            String routeList = SPStaticUtils.getString("route_desk");
+            if (!TextUtils.isEmpty(deskList)) {
+                Type type = new TypeToken<List<String>>() {}.getType();
+                mRouteIdList = GsonUtils.fromJson(routeList, type);
+            }
+
+            mObjectIdList.setText("签到点：" + mDeskIdList.size() + "个" + ", 签到线路：" + mRouteIdList.size() + "条");
+        }
     }
 }

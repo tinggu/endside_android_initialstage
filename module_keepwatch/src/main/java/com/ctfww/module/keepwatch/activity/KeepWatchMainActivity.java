@@ -27,6 +27,7 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.FileInfo;
+import com.ctfww.commonlib.entity.LocationGson;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyPosition;
 import com.ctfww.commonlib.location.GPSLocationListener;
@@ -34,9 +35,10 @@ import com.ctfww.commonlib.location.GPSLocationManager;
 import com.ctfww.commonlib.location.GPSProviderStatus;
 import com.ctfww.commonlib.utils.ApkUtils;
 import com.ctfww.commonlib.utils.FileUtils;
+import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.SynData;
+import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
@@ -293,6 +295,9 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             if (mViewPager.getCurrentItem() == 0) {
                 PopupWindowUtil.showKeepWatchAddPopupWindow(this, mAddition, -320);
             }
+            else if (mViewPager.getCurrentItem() == 1) {
+                ARouter.getInstance().build("/keyevents/reportKeyEvent").navigation();
+            }
             else if (mViewPager.getCurrentItem() == 2) {
                 ARouter.getInstance().build("/keepwatch/setting").navigation();
             }
@@ -310,8 +315,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             checkUpgrade();
             com.ctfww.module.user.datahelper.DataHelper.getInstance().startTimedSyn();
             com.ctfww.module.keyevents.datahelper.SynData.startTimedSyn();
-            SynData.getAllDesk();
-            SynData.startTimedSyn();
+            Airship.getInstance().synKeepWatchDeskToCloud();
+            Airship.getInstance().synKeepWatchDeskFromCloud();
             getNoLookOverCount();
         }
         else if ("update_location".equals(msg)) {
@@ -320,7 +325,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             EventBus.getDefault().post(new MessageEvent("location"));
         }
         else if ("bind_group".equals(msg)) {
-            SynData.getAllDesk();
+            Airship.getInstance().synKeepWatchDeskToCloud();
+            Airship.getInstance().synKeepWatchDeskFromCloud();
             String groupName= SPStaticUtils.getString("working_group_name");
             mGroupName.setText(SPStaticUtils.getString("working_group_name"));
         }
@@ -473,7 +479,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
 
         List<Integer> idList = new ArrayList<Integer>();
         List<String> fingerPrintList = new ArrayList<>();
-        List<KeepWatchDesk> deskList = DBHelper.getInstance().getDesk(groupId);
+        List<KeepWatchDesk> deskList = DBHelper.getInstance().getKeepWatchDeskList(groupId);
         for (int i = 0; i < deskList.size(); ++i) {
             KeepWatchDesk desk = deskList.get(i);
             idList.add(desk.getDeskId());
@@ -498,7 +504,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
                 mStatisticsImg.setImageResource(R.drawable.keepwatch_statistics_pressed);
                 break;
             case 1:
-                mAddition.setVisibility(View.GONE);
+                mAddition.setImageResource(R.drawable.keepwatch_report);
+                mAddition.setVisibility(View.VISIBLE);
                 mKeepWatchImg.setImageResource(R.drawable.keepwatch_keep_watch_pressed);
                 break;
             case 2:
@@ -512,12 +519,25 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
     }
 
     class MyListener implements GPSLocationListener {
+        Location lastLocation = null;
         @Override
         public void UpdateLocation(Location location) {
             if (location != null) {
                 mGPSLocationManager.setCurrLocation(location);
                 if ("gps".equals(location.getProvider()) && location.getAccuracy() < 20.0f) {
                     mGPSLocationManager.setOptimalLocation(location);
+                    if (lastLocation == null) {
+                        lastLocation = location;
+                        LocationGson locationGson = new LocationGson(location);
+                        EventBus.getDefault().post(new MessageEvent("gps_location_updated", GsonUtils.toJson(locationGson)));
+                    }
+                    else {
+                        if (GlobeFun.calcLocationDist(lastLocation, location) > 10.0) {
+                            lastLocation = location;
+                            LocationGson locationGson = new LocationGson(location);
+                            EventBus.getDefault().post(new MessageEvent("gps_location_updated", GsonUtils.toJson(locationGson)));
+                        }
+                    }
                 }
 
                 LogUtils.i(TAG, "UpdateLocation: provider = " + location.getProvider() + ", lat = " + location.getLatitude() + ", lng = " + location.getLongitude() + ", timeStamp = " + location.getTime() + ", accu = " + location.getAccuracy());

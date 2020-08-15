@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.bean.QueryConditionBean;
+import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
@@ -317,42 +317,42 @@ public class CloudClient {
     }
 
     public void getNoEndKeyEventCount(String group_id, String user_id, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(group_id, user_id);
+        QueryCondition condition = new QueryCondition(group_id, user_id);
         LogUtils.i(TAG, "getNoEndKeyEventCount: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getNoEndKeyEventCount(condition);
         processGeneralRsp(responseBodyCall, callback);
     }
 
     public void getEndKeyEventList(String group_id, String user_id, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(group_id, user_id, startTime, endTime);
+        QueryCondition condition = new QueryCondition(group_id, user_id, startTime, endTime);
         LogUtils.i(TAG, "getEndKeyEventList: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getEndKeyEventList(condition);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getNoEndKeyEventList(String group_id, String user_id, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(group_id, user_id);
+        QueryCondition condition = new QueryCondition(group_id, user_id);
         LogUtils.i(TAG, "getNoEndKeyEventList: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getNoEndKeyEventList(condition);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getHistoryEveryDayKeyEventStatistics(String group_id, String user_id, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(group_id, user_id, startTime, endTime);
+        QueryCondition condition = new QueryCondition(group_id, user_id, startTime, endTime);
         LogUtils.i(TAG, "getHistoryEveryDayKeyEventStatistics: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getHistoryEveryDayKeyEventStatistics(condition);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getEveryOneEndKeyEventStatistics(String group_id, String user_id, long startTime, long endTime, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(group_id, user_id, startTime, endTime);
+        QueryCondition condition = new QueryCondition(group_id, user_id, startTime, endTime);
         LogUtils.i(TAG, "getEveryOneEndKeyEventStatistics: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getEveryOneEndKeyEventStatistics(condition);
         processListRsp(responseBodyCall, callback);
     }
 
     public void getSomeOneDoingKeyEvent(String group_id, String user_id, final ICloudCallback callback) {
-        QueryConditionBean condition = new QueryConditionBean(group_id, user_id);
+        QueryCondition condition = new QueryCondition(group_id, user_id);
         LogUtils.i(TAG, "getSomeOneDoingKeyEvent: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.getSomeOneDoingKeyEvent(condition);
         processListRsp(responseBodyCall, callback);

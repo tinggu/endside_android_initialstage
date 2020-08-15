@@ -12,7 +12,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.map.BaiduMapHelper;
@@ -71,7 +71,7 @@ public class KeepWatchViewSigninDeskActivity extends AppCompatActivity implement
         }
 
         String groupId = SPStaticUtils.getString("working_group_id");
-        KeepWatchDesk desk = DBHelper.getInstance().getDesk(groupId, mDeskId);
+        KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(groupId, mDeskId);
         if (desk == null) {
             return;
         }

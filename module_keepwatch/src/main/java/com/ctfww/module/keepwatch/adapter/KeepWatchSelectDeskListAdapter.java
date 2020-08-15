@@ -21,7 +21,7 @@ public class KeepWatchSelectDeskListAdapter extends RecyclerView.Adapter<Recycle
     private final static String TAG = "UserSelectUserListAdapter";
 
     private List<KeepWatchDesk> list;
-    private HashMap<Integer, Integer> selectedMap = new HashMap<>();
+    private HashMap<String, String> selectedMap = new HashMap<>();
 
     public KeepWatchSelectDeskListAdapter(List<KeepWatchDesk> list) {
         this.list = list;
@@ -72,7 +72,7 @@ public class KeepWatchSelectDeskListAdapter extends RecyclerView.Adapter<Recycle
                 int position = holder.getAdapterPosition();
                 KeepWatchDesk keepWatchDesk = list.get(position);
                 if (holder.deskSelect.isChecked()) {
-                    selectedMap.put(keepWatchDesk.getDeskId(), keepWatchDesk.getDeskId());
+                    selectedMap.put("" + keepWatchDesk.getDeskId(), "" + keepWatchDesk.getDeskId());
                 }
                 else {
                     selectedMap.remove(keepWatchDesk.getDeskId());
@@ -81,7 +81,7 @@ public class KeepWatchSelectDeskListAdapter extends RecyclerView.Adapter<Recycle
         });
     }
 
-    public HashMap<Integer, Integer> getSelectedMap() {
+    public HashMap<String, String> getSelectedMap() {
         return selectedMap;
     }
 }

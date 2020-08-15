@@ -1,6 +1,6 @@
 package com.ctfww.module.keyevents.datahelper;
 
-import com.ctfww.commonlib.bean.QueryConditionBean;
+import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.bean.KeyEventBean;
 import com.ctfww.module.keyevents.bean.KeyEventTraceBean;
@@ -101,7 +101,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keyEvents/getNoEndKeyEventCount")
-    Call<ResponseBody> getNoEndKeyEventCount(@Body QueryConditionBean condition);
+    Call<ResponseBody> getNoEndKeyEventCount(@Body QueryCondition condition);
 
     /**
      * 获得已处理异常列表
@@ -109,7 +109,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keyEvents/getEndKeyEventList")
-    Call<ResponseBody> getEndKeyEventList(@Body QueryConditionBean condition);
+    Call<ResponseBody> getEndKeyEventList(@Body QueryCondition condition);
 
     /**
      * 获得未处理异常列表
@@ -117,7 +117,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keyEvents/getNoEndKeyEventList")
-    Call<ResponseBody> getNoEndKeyEventList(@Body QueryConditionBean condition);
+    Call<ResponseBody> getNoEndKeyEventList(@Body QueryCondition condition);
 
     /**
      * 获得历史每天的异常统计
@@ -125,7 +125,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keyEvents/getHistoryEveryDayKeyEventStatistics")
-    Call<ResponseBody> getHistoryEveryDayKeyEventStatistics(@Body QueryConditionBean condition);
+    Call<ResponseBody> getHistoryEveryDayKeyEventStatistics(@Body QueryCondition condition);
 
     /**
      * 获得某段时间内每个人的完成的异常单
@@ -133,7 +133,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keyEvents/getEveryOneEndKeyEventStatistics")
-    Call<ResponseBody> getEveryOneEndKeyEventStatistics(@Body QueryConditionBean condition);
+    Call<ResponseBody> getEveryOneEndKeyEventStatistics(@Body QueryCondition condition);
 
     /**
      * 获得某人正处理的事件
@@ -141,7 +141,7 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keyEvents/getSomeOneDoingKeyEvent")
-    Call<ResponseBody> getSomeOneDoingKeyEvent(@Body QueryConditionBean condition);
+    Call<ResponseBody> getSomeOneDoingKeyEvent(@Body QueryCondition condition);
 
     /**
      * 获得能抢的工单

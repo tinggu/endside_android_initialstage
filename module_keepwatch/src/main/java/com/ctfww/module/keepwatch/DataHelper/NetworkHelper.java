@@ -5,17 +5,18 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.commonlib.im.UdpHelper;
+import com.ctfww.commonlib.entity.CargoToCloud;
+import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.commonlib.entity.Cargo;
+import com.ctfww.module.keepwatch.entity.KeepWatchRoute;
+import com.ctfww.module.keepwatch.entity.KeepWatchRouteDesk;
+import com.ctfww.module.keepwatch.entity.KeepWatchRouteSummary;
 import com.google.gson.reflect.TypeToken;
-import com.ctfww.commonlib.Consts;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.network.NetworkConst;
-import com.ctfww.module.fingerprint.entity.FingerPrintHistory;
 import com.ctfww.module.keepwatch.bean.KeepWatchAssignmentBean;
-import com.ctfww.module.keepwatch.bean.KeepWatchSigninBean;
 import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchGroupSummary;
@@ -26,8 +27,6 @@ import com.ctfww.module.keepwatch.entity.KeepWatchSigninStatistics;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByUser;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -49,190 +48,63 @@ public class NetworkHelper {
         return NetworkHelper.Inner.INSTANCE;
     }
 
-    public void addKeepWatchDesk(int deskId, String deskName, String address, double lat, double lng, String deskType, String fingerPrint, final IUIDataHelperCallback callback) {
+    public void synKeepWatchDesk(Cargo<KeepWatchDesk> deskCargo, final IUIDataHelperCallback callback) {
         String groupId = SPStaticUtils.getString("working_group_id");
-        long timeStamp = System.currentTimeMillis();
-        long modifyTimestamp = timeStamp;
-
-        KeepWatchDesk desk = new KeepWatchDesk();
-        desk.setGroupId(groupId);
-
-        desk.setLat(lat);
-        desk.setLng(lng);
-        desk.setDeskName(deskName);
-        desk.setDeskAddress(address);
-
-        desk.setDeskId(deskId);
-        desk.setDeskType(deskType);
-        desk.setFingerPrint(fingerPrint);
-        desk.setCreateTimeStamp(timeStamp);
-        desk.setModifyTimeStamp(modifyTimestamp);
-        desk.setStatus("reserve");
-
-        CloudClient.getInstance().addKeepWatchDesk(groupId,
-                lat, lng, deskName, address,
-                deskId, deskType, fingerPrint,
-                timeStamp, modifyTimestamp, new ICloudCallback() {
+        CloudClient.getInstance().synKeepWatchDesk(deskCargo, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                desk.setSynTag("cloud");
-                DBHelper.getInstance().addDesk(desk);
+                Type type = new TypeToken<Cargo<KeepWatchDesk>>() {}.getType();
+                Cargo<KeepWatchDesk> deskCargoRsp = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synKeepWatchDesk: deskCargoRsp = " + deskCargoRsp.toString());
+                callback.onSuccess(deskCargoRsp);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchDesk fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchDeskToCloud(CargoToCloud<KeepWatchDesk> cargo, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchDeskToCloud(cargo, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
                 callback.onSuccess(data);
             }
 
             @Override
             public void onError(int code, String errorMsg) {
-                if (code != REST_FAIL) {
-                    desk.setSynTag("new");
-                    DBHelper.getInstance().addDesk(desk);
-                }
-
-                LogUtils.i(TAG, "addSigninDesk fail: code = " + code);
+                LogUtils.i(TAG, "synKeepWatchDeskToCloud fail: code = " + code);
                 callback.onError(code);
             }
 
             @Override
             public void onFailure(String errorMsg) {
-                desk.setSynTag("new");
-                DBHelper.getInstance().addDesk(desk);
                 callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
             }
         });
     }
 
-    public void synAddDeskToCloud(KeepWatchDesk desk, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().addKeepWatchDesk(desk.getGroupId(),
-                desk.getLat(), desk.getLng(), desk.getDeskName(), desk.getDeskAddress(),
-                desk.getDeskId(), desk.getDeskType(), desk.getFingerPrint(),
-                desk.getCreateTimeStamp(), desk.getModifyTimeStamp(), new ICloudCallback() {
-                    @Override
-                    public void onSuccess(String data) {
-                        desk.setSynTag("cloud");
-                        DBHelper.getInstance().updateDesk(desk);
-                        callback.onSuccess(data);
-                    }
-
-                    @Override
-                    public void onError(int code, String errorMsg) {
-                        LogUtils.i(TAG, "synAddSigninDesk fail: code = " + code);
-                        callback.onError(code);
-                    }
-
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-                    }
-                });
-    }
-
-    public void modifyDesk(KeepWatchDesk desk, final IUIDataHelperCallback callback) {
-        desk.setModifyTimeStamp(System.currentTimeMillis());
-        CloudClient.getInstance().updateKeepWatchDeskAddition(desk.getGroupId(),
-                desk.getDeskName(), desk.getDeskAddress(),
-                desk.getDeskId(), desk.getDeskType(), desk.getFingerPrint(),
-                desk.getModifyTimeStamp(), new ICloudCallback() {
-                    @Override
-                    public void onSuccess(String data) {
-                        desk.setSynTag("cloud");
-                        DBHelper.getInstance().updateDesk(desk);
-                        callback.onSuccess(data);
-                    }
-
-                    @Override
-                    public void onError(int code, String errorMsg) {
-                        desk.setSynTag("modify");
-                        DBHelper.getInstance().updateDesk(desk);
-                        LogUtils.i(TAG, "modifyDesk fail: code = " + code);
-                        callback.onError(code);
-                    }
-
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        desk.setSynTag("modify");
-                        DBHelper.getInstance().updateDesk(desk);
-                        callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-                    }
-                });
-    }
-
-    public void synModifyDeskToCloud(KeepWatchDesk desk, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().updateKeepWatchDeskAddition(desk.getGroupId(),
-                desk.getDeskName(), desk.getDeskAddress(),
-                desk.getDeskId(), desk.getDeskType(), desk.getFingerPrint(),
-                desk.getModifyTimeStamp(), new ICloudCallback() {
-                    @Override
-                    public void onSuccess(String data) {
-                        desk.setSynTag("cloud");
-                        DBHelper.getInstance().updateDesk(desk);
-                        callback.onSuccess(data);
-                    }
-
-                    @Override
-                    public void onError(int code, String errorMsg) {
-                        LogUtils.i(TAG, "synModifyDeskToCloud fail: code = " + code);
-                        callback.onError(code);
-                    }
-
-                    @Override
-                    public void onFailure(String errorMsg) {
-                        callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-                    }
-                });
-    }
-
-    private void updateKeepWatchDeskFingerPrint(int deskId, long timeStamp, List<FingerPrintHistory> fingerPrintHistoryList) {
-        if (fingerPrintHistoryList.isEmpty()) {
-            LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: no history finger print data!");
-            return;
-        }
-
-        String fingerPrint = com.ctfww.module.fingerprint.Utils.synthesizeFingerPrint(fingerPrintHistoryList);
-        LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: fingerPrint = " + fingerPrint);
-        if (TextUtils.isEmpty(fingerPrint)) {
-            LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: synthesizeFingerPrint fail!");
-            return;
-        }
-
-        String groupId = SPStaticUtils.getString("working_group_id");
-        CloudClient.getInstance().updateKeepWatchDeskFingerPrint(groupId, deskId, timeStamp, fingerPrint, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: CloudClient.getInstance().updateKeepWatchDeskFingerPrint success!");
-
-                // 对本地的签到点指纹进行修改
-                KeepWatchDesk desk = DBHelper.getInstance().getDesk(groupId, deskId);
-                desk.setModifyTimeStamp(timeStamp);
-                desk.setFingerPrint(fingerPrint);
-                DBHelper.getInstance().updateDesk(desk);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: CloudClient.getInstance().updateKeepWatchDeskFingerPrint fail: code = " + code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                LogUtils.i(TAG, "updateKeepWatchDeskFingerPrint: CloudClient.getInstance().updateKeepWatchDeskFingerPrint fail: code = " + NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void getAllDesk(final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        CloudClient.getInstance().getKeepWatchDesk(groupId, 0, new ICloudCallback() {
+    public void synKeepWatchDeskFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchDeskFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 Type type = new TypeToken<List<KeepWatchDesk>>() {}.getType();
                 List<KeepWatchDesk> deskList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "getAllDesk: deskList.size() = " + deskList.size());
-                DBHelper.getInstance().setDeskList(deskList);
+                LogUtils.i(TAG, "synKeepWatchDeskFromCloud: deskList.size() = " + deskList.size());
                 callback.onSuccess(deskList);
             }
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getAllDesk fail: code = " + code);
+                LogUtils.i(TAG, "synKeepWatchDeskFromCloud fail: code = " + code);
                 callback.onError(code);
             }
 
@@ -243,18 +115,168 @@ public class NetworkHelper {
         });
     }
 
-    public void deleteKeepWatchDesk(int deskId, final  IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        CloudClient.getInstance().deleteKeepWatchDesk(groupId, deskId, new ICloudCallback() {
+    public void synKeepWatchRouteSummaryToCloud(CargoToCloud<KeepWatchRouteSummary> cargoToCloud, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchRouteSummaryToCloud(cargoToCloud, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                DBHelper.getInstance().deleteDesk(groupId, deskId);
-                callback.onSuccess(deskId);
+                callback.onSuccess(data);
             }
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "deleteDesk fail: code = " + code);
+                LogUtils.i(TAG, "synKeepWatchRouteSummaryToCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchRouteSummaryFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchRouteSummaryFromCloud(condition, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                Type type = new TypeToken<List<KeepWatchRouteSummary>>() {}.getType();
+                List<KeepWatchRouteSummary> routeSummaryList = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synKeepWatchRouteSummaryFromCloud: routeSummaryList.size() = " + routeSummaryList.size());
+                callback.onSuccess(routeSummaryList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchRouteSummaryFromCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchRouteDeskToCloud(CargoToCloud<KeepWatchRouteDesk> cargoToCloud, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchRouteDeskToCloud(cargoToCloud, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchRouteDeskToCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchRouteDeskFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchRouteDeskFromCloud(condition, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                Type type = new TypeToken<List<KeepWatchRouteDesk>>() {}.getType();
+                List<KeepWatchRouteDesk> routeDeskList = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synKeepWatchRouteDeskFromCloud: routeDeskList.size() = " + routeDeskList.size());
+                callback.onSuccess(routeDeskList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchRouteDeskFromCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchSigninToCloud(CargoToCloud<KeepWatchSigninInfo> cargoToCloud, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchSigninToCloud(cargoToCloud, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchSigninToCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchSigninFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchSigninFromCloud(condition, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                Type type = new TypeToken<List<KeepWatchSigninInfo>>() {}.getType();
+                List<KeepWatchSigninInfo> signinList = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synKeepWatchSigninFromCloud: signinList.size() = " + signinList.size());
+                callback.onSuccess(signinList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchSigninFromCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchAssignmentToCloud(CargoToCloud<KeepWatchAssignment> cargoToCloud, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchAssignmentToCloud(cargoToCloud, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchAssignmentToCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synKeepWatchAssignmentFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synKeepWatchAssignmentFromCloud(condition, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                Type type = new TypeToken<List<KeepWatchAssignment>>() {}.getType();
+                List<KeepWatchAssignment> assignmentList = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synKeepWatchAssignmentFromCloud: assignmentList.size() = " + assignmentList.size());
+                callback.onSuccess(assignmentList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synKeepWatchAssignmentFromCloud fail: code = " + code);
                 callback.onError(code);
             }
 
@@ -266,86 +288,6 @@ public class NetworkHelper {
     }
 
     /***********************************new*************************************************/
-
-    public void addKeepWatchSignin(KeepWatchSigninInfo keepWatchSigninInfo, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        keepWatchSigninInfo.setGroupId(groupId);
-        String userId = SPStaticUtils.getString("user_open_id");
-        keepWatchSigninInfo.setUserId(userId);
-        long timeStamp = System.currentTimeMillis();
-        keepWatchSigninInfo.setTimeStamp(timeStamp);
-
-        LogUtils.i(TAG, "addKeepWatchSignin: keepWatchSigninInfo = " + keepWatchSigninInfo.toString());
-
-        String data = GsonUtils.toJson(keepWatchSigninInfo);
-        KeepWatchSigninBean keepWatchSigninBean = GsonUtils.fromJson(data, KeepWatchSigninBean.class);
-        CloudClient.getInstance().addKeepWatchSignin(keepWatchSigninBean, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-                // 更新签到指纹
-                if ("qr".equals(keepWatchSigninInfo.getFinishType())) {
-                    Type type = new TypeToken<List<FingerPrintHistory>>() {}.getType();
-                    List<FingerPrintHistory> fingerPrintHistoryList = GsonUtils.fromJson(data, type);
-                    updateKeepWatchDeskFingerPrint(keepWatchSigninInfo.getDeskId(), keepWatchSigninInfo.getTimeStamp(), fingerPrintHistoryList);
-                }
-
-                EventBus.getDefault().post(new MessageEvent("send_signin_success"));
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                if (code != Consts.REST_FAIL && code != Consts.REST_BELONG_FAIL) {
-                    keepWatchSigninInfo.setSynTag("new");
-                    DBHelper.getInstance().addSignin(keepWatchSigninInfo);
-                }
-
-                LogUtils.i(TAG, "addSignin: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                keepWatchSigninInfo.setSynTag("new");
-                DBHelper.getInstance().addSignin(keepWatchSigninInfo);
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchSigninToCloud(KeepWatchSigninInfo keepWatchSigninInfo, final IUIDataHelperCallback callback) {
-        String data = GsonUtils.toJson(keepWatchSigninInfo);
-        KeepWatchSigninBean keepWatchSigninBean = GsonUtils.fromJson(data, KeepWatchSigninBean.class);
-        CloudClient.getInstance().addKeepWatchSignin(keepWatchSigninBean, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                DBHelper.getInstance().deleteSignin(keepWatchSigninInfo);
-                callback.onSuccess(data);
-                // 更新签到指纹
-                if ("qr".equals(keepWatchSigninInfo.getFinishType())) {
-                    Type type = new TypeToken<List<FingerPrintHistory>>() {}.getType();
-                    List<FingerPrintHistory> fingerPrintHistoryList = GsonUtils.fromJson(data, type);
-                    updateKeepWatchDeskFingerPrint(keepWatchSigninInfo.getDeskId(), keepWatchSigninInfo.getTimeStamp(), fingerPrintHistoryList);
-                }
-
-                EventBus.getDefault().post(new MessageEvent("send_signin_success"));
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchSigninToCloud fail: code = " + code);
-                if (code == Consts.REST_FAIL || code == Consts.REST_BELONG_FAIL) {
-                    DBHelper.getInstance().deleteSignin(keepWatchSigninInfo);
-                }
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
 
     public void getPersonTrends(int count, final IUIDataHelperCallback callback) {
         String groupId = SPStaticUtils.getString("working_group_id");
@@ -395,67 +337,6 @@ public class NetworkHelper {
             @Override
             public void onError(int code, String errorMsg) {
                 LogUtils.i(TAG, "getRanking fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void addKeepWatchAssignment(String deskIdList, String circleType, long startTime, long endTime, String userId, int frequency, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            LogUtils.i(TAG, "getRanking: groupId is empty");
-            return;
-        }
-
-        KeepWatchAssignmentBean keepWatchAssignmentBean = new KeepWatchAssignmentBean();
-        keepWatchAssignmentBean.setDeskId(0);
-        keepWatchAssignmentBean.setDeskIdStr(deskIdList);
-        keepWatchAssignmentBean.setCircleType(circleType);
-        keepWatchAssignmentBean.setUserId(userId);
-        keepWatchAssignmentBean.setGroupId(groupId);
-        keepWatchAssignmentBean.setFrequency(frequency);
-        keepWatchAssignmentBean.setStartTime(startTime);
-        keepWatchAssignmentBean.setEndTime(endTime);
-        CloudClient.getInstance().addKeepWatchAssignment(keepWatchAssignmentBean, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "addKeepWatchAssignment fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void deleteKeepWatchAssignment(String userId, int deskId, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            LogUtils.i(TAG, "deleteKeepWatchAssignment: groupId is empty");
-            return;
-        }
-
-        CloudClient.getInstance().deleteKeepWatchAssignment(groupId, userId, deskId, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "deleteKeepWatchAssignment fail: code = " + code);
                 callback.onError(code);
             }
 
@@ -868,4 +749,33 @@ public class NetworkHelper {
             }
         });
     }
+
+    public void getKeepWatchRouteList(final IUIDataHelperCallback callback) {
+        String groupId = SPStaticUtils.getString("working_group_id");
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
+
+        CloudClient.getInstance().getKeepWatchRoute(groupId, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                Type type = new TypeToken<List<KeepWatchRoute>>() {}.getType();
+                List<KeepWatchRoute> routeList = GsonUtils.fromJson(data, type);
+                callback.onSuccess(routeList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "getKeepWatchRouteList fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+
 }

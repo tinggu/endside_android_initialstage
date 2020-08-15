@@ -17,7 +17,7 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.utils.DialogUtils;
-import com.ctfww.module.keepwatch.DataHelper.DBHelper;
+import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchSelectDeskListAdapter;
@@ -81,7 +81,7 @@ public class KeepWatchSelectDeskActivity extends AppCompatActivity implements Vi
             return;
         }
 
-        List<KeepWatchDesk> keepWatchDeskList = DBHelper.getInstance().getDesk(groupId);
+        List<KeepWatchDesk> keepWatchDeskList = DBHelper.getInstance().getKeepWatchDeskList(groupId);
         if (keepWatchDeskList == null || keepWatchDeskList.isEmpty()) {
             return;
         }
@@ -135,14 +135,14 @@ public class KeepWatchSelectDeskActivity extends AppCompatActivity implements Vi
 //                }
 //            }
 
-            HashMap<Integer, Integer> selectMap = mKeepWatchSelectDeskListAdapter.getSelectedMap();
+            HashMap<String, String> selectMap = mKeepWatchSelectDeskListAdapter.getSelectedMap();
             if (selectMap.isEmpty()) {
                 DialogUtils.onlyPrompt("你没有选择任何签到点！", this);
                 return;
             }
 
             String deskListStr = "";
-            for (Integer key : selectMap.keySet()) {
+            for (String key : selectMap.keySet()) {
                 if (TextUtils.isEmpty(deskListStr)) {
                     deskListStr += ("" + key);
                 }
