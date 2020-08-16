@@ -30,7 +30,9 @@ import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.adapter.KeyEventTraceListAdapter;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
+import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupUserInfo;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -177,11 +179,35 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         else if (id == mFree.getId()) {
             free();
         }
-        else if (id == mAccept.getId()) {
-            uploadKeyEventTrace("accepted");
-        }
-        else if (id == mEnd.getId()) {
-            uploadKeyEventTrace("end");
+        else if (id == mAccept.getId() || id == mEnd.getId()) {
+            KeyEventTrace keyEventTrace = new KeyEventTrace();
+            keyEventTrace.setEventId(mKeyEvent.getEventId());
+            keyEventTrace.setTimeStamp(System.currentTimeMillis());
+            keyEventTrace.setGroupId(SPStaticUtils.getString("working_group_id"));
+            keyEventTrace.setDeskId(mKeyEvent.getDeskId());
+            keyEventTrace.setMatchLevel("default");
+            UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+            if (userInfo == null) {
+                return;
+            }
+
+            keyEventTrace.setNickName(userInfo.getUserId());
+            keyEventTrace.setNickName(userInfo.getNickName());
+            keyEventTrace.setHeadUrl(userInfo.getHeadUrl());
+            keyEventTrace.setSynTag("modify");
+
+            if (id == mAccept.getId()) {
+                keyEventTrace.setStatus("accepted");
+            }
+            else {
+                keyEventTrace.setStatus("end");
+                String print = com.ctfww.module.fingerprint.Utils.getWifiCalculateFingerPrint();
+                DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeyEvent.getDeskId());
+                String matchLevel = distResult.getStringMatchLevel();
+                keyEventTrace.setMatchLevel(matchLevel);
+            }
+
+            DBHelper.getInstance().updateKeyEventTrace(keyEventTrace);
         }
     }
 
@@ -196,23 +222,23 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         }
         else if ("selected_user".equals(messageEvent.getMessage())) {
             GroupUserInfo groupUserInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupUserInfo.class);
-            if (mAssignment.getVisibility() == View.VISIBLE) { // 要分派给某人
-                // 自己变成已经分派
-                uploadKeyEventTrace("assignment");
 
-                // 别人变成接收到
-                uploadKeyEventTrace(groupUserInfo.getUserId(), "received");
-            }
-            else if (mTransfer.getVisibility() == View.VISIBLE) {
-                // 自己变成已经转移
-                uploadKeyEventTrace("transfered");
+            KeyEventTrace keyEventTrace = new KeyEventTrace();
+            keyEventTrace.setEventId(mKeyEvent.getEventId());
+            keyEventTrace.setTimeStamp(System.currentTimeMillis());
+            keyEventTrace.setGroupId(SPStaticUtils.getString("working_group_id"));
+            keyEventTrace.setDeskId(mKeyEvent.getDeskId());
+            keyEventTrace.setMatchLevel("default");
+            keyEventTrace.setNickName(groupUserInfo.getUserId());
+            keyEventTrace.setNickName(groupUserInfo.getNickName());
+            keyEventTrace.setHeadUrl(groupUserInfo.getHeadUrl());
+            keyEventTrace.setStatus("received");
+            keyEventTrace.setSynTag("modify");
 
-                // 别人变成接收到
-                uploadKeyEventTrace(groupUserInfo.getUserId(), "received");
+            if (mAssignment.getVisibility() == View.VISIBLE || mTransfer.getVisibility() == View.VISIBLE) { // 要分派给某人
+                DBHelper.getInstance().updateKeyEventTrace(keyEventTrace);
             }
         }
-
-//        EventBus.getDefault().removeStickyEvent(messageEvent);
     }
 
     private void showEventInfoInUI(KeyEvent keyEvent) {
@@ -374,38 +400,6 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }
-    }
-
-    private void uploadKeyEventTrace(String status) {
-        String userId = SPStaticUtils.getString("user_open_id");
-        uploadKeyEventTrace(userId, status);
-    }
-
-    private void uploadKeyEventTrace(String userId, String status) {
-        if (mKeyEvent == null) {
-            return;
-        }
-
-        String matchLevel = "default";
-        if ("end".equals(status)) {
-            String print = com.ctfww.module.fingerprint.Utils.getWifiCalculateFingerPrint();
-            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeyEvent.getDeskId());
-            matchLevel = distResult.getStringMatchLevel();
-        }
-
-        NetworkHelper.getInstance().uploadKeyEventTrace(userId, mKeyEvent.getEventId(), status, mKeyEvent.getDeskId(), matchLevel, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                LogUtils.i(TAG, "uploadKeyEventTrace success!");
-                getActionList(mKeyEvent.getEventId());
-                EventBus.getDefault().post(new MessageEvent("send_end_key_event_success", GsonUtils.toJson(mKeyEvent)));
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "uploadKeyEventTrace fail: code = " + code);
-            }
-        });
     }
 
     @Override

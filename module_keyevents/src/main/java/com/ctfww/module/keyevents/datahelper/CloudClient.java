@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
+import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.bean.KeyEventBean;
 import com.ctfww.module.keyevents.bean.KeyEventTraceBean;
@@ -189,79 +191,28 @@ public class CloudClient {
         });
     }
 
-    public void addKeyEvent(KeyEventBean keyEventBean, final ICloudCallback callback) {
-        Call<ResponseBody> responseBodyCall = mCloudMethod.addKeyEvent(keyEventBean);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
-                processRsp(response, callback);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public void synKeyEventToCloud(CargoToCloud<KeyEvent> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeyEventToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void deleteKeyEvent(String eventId, final ICloudCallback callback) {
-        Call<ResponseBody> responseBodyCall = mCloudMethod.deleteKeyEvent(eventId);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
-                processRsp(response, callback);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public void synKeyEventFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeyEventFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
     }
 
-    public void getAllKeyEvent(long startTime, long endTime, final ICloudCallback callback) {
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getAllKeyEvent(new StartEndTimeBean(startTime, endTime));
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
-                processRsp(response, callback);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public void synKeyEventTraceToCloud(CargoToCloud<KeyEventTrace> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeyEventTraceToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventTraceToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void getSomeoneAllKeyEvent(String userId, long startTime, long endTime, final ICloudCallback callback) {
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getSomeoneAllKeyEvent(new SomeoneStartEndTimeBean(userId, startTime, endTime));
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
-                processRsp(response, callback);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
-    }
-
-    public void updateKeyEvent(final KeyEventBean keyEventBean, final ICloudCallback callback) {
-        Call<ResponseBody> responseBodyCall = mCloudMethod.updateKeyEventById(keyEventBean);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
-                processRsp(response, callback);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
+    public void synKeyEventTraceFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeyEventTraceFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventTraceFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
     }
 
     public void uploadFile(final String filePath, final ICloudCallback callback) {
@@ -285,35 +236,10 @@ public class CloudClient {
         });
     }
 
-    public void reportRepaired(String eventId, final ICloudCallback callback) {
-        LogUtils.i(TAG, "reportRepaired: eventId = " + eventId);
-        Call<ResponseBody> responseBodyCall = mCloudMethod.reportRepaired(eventId);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
     public void getKeyEventActionList(String eventId, final ICloudCallback callback) {
         LogUtils.i(TAG, "getKeyEventActionList: eventId = " + eventId);
         Call<ResponseBody> responseBodyCall = mCloudMethod.getKeyEventActionList(eventId);
         processListRsp(responseBodyCall, callback);
-    }
-
-    public void uploadKeyEventTrace(String eventId, long timeStamp, String userId, String status, String groupId, int deskId, String matchLevel, final ICloudCallback callback) {
-        KeyEventTrace keyEventTrace = new KeyEventTrace();
-        keyEventTrace.setEventId(eventId);
-        keyEventTrace.setTimeStamp(timeStamp);
-        keyEventTrace.setUserId(userId);
-        keyEventTrace.setStatus(status);
-        keyEventTrace.setGroupId(groupId);
-        keyEventTrace.setDeskId(deskId);
-        keyEventTrace.setMatchLevel(matchLevel);
-
-        uploadKeyEventTrace(keyEventTrace,callback);
-    }
-
-    public void uploadKeyEventTrace(KeyEventTrace keyEventTrace, final ICloudCallback callback) {
-        LogUtils.i(TAG, "uploadKeyEventTrace: keyEventTrace = " + keyEventTrace.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.uploadKeyEventTrace(keyEventTrace);
-        processGeneralRsp(responseBodyCall, callback);
     }
 
     public void getNoEndKeyEventCount(String group_id, String user_id, final ICloudCallback callback) {

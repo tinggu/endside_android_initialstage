@@ -49,7 +49,7 @@ public class Airship {
                     synKeepWatchSigninToCloud();
                 }
                 catch (Exception e) {
-                    LogUtils.i("com.ctfww.module.keepwatch.SynData", "e.getMessage() = " + e.getMessage());
+                    LogUtils.i("com.ctfww.module.keepwatch.Airship", "e.getMessage() = " + e.getMessage());
                 }
             }
         }, 0, 60000, TimeUnit.MILLISECONDS);

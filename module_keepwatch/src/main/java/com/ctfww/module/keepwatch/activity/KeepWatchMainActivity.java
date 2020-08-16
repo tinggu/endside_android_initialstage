@@ -314,7 +314,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             LogUtils.i(TAG, "onGetMessage: tms_first_token");
             checkUpgrade();
             com.ctfww.module.user.datahelper.DataHelper.getInstance().startTimedSyn();
-            com.ctfww.module.keyevents.datahelper.SynData.startTimedSyn();
+            com.ctfww.module.keyevents.datahelper.airship.Airship.startTimedSyn();
             Airship.getInstance().synKeepWatchDeskToCloud();
             Airship.getInstance().synKeepWatchDeskFromCloud();
             getNoLookOverCount();

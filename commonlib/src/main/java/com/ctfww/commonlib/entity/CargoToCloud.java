@@ -25,7 +25,7 @@ public class CargoToCloud<T extends EntityInterface> {
         modifyList = new ArrayList<>();
         for (int i = 0; i < list.size(); ++i) {
             T t = list.get(i);
-            if ("new".equals(t.getStatus())) {
+            if ("new".equals(t.getSynTag())) {
                 newList.add(t);
             }
             else {

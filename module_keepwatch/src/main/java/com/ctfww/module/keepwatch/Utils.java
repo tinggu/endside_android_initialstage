@@ -34,7 +34,7 @@ public class Utils {
         DBHelper.getInstance().init(ctx);
 
         // 初始化keyevents数据库模块
-        com.ctfww.module.keyevents.datahelper.DBHelper.getInstance().init(ctx);
+        com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper.getInstance().init(ctx);
     }
 
     public static void synData() {

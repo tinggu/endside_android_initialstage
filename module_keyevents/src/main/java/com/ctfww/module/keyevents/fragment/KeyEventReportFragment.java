@@ -30,11 +30,13 @@ import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.VoiceUtils;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.activity.EventPreviewActivity;
 import com.ctfww.module.keyevents.activity.SoundRecord2Activity;
-import com.ctfww.module.keyevents.datahelper.DBHelper;
-import com.ctfww.module.keyevents.datahelper.SynData;
+import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.keyevents.datahelper.airship.Airship;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.io.File;
 
@@ -362,8 +364,26 @@ public class KeyEventReportFragment extends Fragment{
 
         keyEvent.setSynTag("new");
         DBHelper.getInstance().addKeyEvent(keyEvent);
+        Airship.getInstance().synKeyEventToCloud();
 
-        SynData.uploadKeyEvent(keyEvent);
+        KeyEventTrace keyEventTrace = new KeyEventTrace();
+        keyEventTrace.setEventId(keyEvent.getEventId());
+        keyEventTrace.setTimeStamp(keyEvent.getTimeStamp());
+        keyEventTrace.setGroupId(keyEvent.getGroupId());
+        keyEventTrace.setDeskId(keyEvent.getDeskId());
+        keyEventTrace.setMatchLevel("default");
+        UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+        if (userInfo == null) {
+            return true;
+        }
+
+        keyEventTrace.setNickName(userInfo.getUserId());
+        keyEventTrace.setNickName(userInfo.getNickName());
+        keyEventTrace.setHeadUrl(userInfo.getHeadUrl());
+        keyEventTrace.setStatus("create");
+        keyEventTrace.setSynTag("new");
+
+        DBHelper.getInstance().addKeyEventTrace(keyEventTrace);
 
         return true;
     }

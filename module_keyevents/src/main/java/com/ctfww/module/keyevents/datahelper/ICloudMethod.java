@@ -1,6 +1,8 @@
 package com.ctfww.module.keyevents.datahelper;
 
+import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.bean.KeyEventBean;
 import com.ctfww.module.keyevents.bean.KeyEventTraceBean;
@@ -22,50 +24,37 @@ import retrofit2.http.Part;
  */
 public interface ICloudMethod {
     /**
-     * 添加关键事件
-     * @param keyEvent
+     * 同步关键事件上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/uploadKeyEvent")
-    Call<ResponseBody> addKeyEvent(@Body KeyEventBean keyEvent);
+    @POST("/microcloudkeyevents/keyEvents/synKeyEventToCloud")
+    Call<ResponseBody> synKeyEventToCloud(@Body CargoToCloud<KeyEvent> info);
 
     /**
-     * 删除关键事件
-     * @param eventId 设备ID
+     * 从云上同步关键事件
+     * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/deleteKeyEvent")
-    Call<ResponseBody> deleteKeyEvent(@Body String eventId);
+    @POST("/microcloudkeyevents/keyEvents/synKeyEventFromCloud")
+    Call<ResponseBody> synKeyEventFromCloud(@Body QueryCondition condition);
 
     /**
-     * 获取所有关键事件
+     * 同步关键事件处理状态上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/findKeyEvents")
-    Call<ResponseBody> getAllKeyEvent(@Body StartEndTimeBean startEndTimeBean);
+    @POST("/microcloudkeyevents/keyEvents/synKeyEventTraceToCloud")
+    Call<ResponseBody> synKeyEventTraceToCloud(@Body CargoToCloud<KeyEventTrace> info);
 
     /**
-     * 获取某人所有关键事件
+     * 从云上同步关键事件处理状态
+     * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/findSomeoneKeyEvents")
-    Call<ResponseBody> getSomeoneAllKeyEvent(@Body SomeoneStartEndTimeBean someoneStartEndTimeBean);
+    @POST("/microcloudkeyevents/keyEvents/synKeyEventTraceFromCloud")
+    Call<ResponseBody> synKeyEventTraceFromCloud(@Body QueryCondition condition);
 
-    /**
-     * 通过关键事件ID获取关键事件
-     * @param eventId 设备ID
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyEvents/getKeyEventById")
-    Call<ResponseBody> getKeyEventById(@Body String eventId);
-
-    /**
-     * 通过ID来更新关键事件
-     * @param keyEventBean 关键事件
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyEvents/updateDeviceBaseInfoById")
-    Call<ResponseBody> updateKeyEventById(@Body KeyEventBean keyEventBean);
 
     /**
      * 上传文件 http://39.98.147.77:8003/fileMgt/uploadFile
@@ -76,9 +65,6 @@ public interface ICloudMethod {
     @POST("/microapkmgtserver/fileMgt/uploadFile")
     Call<ResponseBody> uploadFile(@Header("userId") String userId, @Part MultipartBody.Part file);
 
-    @POST("/microcloudkeyevents/keyEvents/reportRepaired")
-    Call<ResponseBody> reportRepaired(@Body String eventId);
-
     /**
      * 获取某个事件的处理过程
      * @param eventId
@@ -87,13 +73,6 @@ public interface ICloudMethod {
     @POST("/microcloudkeyevents/keyEvents/getKeyEventActionList")
     Call<ResponseBody> getKeyEventActionList(@Body String eventId);
 
-    /**
-     * 上传事件操作
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyEvents/uploadKeyEventTrace")
-    Call<ResponseBody> uploadKeyEventTrace(@Body KeyEventTrace info);
 
     /**
      * 获得未处理异常个数

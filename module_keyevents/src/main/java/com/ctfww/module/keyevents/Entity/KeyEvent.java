@@ -2,28 +2,34 @@ package com.ctfww.module.keyevents.Entity;
 
 import android.text.TextUtils;
 
+import com.ctfww.commonlib.entity.EntityInterface;
+import com.ctfww.commonlib.utils.FileUtils;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 
 @Entity
-public class KeyEvent {
+public class KeyEvent implements EntityInterface {
     @Id
     private String eventId;
     private long timeStamp;
+    @Index
     private String userId;
     private int type;
     private String eventName;
     private double lat;
     private double lng;
     private String address;
+    @Index
     private int deskId;
     private String description;
     private String voicePath;
     private String picPath;
     private String videoPath;
     private String status;
+    @Index
     private String groupId;
     private int level;
 
@@ -91,6 +97,22 @@ public class KeyEvent {
 
     public boolean hasAddtion() {
         return !TextUtils.isEmpty(picPath) && !TextUtils.isEmpty(videoPath) && !TextUtils.isEmpty(voicePath);
+    }
+
+    private boolean isSyned(String path) {
+        return TextUtils.isEmpty(path) || FileUtils.isNetworkUrl(path);
+    }
+
+    public boolean isPicSyned() {
+        return isSyned(picPath);
+    }
+
+    public boolean isVoiceSyned() {
+        return isSyned(voicePath);
+    }
+
+    public boolean isVideoSyned() {
+        return isSyned(videoPath);
     }
 
     public String getEventId() {
