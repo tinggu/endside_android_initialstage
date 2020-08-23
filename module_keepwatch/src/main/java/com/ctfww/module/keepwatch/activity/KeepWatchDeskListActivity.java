@@ -14,8 +14,8 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
+import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.keepwatch.datahelper.airship.Airship;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchDeskListAdapter;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
@@ -56,7 +56,7 @@ public class KeepWatchDeskListActivity extends AppCompatActivity implements View
         mTittle.setText("签到点列表");
         mAddDesk = findViewById(R.id.top_addition);
         mAddDesk.setText("添加");
-        if ("admin".equals(SPStaticUtils.getString("role"))) {
+        if ("admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup())) {
             mAddDesk.setVisibility(View.VISIBLE);
         }
 

@@ -2,7 +2,6 @@ package com.ctfww.module.user.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.activity.NoticeDescActivity;
-import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.NoticeInfo;
-import com.ctfww.module.user.entity.NoticeReadStatus;
 
 
 import java.util.List;
@@ -91,22 +86,13 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 NoticeInfo noticeInfo = list.get(position);
-                addNoticeReadStatus(noticeInfo);
-            }
-        });
-    }
-
-    private void addNoticeReadStatus(final NoticeInfo noticeInfo) {
-        String userId = SPStaticUtils.getString("user_open_id");
-        if (TextUtils.isEmpty(userId)) {
-            return;
-        }
-
-        NetworkHelper.getInstance().addNoticeReadStatus(noticeInfo.getNoticeId(), 2, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
                 noticeInfo.setFlag(2);
+                noticeInfo.setTimeStamp(System.currentTimeMillis());
+                noticeInfo.setSynTag("modify");
                 notifyDataSetChanged();
+
+                DBHelper.getInstance().updateNotice(noticeInfo);
+
                 if (noticeInfo.getType() == 1 || noticeInfo.getType() == 2 || noticeInfo.getType() == 3) {
                     ARouter.getInstance().build("/user/invite").navigation();
                 }
@@ -115,11 +101,6 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     intent.putExtra("notice_info", GsonUtils.toJson(noticeInfo));
                     context.startActivity(intent);
                 }
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "addNoticeReadStatus fail: code = " + code);
             }
         });
     }

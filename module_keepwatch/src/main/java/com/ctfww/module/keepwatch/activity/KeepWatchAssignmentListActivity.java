@@ -12,16 +12,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.fragment.KeepWatchPeriodAssignmentListFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchTodayAssignmentListFragment;
-import com.ctfww.module.user.entity.GroupUserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -117,8 +115,8 @@ public class KeepWatchAssignmentListActivity extends AppCompatActivity implement
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
         if ("selected_user".equals(messageEvent.getMessage())) {
-            GroupUserInfo groupUserInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupUserInfo.class);
-            transfer(groupUserInfo.getUserId());
+            String userId = messageEvent.getValue();
+            transfer(userId);
             LogUtils.i(TAG, "onGetMessage: selected_user");
         }
     }

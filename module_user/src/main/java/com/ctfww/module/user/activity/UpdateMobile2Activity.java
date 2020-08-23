@@ -17,6 +17,9 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.entity.UserInfo;
 
 public class UpdateMobile2Activity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "UpdateMobile2Activity";
@@ -87,9 +90,11 @@ public class UpdateMobile2Activity extends AppCompatActivity implements View.OnC
                 return;
             }
 
-            Intent intent = new Intent();
-            intent.putExtra("mobile", mMobile.getText().toString());
-            setResult(RESULT_OK, intent);
+            UserInfo userInfo = DBQuickEntry.getSelfInfo();
+            userInfo.setMobile(mMobile.getText().toString());
+            userInfo.setTimeStamp(System.currentTimeMillis());
+            userInfo.setSynTag("modify");
+            DBHelper.getInstance().updateUser(userInfo);
             finish();
         }
     }

@@ -20,6 +20,8 @@ import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.UserReceiveInviteListAdapter;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,7 +37,6 @@ public class UserReceiveInviteListFragment extends Fragment {
     TextView mNoInvitePrompt;
     RecyclerView mInviteListView;
     UserReceiveInviteListAdapter mUserReceiveInviteListAdapter;
-    UserReceiveInviteListFragmentData mUserReceiveInviteListFragmentData = new UserReceiveInviteListFragmentData();
 
     private View mV;
 
@@ -44,70 +45,49 @@ public class UserReceiveInviteListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mV = inflater.inflate(R.layout.user_invite_list_fragment, container, false);
         initViews(mV);
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
-        getInviteList();
 
         return mV;
     }
 
     private void initViews(View v) {
         mNoInvitePrompt = v.findViewById(R.id.group_prompt_no_invite);
-        mNoInvitePrompt.setVisibility(View.GONE);
+
         mInviteListView = v.findViewById(R.id.group_invite_list);
-        mInviteListView.setVisibility(View.GONE);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mInviteListView.setLayoutManager(layoutManager);
-        mUserReceiveInviteListAdapter = new UserReceiveInviteListAdapter(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
+        List<GroupInviteInfo> groupInviteInfoList = DBQuickEntry.getSelfReceivedInviteList();
+        mUserReceiveInviteListAdapter = new UserReceiveInviteListAdapter(groupInviteInfoList);
         mInviteListView.setAdapter(mUserReceiveInviteListAdapter);
-    }
-
-    private void getInviteList() {
-        NetworkHelper.getInstance().getInvite(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mUserReceiveInviteListFragmentData.setGroupInviteInfoList((ArrayList<GroupInviteInfo>)obj);
-                mUserReceiveInviteListAdapter.setList(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
-                mUserReceiveInviteListAdapter.notifyDataSetChanged();
-                mInviteListView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "no receive invite");
-                mNoInvitePrompt.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    public void updateData(GroupInviteInfo groupInviteInfo) {
-        mUserReceiveInviteListFragmentData.update(groupInviteInfo);
-        mUserReceiveInviteListAdapter.setList(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
-        mUserReceiveInviteListAdapter.notifyDataSetChanged();
-    }
-
-    public void deleteData(int position) {
-        mUserReceiveInviteListFragmentData.delete(position);
-        mUserReceiveInviteListAdapter.setList(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
-        mUserReceiveInviteListAdapter.notifyDataSetChanged();
+        if (groupInviteInfoList.isEmpty()) {
+            mNoInvitePrompt.setVisibility(View.VISIBLE);
+            mInviteListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoInvitePrompt.setVisibility(View.GONE);
+            mInviteListView.setVisibility(View.VISIBLE);
+        }
     }
 
     //处理事件
     @Subscribe(threadMode = ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
-        String msg = messageEvent.getMessage();
-        if ("send_update_receive_invite_success".equals(msg)) {
-            GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
-            updateData(groupInviteInfo);
-            mUserReceiveInviteListAdapter.setList(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
+        if ("finish_invite_syn".equals(messageEvent.getMessage())) {
+            List<GroupInviteInfo> groupInviteInfoList = DBQuickEntry.getSelfReceivedInviteList();
+            mUserReceiveInviteListAdapter.setList(groupInviteInfoList);
             mUserReceiveInviteListAdapter.notifyDataSetChanged();
-        }
-        else if ("user_delete_receive_invite".equals(msg)){
-            mUserReceiveInviteListFragmentData.delete(GlobeFun.parseInt(messageEvent.getValue()));
-            mUserReceiveInviteListAdapter.setList(mUserReceiveInviteListFragmentData.getGroupInviteInfoList());
-            mUserReceiveInviteListAdapter.notifyDataSetChanged();
+            if (groupInviteInfoList.isEmpty()) {
+                mNoInvitePrompt.setVisibility(View.VISIBLE);
+                mInviteListView.setVisibility(View.GONE);
+            }
+            else {
+                mNoInvitePrompt.setVisibility(View.GONE);
+                mInviteListView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -116,36 +96,6 @@ public class UserReceiveInviteListFragment extends Fragment {
         super.onDestroy();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
-        }
-    }
-}
-
-class UserReceiveInviteListFragmentData {
-    List<GroupInviteInfo> groupInviteInfoList = new ArrayList<>();
-    public UserReceiveInviteListFragmentData() {
-
-    }
-
-    public void setGroupInviteInfoList(List<GroupInviteInfo> groupInviteInfoList) {
-        this.groupInviteInfoList = groupInviteInfoList;
-    }
-
-    public List<GroupInviteInfo> getGroupInviteInfoList() {
-        return groupInviteInfoList;
-    }
-
-    public void delete(int position) {
-        if (groupInviteInfoList.size() > position) {
-            groupInviteInfoList.remove(position);
-        }
-    }
-
-    public void update(GroupInviteInfo groupInviteInfo) {
-        for (int i = 0; i < groupInviteInfoList.size(); ++i) {
-            if (groupInviteInfo.getInviteId().equals(groupInviteInfoList.get(i).getInviteId())) {
-                groupInviteInfoList.get(i).setStatus(groupInviteInfo.getStatus());
-                break;
-            }
         }
     }
 }

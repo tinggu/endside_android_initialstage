@@ -15,6 +15,11 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.entity.NoticeInfo;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -59,19 +64,29 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
             finish();
         }
         else if (id == mRelease.getId()) {
-            NetworkHelper.getInstance().addNotice(mNoticeTittle.getText().toString(), mNoticeDesc.getText().toString(), new IUIDataHelperCallback() {
-                @Override
-                public void onSuccess(Object obj) {
-                    ToastUtils.showShort("通知发布成功");
-                    EventBus.getDefault().post(new MessageEvent("send_notice_success"));
-                    finish();
-                }
+            UserInfo userInfo = DBQuickEntry.getSelfInfo();
+            if (userInfo == null) {
+                return;
+            }
 
-                @Override
-                public void onError(int code) {
-                    ToastUtils.showShort("通知发布失败，请确认网络是否正常！");
-                }
-            });
+            NoticeInfo noticeInfo = new NoticeInfo();
+            noticeInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
+            noticeInfo.setUserId(userInfo.getUserId());
+            noticeInfo.setNickName(userInfo.getNickName());
+            noticeInfo.setTittle(mNoticeTittle.getText().toString());
+            noticeInfo.setContent(mNoticeDesc.getText().toString());
+            noticeInfo.setType(0);
+            noticeInfo.setTimeStamp(System.currentTimeMillis());
+            noticeInfo.setFlag(2);
+            noticeInfo.setSynTag("new");
+
+            noticeInfo.combineNoticeId();
+
+            DBHelper.getInstance().addNotice(noticeInfo);
+
+            Airship.getInstance().synNoticeInfoToCloud();
+
+            finish();
         }
     }
 }

@@ -11,21 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
-import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.activity.ViewMapActivity;
 import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 

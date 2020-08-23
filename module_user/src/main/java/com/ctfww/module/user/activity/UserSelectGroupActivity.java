@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.UserSelectGroupListAdapter;
-import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.UserGroupInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,15 +31,12 @@ import java.util.List;
 public class UserSelectGroupActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "UserSelectGroupActivity";
 
-    ImageView mBack;
-    TextView mTittle;
-    TextView mConfirm;
-    TextView mNoGroupPrompt;
-    RecyclerView mGroupListView;
-
-    UserSelectGroupListAdapter mUserSelectGroupListAdapter;
-
-    UserSelectGroupActivityData mUserSelectGroupActivityData = new UserSelectGroupActivityData();
+    private ImageView mBack;
+    private TextView mTittle;
+    private TextView mConfirm;
+    private TextView mNoGroupPrompt;
+    private RecyclerView mUserSelectGroupListView;
+    private UserSelectGroupListAdapter mUserSelectGroupListAdapter;
 
 
     @Override
@@ -48,8 +45,9 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.user_select_group_activity);
         initViews();
         setOnClickListener();
-        getGroupList();
+
         EventBus.getDefault().register(this);
+        Airship.getInstance().synUserGroupInfoFromCloud();
     }
 
     private void initViews() {
@@ -59,14 +57,20 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         mConfirm = findViewById(R.id.user_top_bar_right_btn);
         mConfirm.setText("确定");
         mNoGroupPrompt = findViewById(R.id.user_prompt_no_create_group);
-        mNoGroupPrompt.setVisibility(View.GONE);
-        mGroupListView = findViewById(R.id.user_group_list);
-        mGroupListView.setVisibility(View.GONE);
+        mUserSelectGroupListView = findViewById(R.id.user_group_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mGroupListView.setLayoutManager(layoutManager);
-        mGroupId = SPStaticUtils.getString("working_group_id");
-        mUserSelectGroupListAdapter = new UserSelectGroupListAdapter(mUserSelectGroupActivityData.getUserGroupInfoList(), mGroupId);
-        mGroupListView.setAdapter(mUserSelectGroupListAdapter);
+        mUserSelectGroupListView.setLayoutManager(layoutManager);
+        List<UserGroupInfo> userGroupInfoList = DBQuickEntry.getSelfGroupList();
+        mUserSelectGroupListAdapter = new UserSelectGroupListAdapter(userGroupInfoList);
+        mUserSelectGroupListView.setAdapter(mUserSelectGroupListAdapter);
+        if (userGroupInfoList.isEmpty()) {
+            mNoGroupPrompt.setVisibility(View.VISIBLE);
+            mUserSelectGroupListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoGroupPrompt.setVisibility(View.GONE);
+            mUserSelectGroupListView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setOnClickListener() {
@@ -74,33 +78,20 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         mConfirm.setOnClickListener(this);
     }
 
-    private void getGroupList() {
-        String userId = SPStaticUtils.getString("user_open_id");
-        NetworkHelper.getInstance().getUserGroupInfo(userId, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mUserSelectGroupActivityData.setUserGroupInfoList((ArrayList<UserGroupInfo>) obj);
-                mUserSelectGroupListAdapter.setList(mUserSelectGroupActivityData.getUserGroupInfoList(), mGroupId);
-                mUserSelectGroupListAdapter.notifyDataSetChanged();
-                mGroupListView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "no group");
-                mNoGroupPrompt.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private String mGroupId;
     @Subscribe(threadMode= ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
-        if ("select_group".equals(messageEvent.getMessage())) {
-            LogUtils.i(TAG, "onGetMessage: messageEvent = " + messageEvent.toString());
-            mGroupId = messageEvent.getValue();
-            mUserSelectGroupListAdapter.setList(mUserSelectGroupActivityData.getUserGroupInfoList(), mGroupId);
+        if ("finish_user_group_syn".equals(messageEvent.getMessage())) {
+            List<UserGroupInfo> userGroupInfoList = DBQuickEntry.getSelfGroupList();
+            mUserSelectGroupListAdapter.setList(userGroupInfoList);
             mUserSelectGroupListAdapter.notifyDataSetChanged();
+            if (userGroupInfoList.isEmpty()) {
+                mNoGroupPrompt.setVisibility(View.VISIBLE);
+                mUserSelectGroupListView.setVisibility(View.GONE);
+            }
+            else {
+                mNoGroupPrompt.setVisibility(View.GONE);
+                mUserSelectGroupListView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -110,13 +101,13 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         if (id == mBack.getId()) {
             finish();
         } else if (id == mConfirm.getId()) {
-            UserGroupInfo userGroupInfo = mUserSelectGroupActivityData.getGroup(mGroupId);
-            if (userGroupInfo != null) {
-                SPStaticUtils.put("working_group_id", userGroupInfo.getGroupId());
-                SPStaticUtils.put("role", userGroupInfo.getRole());
-                SPStaticUtils.put("working_group_name", userGroupInfo.getGroupName());
-                EventBus.getDefault().post(new MessageEvent("bind_group"));
+            String groupId = mUserSelectGroupListAdapter.getGroupId();
+            if (TextUtils.isEmpty(groupId) || groupId.equals(SPStaticUtils.getString("working_group_id"))) {
+                return;
             }
+
+            SPStaticUtils.put("working_group_id", groupId);
+            EventBus.getDefault().post(new MessageEvent("bind_group"));
 
             finish();
         }
@@ -128,75 +119,4 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         EventBus.getDefault().unregister(this);
     }
 
-}
-
-class UserSelectGroupActivityData {
-    List<UserGroupInfo> userGroupInfoList;
-    public UserSelectGroupActivityData() {
-        userGroupInfoList = new ArrayList<>();
-    }
-
-    public List<UserGroupInfo> getUserGroupInfoList() {
-        return userGroupInfoList;
-    }
-
-    public void setUserGroupInfoList(List<UserGroupInfo> userGroupInfoList) {
-        this.userGroupInfoList = userGroupInfoList;
-    }
-
-    public void addOrUpdateGroup(UserGroupInfo userGroupInfo) {
-        int i = 0;
-        for (; i < userGroupInfoList.size(); ++i) {
-            if (userGroupInfo.getGroupId().equals(userGroupInfoList.get(i).getGroupId())) {
-                userGroupInfoList.get(i).setGroupName(userGroupInfo.getGroupName());
-                userGroupInfoList.get(i).setRole(userGroupInfo.getRole());
-                break;
-            }
-        }
-
-        if (i == userGroupInfoList.size()) {
-            userGroupInfoList.add(userGroupInfo);
-        }
-    }
-
-    public UserGroupInfo getGroup(int position) {
-        if (position == -1 || position >= userGroupInfoList.size()) {
-            return null;
-        }
-
-        return userGroupInfoList.get(position);
-    }
-
-    public UserGroupInfo getGroup(String groupId) {
-        if (TextUtils.isEmpty(groupId)) {
-            return null;
-        }
-
-        String oldGroupId = SPStaticUtils.getString("working_group_id");
-        if (groupId.equals(oldGroupId)) {
-            return null;
-        }
-
-        for (int i = 0; i < userGroupInfoList.size(); ++i) {
-            UserGroupInfo userGroupInfo = userGroupInfoList.get(i);
-            if (groupId.equals(userGroupInfo.getGroupId())) {
-                return userGroupInfo;
-            }
-        }
-
-        return null;
-    }
-
-    public void deleteGroup(int position) {
-        userGroupInfoList.remove(position);
-    }
-
-    public void deleteGroup(String groupId) {
-       for (int i = 0; i < userGroupInfoList.size(); ++i) {
-           if (userGroupInfoList.get(i).getGroupId().equals(groupId)) {
-               userGroupInfoList.remove(i);
-               return;
-           }
-       }
-    }
 }

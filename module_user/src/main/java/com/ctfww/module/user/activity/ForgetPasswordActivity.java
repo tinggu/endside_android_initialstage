@@ -12,7 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.DataHelper;
+import com.ctfww.module.user.datahelper.Utils;
+import com.ctfww.module.user.datahelper.airship.Airship;
 
 public class ForgetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView mBack;
@@ -52,7 +53,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
     public void onClick(View view) {
         int i = view.getId();
         if (i == mGetSms.getId()) { // 验证码登录
-            if (!DataHelper.getInstance().isValidMobileNum(mMobile.getText().toString())) {
+            if (!Utils.isValidMobileNum(mMobile.getText().toString())) {
                 ToastUtils.showShort(R.string.user_toast_valid_mobile);
                 return;
             }

@@ -20,10 +20,12 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchGroupSummary;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,7 +70,7 @@ public class KeepWatchMyFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         mUserInfoLL = v.findViewById(R.id.keepwatch_user_info_ll);
         mHead = v.findViewById(R.id.keepwatch_head);
         Glide.with(this).load(userInfo.getHeadUrl()).into(mHead);
@@ -76,7 +78,7 @@ public class KeepWatchMyFragment extends Fragment {
         mNickName.setText(userInfo.getNickName());
 
         mRole = v.findViewById(R.id.keepwatch_role);
-        String role = SPStaticUtils.getString("role");
+        String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
         if ("admin".equals(role)) {
             mRole.setText("管理员");
         }
@@ -137,7 +139,7 @@ public class KeepWatchMyFragment extends Fragment {
                     return;
                 }
 
-                ARouter.getInstance().build("/user/groupUser").navigation();
+                ARouter.getInstance().build("/user/groupUserList").navigation();
             }
         });
 

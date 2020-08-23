@@ -22,9 +22,8 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
-import com.ctfww.commonlib.im.BasicData;
 import com.ctfww.commonlib.utils.DialogUtils;
-import com.ctfww.module.keepwatch.DataHelper.NetworkHelper;
+import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
@@ -199,7 +198,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
                         long[] patter = {1000, 2000, 2000, 50};
                         vibrator.vibrate(patter, -1);
                     }
-                    String role = SPStaticUtils.getString("role");
+                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
                     if ("admin".equals(role)) {
                         getNoEndKeyEventCount();
                     }
@@ -207,7 +206,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
                 else if (head.getMsgContentType() == 11) {
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
                     String userId = SPStaticUtils.getString("user_open_id");
-                    String role = SPStaticUtils.getString("role");
+                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
                     if (userId.equals(head.getFromId()) || "admin".equals(role)) {
                         getNoEndKeyEventCount();
                     }
@@ -218,7 +217,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
                 }
                 else if (head.getMsgContentType() == 20) {
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
-                    String role = SPStaticUtils.getString("role");
+                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
                     String userId = SPStaticUtils.getString("user_open_id");
                     if ("admin".equals(role) || userId.equals(head.getFromId())) {
                         getTodayKeepWatchStatistics();

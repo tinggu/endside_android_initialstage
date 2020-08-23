@@ -13,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.DataHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 public class UpdateMobileActivity extends AppCompatActivity implements View.OnClickListener, VerifyPasswordDialog.IInputPassword {
@@ -26,13 +27,10 @@ public class UpdateMobileActivity extends AppCompatActivity implements View.OnCl
     private TextView mMobileTxt;
     private Button mBlueBtn;
 
-    private UserInfo mUserInfo;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.user_update_mobile_activity);
-        mUserInfo = DataHelper.getInstance().getUserInfo();
         initViews();
 
          setOnClickListener();
@@ -43,7 +41,8 @@ public class UpdateMobileActivity extends AppCompatActivity implements View.OnCl
         mTopBarTitlle = findViewById(R.id.user_top_bar_tittle);
         mTopBarTitlle.setText("更换手机号");
         mMobileTxt = findViewById(R.id.user_mobile_desc);
-        mMobileTxt.setText("绑定的手机号：" + mUserInfo.getMobile());
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
+        mMobileTxt.setText("绑定的手机号：" + userInfo.getMobile());
         mBlueBtn = findViewById(R.id.user_blue_btn);
         mBlueBtn.setText("更换手机号");
     }
@@ -73,30 +72,12 @@ public class UpdateMobileActivity extends AppCompatActivity implements View.OnCl
             return;
         }
 
-        if (!password.equals(mUserInfo.getPassword())) {
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
+        if (!password.equals(userInfo.getPassword())) {
             LogUtils.i(TAG, "密码验证不正确");
             return;
         }
 
-        startActivityForResult(new Intent(this, UpdateMobile2Activity.class), REQUEST_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                String mobileTemp = data.getStringExtra("mobile");
-                if (mUserInfo.getMobile().equals(mobileTemp)) {
-                    ToastUtils.showShort("修改的手机号码与原来的相同，因此没有修改！");
-                } else {
-                    Intent intent = new Intent();
-                    intent.putExtra("mobile", mobileTemp);
-                    setResult(RESULT_OK, intent);
-                }
-
-                finish();
-            }
-        }
+        startActivity(new Intent(this, UpdateMobile2Activity.class));
     }
 }

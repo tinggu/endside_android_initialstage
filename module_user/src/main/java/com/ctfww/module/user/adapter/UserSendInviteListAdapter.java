@@ -14,6 +14,8 @@ import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,21 +92,12 @@ public class UserSendInviteListAdapter extends RecyclerView.Adapter<RecyclerView
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 holder.delete.setVisibility(View.GONE);
-                delete(position);
-            }
-        });
-    }
+                GroupInviteInfo inviteInfo = list.get(position);
+                inviteInfo.setStatus("delete");
+                inviteInfo.setSynTag("modify");
+                inviteInfo.setTimeStamp(System.currentTimeMillis());
 
-    private void delete(final int position) {
-        NetworkHelper.getInstance().deleteInvite(list.get(position).getInviteId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                EventBus.getDefault().post(new MessageEvent("user_delete_send_invite", "" + position));
-            }
-
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("删除失败，请检查网络是否正常！");
+                DBHelper.getInstance().updateInvite(inviteInfo);
             }
         });
     }

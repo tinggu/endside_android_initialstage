@@ -55,10 +55,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.ctfww.module.user.activity.GroupUserInfoActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
         <activity android:name="com.ctfww.module.user.activity.UserSelectGroupActivity"
             android:screenOrientation="portrait">
         </activity>

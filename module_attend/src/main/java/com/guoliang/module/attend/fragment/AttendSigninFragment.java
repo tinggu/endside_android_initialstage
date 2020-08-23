@@ -82,7 +82,7 @@ public class AttendSigninFragment extends Fragment {
         mGroupSelect = v.findViewById(R.id.top_select);
         mGroupSelect.setVisibility(View.VISIBLE);
         mGroupName = v.findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
+        String groupName = com.;
         if (TextUtils.isEmpty(groupName)) {
             mGroupName.setText("请选择群组");
         }
@@ -208,7 +208,7 @@ public class AttendSigninFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String groupName = SPStaticUtils.getString("working_group_name");
+        String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
         if (TextUtils.isEmpty(groupName)) {
             mGroupName.setText("请选择群组");
         }
@@ -269,7 +269,7 @@ public class AttendSigninFragment extends Fragment {
 
         }
         else if ("bind_group".equals(messageEvent.getMessage())) {
-            String groupName = SPStaticUtils.getString("working_group_name");
+            String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
             if (TextUtils.isEmpty(groupName)) {
                 mGroupName.setText("请选择群组");
             }

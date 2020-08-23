@@ -37,8 +37,8 @@ import com.ctfww.commonlib.utils.ApkUtils;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
-import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
-import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
+import com.ctfww.module.keepwatch.datahelper.airship.Airship;
+import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
@@ -179,7 +179,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         mGroupSelect = findViewById(R.id.top_select);
         mGroupSelect.setVisibility(View.VISIBLE);
         mGroupName = findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
+        String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
         if (TextUtils.isEmpty(groupName)) {
             mGroupName.setText("请选择群组");
         }
@@ -255,6 +255,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         resetImage();
         setSelectImage(0);
         mViewPager.setCurrentItem(0);
+
+        showNoLookOverCount();
     }
 
     private void setOnClickListener() {
@@ -313,11 +315,23 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             Utils.setFirstToken(true);
             LogUtils.i(TAG, "onGetMessage: tms_first_token");
             checkUpgrade();
-            com.ctfww.module.user.datahelper.DataHelper.getInstance().startTimedSyn();
-            com.ctfww.module.keyevents.datahelper.airship.Airship.startTimedSyn();
-            Airship.getInstance().synKeepWatchDeskToCloud();
-            Airship.getInstance().synKeepWatchDeskFromCloud();
-            getNoLookOverCount();
+            Airship.getInstance().startTimedSyn();
+            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().startTimedSyn();
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().startTimedSyn();
+
+            // 同步基本的用户信息与群组信息
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synUserInfoFromCloud();
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synGroupInfoFromCloud();
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synUserGroupInfoFromCloud();
+
+            // 同步其他相关信息
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synGroupUserInfoFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchDeskFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteSummaryFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteDeskFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchAssignmentFromCloud();
+            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synNoticeInfoFromCloud();
         }
         else if ("update_location".equals(msg)) {
             mMyPos = GsonUtils.fromJson(messageEvent.getValue(), MyPosition.class);
@@ -325,10 +339,16 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             EventBus.getDefault().post(new MessageEvent("location"));
         }
         else if ("bind_group".equals(msg)) {
-            Airship.getInstance().synKeepWatchDeskToCloud();
-            Airship.getInstance().synKeepWatchDeskFromCloud();
-            String groupName= SPStaticUtils.getString("working_group_name");
-            mGroupName.setText(SPStaticUtils.getString("working_group_name"));
+            String groupName= com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
+            mGroupName.setText(groupName);
+
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synGroupUserInfoFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchDeskFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteSummaryFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteDeskFromCloud();
+            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchAssignmentFromCloud();
+            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synNoticeInfoFromCloud();
         }
         else if ("send_invite_success".equals(msg)) {
             GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
@@ -364,7 +384,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
             if (head.getMsgType() == 2001) {
                 if (head.getMsgContentType() == 1 || head.getMsgContentType() == 2 || head.getMsgContentType() == 3) {
-                    getNoLookOverCount();
+                    com.ctfww.module.user.datahelper.airship.Airship.getInstance().synNoticeInfoFromCloud();
                     long[] patter = {1000, 50};
                     Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(patter, -1);
@@ -372,10 +392,22 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             }
             else if (head.getMsgType() == 3001) {
                 if (head.getMsgContentType() == 1) {
-                    getNoLookOverCount();
+                    com.ctfww.module.user.datahelper.airship.Airship.getInstance().synNoticeInfoFromCloud();
                     long[] patter = {1000, 50};
                     Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(patter, -1);
+                }
+                else if (head.getMsgContentType() == 10) {
+                    com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
+                    Airship.getInstance().synKeepWatchPersonTrendsFromCloud();
+                }
+                else if (head.getMsgContentType() == 11) {
+                    Airship.getInstance().synKeepWatchRankingFromCloud();
+                }
+                else if (head.getMsgContentType() == 20) {
+                    Airship.getInstance().synKeepWatchPersonTrendsFromCloud();
+                    Airship.getInstance().synKeepWatchRankingFromCloud();
+                    Airship.getInstance().synKeepWatchAssignmentFinishStatusFromCloud();
                 }
             }
         }
@@ -582,29 +614,18 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         }
     }
 
-    private void getNoLookOverCount() {
-        com.ctfww.module.user.datahelper.NetworkHelper.getInstance().getNoLookOverCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                LogUtils.i(TAG, "getNoLookOverCount: count = " + count);
-                if (count == 0) {
-                    return;
-                }
+    private void showNoLookOverCount() {
+        long count = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getSelfNoLookOverNoticeCount();
+        if (count == 0) {
+            return;
+        }
 
-                mUnreadCount.setVisibility(View.VISIBLE);
-                if (count <= 9) {
-                    mUnreadCount.setText("" + count);
-                }
-                else {
-                    mUnreadCount.setText("9+");
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getNoLookOverCount fail: code = " + code);
-            }
-        });
+        mUnreadCount.setVisibility(View.VISIBLE);
+        if (count <= 9) {
+            mUnreadCount.setText("" + count);
+        }
+        else {
+            mUnreadCount.setText("9+");
+        };
     }
 }

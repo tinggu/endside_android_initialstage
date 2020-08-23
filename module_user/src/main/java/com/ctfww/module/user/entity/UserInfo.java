@@ -1,15 +1,14 @@
 package com.ctfww.module.user.entity;
 
+import com.ctfww.commonlib.entity.EntityInterface;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 
 @Entity
-public class UserInfo {
-
-    private long registerTimestamp;
-    private long modifyTimestamp;
-
+public class UserInfo implements EntityInterface {
     @Id
     private String userId;
 
@@ -32,16 +31,17 @@ public class UserInfo {
     private String blogNum;
 
     private String qqNum;
+    
+    private long timeStamp;
 
+    @Index
     private String synTag;
 
-    @Generated(hash = 2124904921)
-    public UserInfo(long registerTimestamp, long modifyTimestamp, String userId,
-            String nickName, String password, String mobile, String email,
-            String headUrl, String birthday, int gender, String wechatNum,
-            String blogNum, String qqNum, String synTag) {
-        this.registerTimestamp = registerTimestamp;
-        this.modifyTimestamp = modifyTimestamp;
+    @Generated(hash = 143568552)
+    public UserInfo(String userId, String nickName, String password, String mobile,
+            String email, String headUrl, String birthday, int gender,
+            String wechatNum, String blogNum, String qqNum, long timeStamp,
+            String synTag) {
         this.userId = userId;
         this.nickName = nickName;
         this.password = password;
@@ -53,6 +53,7 @@ public class UserInfo {
         this.wechatNum = wechatNum;
         this.blogNum = blogNum;
         this.qqNum = qqNum;
+        this.timeStamp = timeStamp;
         this.synTag = synTag;
     }
 
@@ -72,24 +73,7 @@ public class UserInfo {
                 + ", wechat = " + wechatNum
                 + ", blog = " + blogNum
                 + ", qq = " + qqNum
-                + ", registerTimestamp = " + registerTimestamp
-                + ", modifyTimestamp = " + modifyTimestamp;
-    }
-
-    public long getRegisterTimestamp() {
-        return this.registerTimestamp;
-    }
-
-    public void setRegisterTimestamp(long registerTimestamp) {
-        this.registerTimestamp = registerTimestamp;
-    }
-
-    public long getModifyTimestamp() {
-        return this.modifyTimestamp;
-    }
-
-    public void setModifyTimestamp(long modifyTimestamp) {
-        this.modifyTimestamp = modifyTimestamp;
+                + ", timeStamp = " + timeStamp;
     }
 
     public String getUserId() {
@@ -178,6 +162,14 @@ public class UserInfo {
 
     public void setQqNum(String qqNum) {
         this.qqNum = qqNum;
+    }
+
+    public long getTimeStamp() {
+        return this.timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getSynTag() {

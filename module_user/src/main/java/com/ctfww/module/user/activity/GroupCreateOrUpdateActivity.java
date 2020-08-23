@@ -2,8 +2,8 @@ package com.ctfww.module.user.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,10 +11,13 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.commonlib.utils.ApkUtils;
+import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.UserGroupInfo;
 
 @Route(path = "/user/createGroup")
@@ -72,48 +75,33 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
             finish();
         }
         else if (id == mConfirm.getId()) {
+            if (TextUtils.isEmpty(mName.getText().toString())) {
+                DialogUtils.onlyPrompt("群组名称不能为空！", this);
+                return;
+            }
+
             if (mIsCreate) {
-                createGroup();
+                GroupInfo groupInfo = new GroupInfo();
+                groupInfo.setGroupName(mName.getText().toString());
+                groupInfo.setTimeStamp(System.currentTimeMillis());
+                groupInfo.setUserId(SPStaticUtils.getString("user_open_id"));
+                groupInfo.setAppName(ApkUtils.getAppName(getApplicationContext()));
+                groupInfo.setStatus("reserve");
+                groupInfo.setSynTag("new");
+                groupInfo.combineGroupId();
+                DBHelper.getInstance().addGroup(groupInfo);
             }
             else {
-                updateGroupInfo();
+                String groupId = mUserGroupInfo.getGroupId();
+                GroupInfo groupInfo = DBHelper.getInstance().getGroup(groupId);
+                groupInfo.setGroupName(mName.getText().toString());
+                groupInfo.setTimeStamp(System.currentTimeMillis());
+                groupInfo.setUserId(SPStaticUtils.getString("user_open_id"));
+                groupInfo.setSynTag("modify");
+                DBHelper.getInstance().updateGroup(groupInfo);
             }
+
+            Airship.getInstance().synGroupInfoToCloud();
         }
-    }
-
-    private void createGroup() {
-        NetworkHelper.getInstance().createGroup(mName.getText().toString(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                UserGroupInfo userGroupInfo = (UserGroupInfo)obj;
-                Intent intent = new Intent();
-                intent.putExtra("userGroupInfo", GsonUtils.toJson(userGroupInfo));
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("群组创建失败");
-            }
-        });
-    }
-
-    private void updateGroupInfo() {
-        NetworkHelper.getInstance().updateGroupInfo(mUserGroupInfo.getGroupId(), mName.getText().toString(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mUserGroupInfo.setGroupName(mName.getText().toString());
-                Intent intent = new Intent();
-                intent.putExtra("userGroupInfo", GsonUtils.toJson(mUserGroupInfo));
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("更新群组信息失败，请检查网络！");
-            }
-        });
     }
 }

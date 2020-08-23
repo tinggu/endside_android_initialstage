@@ -18,6 +18,7 @@ import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,7 +102,11 @@ public class UserReceiveInviteListAdapter extends RecyclerView.Adapter<RecyclerV
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 holder.delete.setVisibility(View.GONE);
-                delete(position);
+                GroupInviteInfo groupInviteInfo = list.get(position);
+                groupInviteInfo.setStatus("delete");
+                groupInviteInfo.setTimeStamp(System.currentTimeMillis());
+                groupInviteInfo.setSynTag("modify");
+                DBHelper.getInstance().updateInvite(groupInviteInfo);
             }
         });
 
@@ -109,7 +114,17 @@ public class UserReceiveInviteListAdapter extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                accept(list.get(position));
+                GroupInviteInfo groupInviteInfo = list.get(position);
+                groupInviteInfo.setStatus("accept");
+                groupInviteInfo.setTimeStamp(System.currentTimeMillis());
+                groupInviteInfo.setSynTag("modify");
+                DBHelper.getInstance().updateInvite(groupInviteInfo);
+
+                String groupId = SPStaticUtils.getString("working_group_id");
+                if (TextUtils.isEmpty(groupId)) {
+                    SPStaticUtils.put("working_group_id", groupInviteInfo.getGroupId());
+                    EventBus.getDefault().post(new MessageEvent("bind_group"));
+                }
             }
         });
 
@@ -117,59 +132,11 @@ public class UserReceiveInviteListAdapter extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                refuse(list.get(position));
-            }
-        });
-    }
-
-    private void accept(final GroupInviteInfo groupInviteInfo) {
-        NetworkHelper.getInstance().updateInviteStatus(groupInviteInfo.getInviteId(), "accept", new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                groupInviteInfo.setStatus("accept");
-                EventBus.getDefault().post(new MessageEvent("send_update_receive_invite_success", GsonUtils.toJson(groupInviteInfo)));
-
-                String groupId = SPStaticUtils.getString("working_group_id");
-                if (TextUtils.isEmpty(groupId)) {
-                    SPStaticUtils.put("working_group_id", groupInviteInfo.getGroupId());
-                    SPStaticUtils.put("working_group_name", groupInviteInfo.getGroupName());
-                    SPStaticUtils.put("role", "member");
-                    EventBus.getDefault().post(new MessageEvent("bind_group"));
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("接受失败，请检查网络是否正常！");
-            }
-        });
-    }
-
-    private void refuse(final GroupInviteInfo groupInviteInfo) {
-        NetworkHelper.getInstance().updateInviteStatus(groupInviteInfo.getInviteId(), "refuse", new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
+                GroupInviteInfo groupInviteInfo = list.get(position);
                 groupInviteInfo.setStatus("refuse");
-                EventBus.getDefault().post(new MessageEvent("send_update_receive_invite_success", GsonUtils.toJson(groupInviteInfo)));
-            }
-
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("拒绝失败，请检查网络是否正常！");
-            }
-        });
-    }
-
-    private void delete(final int position) {
-        NetworkHelper.getInstance().deleteInvite(list.get(position).getInviteId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                EventBus.getDefault().post(new MessageEvent("user_delete_receive_invite", "" + position));
-            }
-
-            @Override
-            public void onError(int code) {
-                ToastUtils.showShort("删除失败，请检查网络是否正常！");
+                groupInviteInfo.setTimeStamp(System.currentTimeMillis());
+                groupInviteInfo.setSynTag("modify");
+                DBHelper.getInstance().updateInvite(groupInviteInfo);
             }
         });
     }

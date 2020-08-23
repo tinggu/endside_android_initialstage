@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.entity.UserGroupInfo;
@@ -25,14 +26,13 @@ public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerVie
     private List<UserGroupInfo> list;
     private String mGroupId;
 
-    public UserSelectGroupListAdapter(List<UserGroupInfo> list, String groupId) {
+    public UserSelectGroupListAdapter(List<UserGroupInfo> list) {
         this.list = list;
-        mGroupId = groupId;
+        mGroupId = SPStaticUtils.getString("working_group_id");
     }
 
-    public void setList(List<UserGroupInfo> list, String groupId) {
+    public void setList(List<UserGroupInfo> list) {
         this.list = list;
-        mGroupId = groupId;
     }
 
     @NonNull
@@ -60,7 +60,7 @@ public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerVie
             @Override
             public void onClick(View view) {
                 mGroupId = userGroupInfo.getGroupId();
-                EventBus.getDefault().post(new MessageEvent("select_group", userGroupInfo.getGroupId()));
+                notifyDataSetChanged();
             }
         });
     }
@@ -68,6 +68,10 @@ public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public String getGroupId() {
+        return mGroupId;
     }
 }
 

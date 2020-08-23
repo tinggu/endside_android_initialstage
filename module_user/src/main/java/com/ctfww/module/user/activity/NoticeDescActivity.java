@@ -10,15 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.adapter.UserNoticeListAdapter;
 import com.ctfww.module.user.adapter.UserNoticeReadStatusListAdapter;
-import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +38,6 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
 
     private RecyclerView mNoticeReadStatusListView;
     private UserNoticeReadStatusListAdapter mNoticeReadStatusListAdapter;
-    private List<NoticeReadStatus> mNoticeReadStatusList = new ArrayList<>();
 
     private NoticeInfo mNoticeInfo;
 
@@ -47,6 +48,9 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
         processIntent();
         initViews();
         setOnClickListener();
+
+        EventBus.getDefault().register(this);
+        Airship.getInstance().synNoticeReadStatusFromCloud();
     }
 
     private void processIntent() {
@@ -75,10 +79,9 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
         LinearLayoutManager layoutManager= new LinearLayoutManager(this);
         mNoticeReadStatusListView.setLayoutManager(layoutManager);
 
-        mNoticeReadStatusListAdapter = new UserNoticeReadStatusListAdapter(mNoticeReadStatusList);
+        List<NoticeReadStatus> noticeReadStatusList = DBHelper.getInstance().getNoticeReadStatusList(mNoticeInfo.getNoticeId());
+        mNoticeReadStatusListAdapter = new UserNoticeReadStatusListAdapter(noticeReadStatusList);
         mNoticeReadStatusListView.setAdapter(mNoticeReadStatusListAdapter);
-
-        getNoticeReadStatus();
     }
 
     private void setOnClickListener() {
@@ -93,20 +96,18 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void getNoticeReadStatus() {
-        NetworkHelper.getInstance().getNoticeReadStatus(mNoticeInfo.getNoticeId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mNoticeReadStatusList = (ArrayList<NoticeReadStatus>)obj;
-                mNoticeReadStatusListAdapter.setList(mNoticeReadStatusList);
-                mNoticeReadStatusListAdapter.notifyDataSetChanged();
-                mNoticeReadStatusListView.setVisibility(View.VISIBLE);
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(MessageEvent messageEvent) {
+        if ("finish_notice_read_status_syn".equals(messageEvent.getMessage())) {
+            List<NoticeReadStatus> noticeReadStatusList = DBHelper.getInstance().getNoticeReadStatusList(mNoticeInfo.getNoticeId());
+            mNoticeReadStatusListAdapter.setList(noticeReadStatusList);
+            mNoticeReadStatusListAdapter.notifyDataSetChanged();
+        }
+    }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getNoticeReadStatus fail: code = " + code);
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -13,9 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
-import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
+import com.ctfww.module.keepwatch.datahelper.airship.Airship;
+import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.activity.KeepWatchQrActivity;
 import com.ctfww.module.keepwatch.activity.KeepWatchViewSigninDeskActivity;
@@ -63,7 +62,7 @@ public class KeepWatchDeskListAdapter extends RecyclerView.Adapter<RecyclerView.
         holder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (!"admin".equals(SPStaticUtils.getString("role"))) {
+                if (!"admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup())) {
                     return true;
                 }
 

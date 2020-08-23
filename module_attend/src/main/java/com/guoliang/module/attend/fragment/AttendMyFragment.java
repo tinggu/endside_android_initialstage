@@ -78,7 +78,7 @@ public class AttendMyFragment extends Fragment {
         mGroupSelect = v.findViewById(R.id.top_select);
         mGroupSelect.setVisibility(View.VISIBLE);
         mGroupName = v.findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
+        String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
         if (TextUtils.isEmpty(groupName)) {
             mGroupName.setText("请选择群组");
         }
@@ -96,7 +96,7 @@ public class AttendMyFragment extends Fragment {
         mNickName.setText(userInfo.getNickName());
 
         mRole = v.findViewById(R.id.attend_role);
-        String role = SPStaticUtils.getString("role");
+        String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
         if ("admin".equals(role)) {
             mRole.setText("管理员");
         }
@@ -177,7 +177,7 @@ public class AttendMyFragment extends Fragment {
                     return;
                 }
 
-                ARouter.getInstance().build("/user/groupUser").navigation();
+                ARouter.getInstance().build("/user/groupUserList").navigation();
             }
         });
 
@@ -253,7 +253,7 @@ public class AttendMyFragment extends Fragment {
 //        else if ("bind_group".equals(msg)) {
 //            getGroupSummary();
 //            mKeepWatchSigninListFragment.getTodaySigninList();
-//            String groupName = SPStaticUtils.getString("working_group_name");
+//            String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
 //            if (TextUtils.isEmpty(groupName)) {
 //                mGroupName.setText("请选择群组");
 //            }
@@ -272,7 +272,7 @@ public class AttendMyFragment extends Fragment {
 //            mKeepWatchSigninListFragment.getTodaySigninList();
 //        }
 //
-//        String groupName = SPStaticUtils.getString("working_group_name");
+//        String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
 //        if (TextUtils.isEmpty(groupName)) {
 //            mGroupName.setText("请选择群组");
 //        }

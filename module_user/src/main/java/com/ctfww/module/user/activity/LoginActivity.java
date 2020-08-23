@@ -26,9 +26,12 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.network.NetworkConst;
-import com.ctfww.module.user.datahelper.DataHelper;
+import com.ctfww.module.user.datahelper.Utils;
+import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.entity.UserInfo;
 
 import static com.ctfww.commonlib.Consts.REST_FAIL;
 
@@ -69,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (DataHelper.getInstance().isLogined()) {
+        if (Utils.isLogined()) {
             ARouter.getInstance().build(getNavigationName()).navigation();
             finish();
             return;
@@ -97,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setGetSmsNumEnable(DataHelper.getInstance().isValidMobileNum(charSequence.toString()));
+                setGetSmsNumEnable(Utils.isValidMobileNum(charSequence.toString()));
             }
 
             @Override
@@ -114,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setSmsLoginBtnEnable(DataHelper.getInstance().isValidSMS(charSequence.toString()));
+                setSmsLoginBtnEnable(Utils.isValidSMS(charSequence.toString()));
             }
 
             @Override
@@ -131,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setPasswordLoginBtnEnable(DataHelper.getInstance().isValidPassword(charSequence.toString()));
+                setPasswordLoginBtnEnable(Utils.isValidPassword(charSequence.toString()));
             }
 
             @Override
@@ -237,7 +240,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loginBySMS() {
-        if (!DataHelper.getInstance().isValidMobileNum(mPhoneNumEt.getText().toString())|| !DataHelper.getInstance().isValidSMS(mSmsNumEt.getText().toString())) {
+        if (!Utils.isValidMobileNum(mPhoneNumEt.getText().toString())|| !Utils.isValidSMS(mSmsNumEt.getText().toString())) {
             ToastUtils.showShort(R.string.user_toast_valid_mobile_or_sms);
             return;
         }
@@ -249,6 +252,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new IUIDataHelperCallback() {
                     @Override
                     public void onSuccess(Object obj) {
+                        UserInfo userInfo = (UserInfo)obj;
+                        userInfo.setSynTag("cloud");
+                        Airship.getInstance().updateUserInfoByCloud(userInfo);
+
                         ToastUtils.showShort(R.string.user_toast_success_login);
                         ARouter.getInstance().build(getNavigationName()).navigation();
                         finish();
@@ -270,7 +277,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loginByPassword() {
-        if (!DataHelper.getInstance().isValidMobileNum(mPhoneNumEt.getText().toString())|| !DataHelper.getInstance().isValidPassword(mPasswordEt.getText().toString())) {
+        if (!Utils.isValidMobileNum(mPhoneNumEt.getText().toString())|| !Utils.isValidPassword(mPasswordEt.getText().toString())) {
             ToastUtils.showShort(R.string.user_toast_valid_mobile_or_password);
             return;
         }
@@ -281,6 +288,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 , new IUIDataHelperCallback() {
                     @Override
                     public void onSuccess(Object obj) {
+                        UserInfo userInfo = (UserInfo)obj;
+                        userInfo.setSynTag("cloud");
+                        Airship.getInstance().updateUserInfoByCloud(userInfo);
+
                         ToastUtils.showShort("登录成功");
                         ARouter.getInstance().build(getNavigationName()).navigation();
                         finish();

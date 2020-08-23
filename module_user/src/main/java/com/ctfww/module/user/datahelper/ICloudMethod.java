@@ -1,14 +1,17 @@
 package com.ctfww.module.user.datahelper;
 
+import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.module.user.bean.GroupInfoBean;
-import com.ctfww.module.user.bean.GroupInviteBean;
-import com.ctfww.module.user.bean.NoticeBean;
 import com.ctfww.module.user.bean.NoticeReadStatusBean;
 import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
-import com.ctfww.module.user.bean.User2GroupBean;
-import com.ctfww.module.user.bean.UserInfoBean;
+import com.ctfww.module.user.entity.GroupInfo;
+import com.ctfww.module.user.entity.GroupInviteInfo;
+import com.ctfww.module.user.entity.GroupUserInfo;
+import com.ctfww.module.user.entity.NoticeInfo;
+import com.ctfww.module.user.entity.NoticeReadStatus;
+import com.ctfww.module.user.entity.UserGroupInfo;
+import com.ctfww.module.user.entity.UserInfo;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -24,17 +27,6 @@ import retrofit2.http.Part;
  *
  */
 public interface ICloudMethod {
-
-
-    /**
-     * 获取用户token
-     * @param url 固定的URL：http://39.98.147.77:9090/token/getAccessTokenByUserId
-     * @param userId 用户ID
-     * @return 返回值
-     */
-//    @POST("token/getAccessTokenByUserId")
-//    Call<ResponseBody> getAccessTokenByUserId(@Url String url, @Body String userId);
-
     /**
      * 账户注销
      * @param userId 用户ID
@@ -42,22 +34,6 @@ public interface ICloudMethod {
      */
     @POST("/microusermanagement/userMgt/deleteAccount")
     Call<ResponseBody> deleteAccount(@Body String userId);
-
-    /**
-     * 通过用户ID来获取用户信息
-     * @param userId 用户ID
-     * @return 返回值
-     */
-    @POST("/microusermanagement/userMgt/getUserInfoByUserId")
-    Call<ResponseBody> getUserInfoByUserId(@Body String userId);
-
-    /**
-     * 通过用户ID来更新用户信息
-     * @param userInfoBean 用户信息
-     * @return 返回值
-     */
-    @POST("/microusermanagement/userMgt/updateUserInfoByUserId")
-    Call<ResponseBody> updateUserInfoByUserId(@Body UserInfoBean userInfoBean);
 
     /**
      * 通过密码进行登录
@@ -84,103 +60,84 @@ public interface ICloudMethod {
     Call<ResponseBody> sendSms(@Body String phoneNumbers);
 
     /**
-     * 创建群组
-     * @param groupInfoBean 群组信息
+     * 同步用户信息上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/createGroup")
-    Call<ResponseBody> createGroup(@Body GroupInfoBean groupInfoBean);
+    @POST("/microusermanagement/userMgt/synUserInfoToCloud")
+    Call<ResponseBody> synUserInfoToCloud(@Body UserInfo info);
 
     /**
-     * 更新群组信息（主要是更新群组名称）
-     * @param groupInfoBean 群组信息
+     * 从云上同步用户信息
+     * @param userId
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/updateGroupInfo")
-    Call<ResponseBody> updateGroupInfo(@Body GroupInfoBean groupInfoBean);
+    @POST("/microusermanagement/userMgt/synUserInfoFromCloud")
+    Call<ResponseBody> synUserInfoFromCloud(@Body String userId);
 
     /**
-     * 删除群组
-     * @param groupId 群组编号
+     * 同步群组信息上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/deleteGroup")
-    Call<ResponseBody> deleteGroup(@Body String groupId);
+    @POST("/microusermanagement/userMgt/synGroupInfoToCloud")
+    Call<ResponseBody> synGroupInfoToCloud(@Body CargoToCloud<GroupInfo> info);
 
     /**
-     * 增加邀请
-     * @param groupInviteBean 邀请信息
+     * 从云上同步群组信息
+     * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/addInvite")
-    Call<ResponseBody> addInvite(@Body GroupInviteBean groupInviteBean);
+    @POST("/microusermanagement/userMgt/synGroupInfoFromCloud")
+    Call<ResponseBody> synGroupInfoFromCloud(@Body QueryCondition condition);
 
     /**
-     * 修改邀请状态，如接受或拒绝
-     * @param groupInviteBean 邀请信息
+     * 同步用户对应的群组信息上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/updateInviteStatus")
-    Call<ResponseBody> updateInviteStatus(@Body GroupInviteBean groupInviteBean);
+    @POST("/microusermanagement/userMgt/synUserGroupInfoToCloud")
+    Call<ResponseBody> synUserGroupInfoToCloud(@Body CargoToCloud<UserGroupInfo> info);
 
     /**
-     * 删除邀请
-     * @param inviteId 邀请编号
+     * 从云上同步用户对应的群组信息
+     * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/deleteInvite")
-    Call<ResponseBody> deleteInvite(@Body String inviteId);
+    @POST("/microusermanagement/userMgt/synUserGroupInfoFromCloud")
+    Call<ResponseBody> synUserGroupInfoFromCloud(@Body QueryCondition condition);
 
     /**
-     * 获取自己发出的邀请
-     * @param userId 用户编号
+     * 同步邀请信息上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/getSendInvite")
-    Call<ResponseBody> getSendInvite(@Body String userId);
+    @POST("/microusermanagement/userMgt/synInviteInfoToCloud")
+    Call<ResponseBody> synInviteInfoToCloud(@Body CargoToCloud<GroupInviteInfo> info);
 
     /**
-     * 获取邀请自己的邀请
-     * @param userId 用户编号
+     * 从云上同步邀请信息
+     * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/getInvite")
-    Call<ResponseBody> getInvite(@Body String userId);
-
-    @POST("/microusermanagement/groupMgt/getNewMessageCount")
-    Call<ResponseBody> getNewMessageCount(@Body String userId);
+    @POST("/microusermanagement/userMgt/synInviteInfoFromCloud")
+    Call<ResponseBody> synInviteInfoFromCloud(@Body QueryCondition condition);
 
     /**
-     * 退群
-     * @param user2GroupBean 用户和群组对应信息
+     * 同步群组成员信息上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/withdrawGroup")
-    Call<ResponseBody> withdrawGroup(@Body User2GroupBean user2GroupBean);
+    @POST("/microusermanagement/userMgt/synGroupUserInfoToCloud")
+    Call<ResponseBody> synGroupUserInfoToCloud(@Body CargoToCloud<GroupUserInfo> info);
 
     /**
-     * 更改用户和群组的对应信息（目前主要是更新角色）
-     * @param user2GroupBean 用户和群组对应信息
+     * 从云上同步群组成员信息
+     * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/groupMgt/updateGroupUserRole")
-    Call<ResponseBody> updateGroupUserRole(@Body User2GroupBean user2GroupBean);
-
-    /**
-     * 获取用户所在的群
-     * @param userId 用户Id
-     * @return 返回值
-     */
-    @POST("/microusermanagement/groupMgt/getUserGroupInfo")
-    Call<ResponseBody> getUserGroupInfo(@Body String userId);
-
-    /**
-     * 获取群包含的用户信息
-     * @param groupId 群Id
-     * @return 返回值
-     */
-    @POST("/microusermanagement/groupMgt/getGroupUserInfo")
-    Call<ResponseBody> getGroupUserInfo(@Body String groupId);
+    @POST("/microusermanagement/userMgt/synGroupUserInfoFromCloud")
+    Call<ResponseBody> synGroupUserInfoFromCloud(@Body QueryCondition condition);
 
     /**
      * 上传文件 http://39.98.147.77:8003/fileMgt/uploadFile
@@ -192,42 +149,34 @@ public interface ICloudMethod {
     Call<ResponseBody> uploadFile(@Header("userId") String userId, @Part MultipartBody.Part file);
 
     /**
-     * 增加通知
+     * 同步通知信息上云
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/noticeMgt/addNotice")
-    Call<ResponseBody> addNotice(@Body NoticeBean info);
+    @POST("/microusermanagement/userMgt/synNoticeInfoToCloud")
+    Call<ResponseBody> synNoticeInfoToCloud(@Body CargoToCloud<NoticeInfo> info);
 
     /**
-     * 获得通知信息
-     * @param condition 主要是groupId和userId
+     * 从云上同步通知信息
+     * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/noticeMgt/getNotice")
-    Call<ResponseBody> getNotice(@Body QueryCondition condition);
+    @POST("/microusermanagement/userMgt/synNoticeInfoFromCloud")
+    Call<ResponseBody> synNoticeInfoFromCloud(@Body QueryCondition condition);
 
     /**
-     * 更改通知信息阅读状态
-     * @param info 通知信息
+     * 同步通知读取状态上云
+     * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/noticeMgt/addNoticeReadStatus")
-    Call<ResponseBody> addNoticeReadStatus(@Body NoticeReadStatusBean info);
+    @POST("/microusermanagement/userMgt/synNoticeReadStatusToCloud")
+    Call<ResponseBody> synNoticeReadStatusToCloud(@Body CargoToCloud<NoticeReadStatus> info);
 
     /**
-     * 获得某条通知的阅读状态（管理员与发送人才有此权限）
-     * @param condition 通知编号以及所在的群组
+     * 从云上同步通知读取状态
+     * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/noticeMgt/getNoticeReadStatus")
-    Call<ResponseBody> getNoticeReadStatus(@Body QueryCondition condition);
-
-    /**
-     * 获得没有查看的通知个数
-     * @param condition groupId与userId
-     * @return 返回值
-     */
-    @POST("/microusermanagement/noticeMgt/getNoLookOverCount")
-    Call<ResponseBody> getNoLookOverCount(@Body QueryCondition condition);
+    @POST("/microusermanagement/userMgt/synNoticeReadStatusFromCloud")
+    Call<ResponseBody> synNoticeReadStatusFromCloud(@Body QueryCondition condition);
 }

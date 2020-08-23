@@ -2,7 +2,6 @@ package com.ctfww.module.user.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,21 +17,17 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.DBHelper;
-import com.ctfww.module.user.datahelper.DataHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
-
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.File;
 import java.util.Calendar;
 
@@ -76,7 +71,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         mTittle = findViewById(R.id.user_top_bar_tittle);
         mTittle.setText("我的信息");
 
-        UserInfo userInfo = DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         LogUtils.i(TAG, "initViews = " + userInfo.toString());
         mHead = findViewById(R.id.user_info_head);
         Glide.with(this).load(userInfo.getHeadUrl()).into(mHead);
@@ -135,6 +130,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         int index = view.getId();
         if (index == R.id.user_back) {
+            Airship.getInstance().synUserInfoToCloud();
             finish();
         }
         else if (index == mUpdateHead.getId()) {
@@ -145,10 +141,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         else if (index == mUpdateNickname.getId()) {
             Intent intent = new Intent(this, OneValSetActivity.class);
             intent.putExtra("type", "nickname");
-            UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-            String val = userInfo.getNickName();
-            intent.putExtra("value", !TextUtils.isEmpty(val) && !"null".equals(val) ? val : "");
-            startActivityForResult(intent, REQUEST_CODE_SET_ONE_VAL);
+            startActivity(intent);
         }
         else if (index == mUpdateGender.getId()) {
             SelectGenderDialog dlg = new SelectGenderDialog();
@@ -156,18 +149,12 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         }
         else if (index == mUpdateMobile.getId()) {
             Intent intent = new Intent(this, UpdateMobileActivity.class);
-            UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-            intent.putExtra("mobile", userInfo.getMobile());
-            intent.putExtra("password", userInfo.getPassword());
-            startActivityForResult(intent, REQUEST_CODE_UPDATE_MOBILE);
+            startActivity(intent);
         }
         else if (index == mUpdateEmail.getId()) {
             Intent intent = new Intent(this, OneValSetActivity.class);
             intent.putExtra("type", "email");
-            UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-            String val = userInfo.getEmail();
-            intent.putExtra("value", !TextUtils.isEmpty(val) && !"null".equals(val) ? val : "");
-            startActivityForResult(intent, REQUEST_CODE_SET_ONE_VAL);
+            startActivity(intent);
         }
         else if (index == mUpdateBirthday.getId()) {
             UpdateBirthdayDialog dlg = new UpdateBirthdayDialog();
@@ -194,34 +181,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SET_ONE_VAL) {
-            if (resultCode==RESULT_OK) {
-                final String key = data.getStringExtra("key");
-                final String val = data.getStringExtra("value");
-                if ("nickname".equals(key)) {
-                    UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-                    userInfo.setNickName(val);
-                    userInfo.setRegisterTimestamp(System.currentTimeMillis());
-                    updateUserInfo(userInfo, "nickName");
-                }
-                else if ("email".equals(key)) {
-                    UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-                    userInfo.setEmail(val);
-                    userInfo.setRegisterTimestamp(System.currentTimeMillis());
-                    updateUserInfo(userInfo, "email");
-                }
-            }
-        }
-        else if (requestCode == REQUEST_CODE_UPDATE_MOBILE) {
-            if (resultCode==RESULT_OK) {
-                String mobile = data.getStringExtra("mobile");
-                UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-                userInfo.setMobile(mobile);
-                userInfo.setRegisterTimestamp(System.currentTimeMillis());
-                updateUserInfo(userInfo, "mobile");
-            }
-        }
-        else if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
+        if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
             Uri uri = data.getData();
             String filePath = FileUtils.getRealPathFromUri(this, uri);
             Bitmap bitmapSrc = ImageUtils.getBitmap(new File(filePath));
@@ -237,30 +197,32 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onGenderSelected(boolean isMale) {
         int gender = isMale ? 2 : 1;
-        UserInfo userInfo = DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         userInfo.setGender(gender);
-        userInfo.setRegisterTimestamp(System.currentTimeMillis());
-        updateUserInfo(userInfo, "gender");
+        userInfo.setTimeStamp(System.currentTimeMillis());
+        userInfo.setSynTag("modify");
+        DBHelper.getInstance().updateUser(userInfo);
     }
 
     @Override
     public int genderType() {
-        UserInfo userInfo = DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         return userInfo.getGender();
     }
 
     @Override
     public void onSelected(int year, int month, int day) {
         String birthday = "" + year + "-" + month + "-" + day;
-        UserInfo userInfo = DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         userInfo.setBirthday(birthday);
-        userInfo.setRegisterTimestamp(System.currentTimeMillis());
-        updateUserInfo(userInfo, "birthday");
+        userInfo.setTimeStamp(System.currentTimeMillis());
+        userInfo.setSynTag("modify");
+        DBHelper.getInstance().updateUser(userInfo);
     }
 
     @Override
     public Object getBirthday() {
-        UserInfo userInfo = DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         String birthday = userInfo.getBirthday();
         if (TextUtils.isEmpty(birthday) || "null".equals(birthday) || GlobeFun.getKeyCount(birthday, '-') != 2) {
             int[] arr = new int[3];
@@ -286,73 +248,19 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onSuccess(Object obj) {
                 String url = (String)obj;
-                updateHead(url, filePath);
-            }
-
-            @Override
-            public void onError(int code) {
-
-            }
-        });
-    }
-
-    private void updateHead(final String url, final String filePath) {
-        final UserInfo userInfo = DataHelper.getInstance().getUserInfo();
-        userInfo.setHeadUrl(url);
-        userInfo.setModifyTimestamp(System.currentTimeMillis());
-        NetworkHelper.getInstance().updateUserInfo(userInfo, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                userInfo.setSynTag("cloud");
-                DBHelper.getInstance().updateUser(userInfo);
-                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-                mHead.setImageBitmap(bitmap);
-                EventBus.getDefault().post(new MessageEvent("head_url"));
-            }
-
-            @Override
-            public void onError(int code) {
+                Glide.with(UserInfoActivity.this).load(url).into(mHead);
+                UserInfo userInfo = DBQuickEntry.getSelfInfo();
+                userInfo.setHeadUrl(url);
+                userInfo.setTimeStamp(System.currentTimeMillis());
                 userInfo.setSynTag("modify");
                 DBHelper.getInstance().updateUser(userInfo);
-                LogUtils.i(TAG, "updateHead faile: code = " + code);
+            }
+
+            @Override
+            public void onError(int code) {
+
             }
         });
-    }
-
-    private void updateUserInfo(final UserInfo userInfo, final String type) {
-        NetworkHelper.getInstance().updateUserInfo(userInfo,
-                new IUIDataHelperCallback() {
-                    @Override
-                    public void onSuccess(Object obj) {
-                        userInfo.setSynTag("cloud");
-                        DBHelper.getInstance().updateUser(userInfo);
-                        if ("nickName".equals(type)) {
-                            mNickname.setText(userInfo.getNickName());
-                            LogUtils.i(TAG, "updateUserInfo: 昵称更新成功");
-                        }
-                        else if ("gender".equals(type)){
-                            mGender.setText(userInfo.getGender() == 1 ? "女" : "男");
-                            LogUtils.i(TAG, "updateUserInfo: 性别更新成功");
-                        }
-                        else if ("email".equals(type)){
-                            mEmail.setText(userInfo.getEmail());
-                            LogUtils.i(TAG, "updateUserInfo: 邮箱更新成功");
-                        }
-                        else if ("birthday".equals(type)){
-                            mBirthday.setText(userInfo.getBirthday());
-                            LogUtils.i(TAG, "updateUserInfo: 生日更新成功");
-                        }
-                        else if ("mobile".equals(type)){
-                            mMobile.setText(userInfo.getMobile());
-                            LogUtils.i(TAG, "updateUserInfo: 电话更新成功");
-                        }
-                    }
-
-                    @Override
-                    public void onError(int code) {
-                        ToastUtils.showShort("updateUserInfo: 更新失败，请确认网络是否正常！");
-                    }
-                });
     }
 
     @Override

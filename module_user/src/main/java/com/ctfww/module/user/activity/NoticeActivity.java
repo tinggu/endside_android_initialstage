@@ -1,13 +1,8 @@
 package com.ctfww.module.user.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,19 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.adapter.User2GroupAdapter;
 import com.ctfww.module.user.adapter.UserNoticeListAdapter;
-import com.ctfww.module.user.datahelper.NetworkHelper;
-import com.ctfww.module.user.entity.GroupUserInfo;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.NoticeInfo;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 @Route(path = "/user/notice")
@@ -41,7 +34,6 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
 
     private RecyclerView mNoticeListView;
     private UserNoticeListAdapter mNoticeListAdapter;
-    private List<NoticeInfo> mNoticeInfoList = new ArrayList<>();
 
     private TextView mNoNoticePrompt;
 
@@ -51,6 +43,9 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.user_notice_activity);
         initViews();
         setOnClickListener();
+
+        EventBus.getDefault().register(this);
+        Airship.getInstance().synNoticeInfoFromCloud();
     }
 
     private void initViews() {
@@ -64,13 +59,12 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
         LinearLayoutManager layoutManager= new LinearLayoutManager(this);
         mNoticeListView.setLayoutManager(layoutManager);
 
-        mNoticeListAdapter = new UserNoticeListAdapter(mNoticeInfoList, this);
+        List<NoticeInfo> noticeInfoList = DBQuickEntry.getWorkingNoticeList();
+        addNoticeReadStatus(noticeInfoList);
+        mNoticeListAdapter = new UserNoticeListAdapter(noticeInfoList, this);
         mNoticeListView.setAdapter(mNoticeListAdapter);
 
         mNoticeListView.setVisibility(View.GONE);
-
-        LogUtils.i(TAG, "aaaaaaaaaaaaaaaaaaaaaaa");
-        getNotice();
     }
 
     private void setOnClickListener() {
@@ -81,57 +75,39 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         int id = v.getId();
         if (id == mBack.getId()) {
+            Airship.getInstance().synNoticeInfoToCloud();
             finish();
         }
     }
 
-    private void getNotice() {
-        NetworkHelper.getInstance().getNotice(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mNoticeInfoList = (ArrayList<NoticeInfo>)obj;
-                if (mNoticeInfoList.isEmpty()) {
-                    mNoticeListView.setVisibility(View.GONE);
-                    mNoNoticePrompt.setVisibility(View.VISIBLE);
-                    return;
-                }
-
-                mNoticeListAdapter.setList(mNoticeInfoList);
-                mNoticeListAdapter.notifyDataSetChanged();
-                mNoticeListView.setVisibility(View.VISIBLE);
-                mNoNoticePrompt.setVisibility(View.GONE);
-
-                addNoticeReadStatus();
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getNotice fail: code = " + code);
-            }
-        });
-    }
-
-    private void addNoticeReadStatus() {
-        for (int i = 0; i < mNoticeInfoList.size(); ++i) {
-            final NoticeInfo noticeInfo = mNoticeInfoList.get(i);
+    private boolean addNoticeReadStatus(List<NoticeInfo> noticeInfoList) {
+        boolean ret = false;
+        for (int i = 0; i < noticeInfoList.size(); ++i) {
+            NoticeInfo noticeInfo = noticeInfoList.get(i);
             if (noticeInfo.getFlag() != 0) {
                 continue;
             }
 
-            LogUtils.i(TAG, "addNoticeReadStatus: noticeInfo = " + noticeInfo.toString());
-            NetworkHelper.getInstance().addNoticeReadStatus(noticeInfo.getNoticeId(), 1, new IUIDataHelperCallback() {
-                @Override
-                public void onSuccess(Object obj) {
-                    noticeInfo.setFlag(1);
-                    mNoticeListAdapter.setList(mNoticeInfoList);
-                    mNoticeListAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onError(int code) {
-                    LogUtils.i(TAG, "addNoticeReadStatus fail: code = " + code);
-                }
-            });
+            noticeInfo.setFlag(1);
+            ret = true;
         }
+
+        return ret;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessage(MessageEvent messageEvent) {
+        if ("finish_notice_syn".equals(messageEvent.getMessage())) {
+            List<NoticeInfo> noticeInfoList = DBQuickEntry.getWorkingNoticeList();
+            addNoticeReadStatus(noticeInfoList);
+            mNoticeListAdapter.setList(noticeInfoList);
+            mNoticeListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

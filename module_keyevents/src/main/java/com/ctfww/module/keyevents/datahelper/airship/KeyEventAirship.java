@@ -58,7 +58,8 @@ public class KeyEventAirship {
             return;
         }
 
-        long startTime = SPStaticUtils.getLong("keyevent_syn_time_stamp_cloud", CommonAirship.getDefaultStartTime());
+        String key = "keyevent_syn_time_stamp_cloud" + "_" + groupId;
+        long startTime = SPStaticUtils.getLong(key, CommonAirship.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
@@ -76,7 +77,7 @@ public class KeyEventAirship {
                     }
                 }
 
-                SPStaticUtils.put("keyevent_syn_time_stamp_cloud", condition.getEndTime());
+                SPStaticUtils.put(key, condition.getEndTime());
             }
 
             @Override

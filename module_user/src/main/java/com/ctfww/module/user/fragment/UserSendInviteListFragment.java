@@ -19,6 +19,7 @@ import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.UserSendInviteListAdapter;
 import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,9 +33,8 @@ public class UserSendInviteListFragment extends Fragment {
     private final static String TAG = "UserInviteListFragment";
 
     TextView mNoInvitePrompt;
-    RecyclerView mInviteListView;
+    RecyclerView mUserSendInviteListView;
     UserSendInviteListAdapter mUserSendInviteListAdapter;
-    UserSendInviteListFragmentData mUserSendInviteListFragmentData = new UserSendInviteListFragmentData();
 
     private View mV;
 
@@ -47,66 +47,42 @@ public class UserSendInviteListFragment extends Fragment {
             EventBus.getDefault().register(this);
         }
 
-        getInviteList();
         return mV;
     }
 
     private void initViews(View v) {
         mNoInvitePrompt = v.findViewById(R.id.group_prompt_no_invite);
-        mNoInvitePrompt.setVisibility(View.GONE);
-        mInviteListView = v.findViewById(R.id.group_invite_list);
-        mInviteListView.setVisibility(View.GONE);
+        mUserSendInviteListView = v.findViewById(R.id.group_invite_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mInviteListView.setLayoutManager(layoutManager);
-        mUserSendInviteListAdapter = new UserSendInviteListAdapter(mUserSendInviteListFragmentData.getGroupInviteInfoList());
-        mInviteListView.setAdapter(mUserSendInviteListAdapter);
-    }
-
-    private void getInviteList() {
-        NetworkHelper.getInstance().getSendInvite(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                List<GroupInviteInfo> groupInviteInfoList = (ArrayList<GroupInviteInfo>)obj;
-                mUserSendInviteListFragmentData.setGroupInviteInfoList(groupInviteInfoList);
-                mUserSendInviteListAdapter.setList(mUserSendInviteListFragmentData.getGroupInviteInfoList());
-                mUserSendInviteListAdapter.notifyDataSetChanged();
-                if (groupInviteInfoList.isEmpty()) {
-                    mInviteListView.setVisibility(View.GONE);
-                    mNoInvitePrompt.setVisibility(View.VISIBLE);
-                }
-                else {
-                    mInviteListView.setVisibility(View.VISIBLE);
-                    mNoInvitePrompt.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getInviteList: code = " + code);
-                if (mUserSendInviteListFragmentData.getGroupInviteInfoList().isEmpty()) {
-                    mInviteListView.setVisibility(View.GONE);
-                    mNoInvitePrompt.setVisibility(View.VISIBLE);
-                }
-                else {
-                    mInviteListView.setVisibility(View.VISIBLE);
-                    mNoInvitePrompt.setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
-    public void deleteData(int position) {
-        mUserSendInviteListFragmentData.delete(position);
-        mUserSendInviteListAdapter.setList(mUserSendInviteListFragmentData.getGroupInviteInfoList());
-        mUserSendInviteListAdapter.notifyDataSetChanged();
+        mUserSendInviteListView.setLayoutManager(layoutManager);
+        List<GroupInviteInfo> inviteInfoList = DBQuickEntry.getSelfSendInviteList();
+        mUserSendInviteListAdapter = new UserSendInviteListAdapter(inviteInfoList);
+        mUserSendInviteListView.setAdapter(mUserSendInviteListAdapter);
+        if (inviteInfoList.isEmpty()) {
+            mNoInvitePrompt.setVisibility(View.VISIBLE);
+            mUserSendInviteListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoInvitePrompt.setVisibility(View.GONE);
+            mUserSendInviteListView.setVisibility(View.VISIBLE);
+        }
     }
 
     //处理事件
     @Subscribe(threadMode = ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
-        String msg = messageEvent.getMessage();
-        if ("user_delete_send_invite".equals(msg)) {
-            deleteData(GlobeFun.parseInt(messageEvent.getValue()));
+        if ("finish_invite_syn".equals(messageEvent.getMessage())) {
+            List<GroupInviteInfo> inviteInfoList = DBQuickEntry.getSelfSendInviteList();
+            mUserSendInviteListAdapter.setList(inviteInfoList);
+            mUserSendInviteListAdapter.notifyDataSetChanged();
+            if (inviteInfoList.isEmpty()) {
+                mNoInvitePrompt.setVisibility(View.VISIBLE);
+                mUserSendInviteListView.setVisibility(View.GONE);
+            }
+            else {
+                mNoInvitePrompt.setVisibility(View.GONE);
+                mUserSendInviteListView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

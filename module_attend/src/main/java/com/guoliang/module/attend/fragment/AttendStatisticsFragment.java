@@ -75,7 +75,7 @@ public class AttendStatisticsFragment extends Fragment {
         mGroupSelect = v.findViewById(R.id.top_select);
         mGroupSelect.setVisibility(View.VISIBLE);
         mGroupName = v.findViewById(R.id.top_tittle);
-        String groupName = SPStaticUtils.getString("working_group_name");
+        String groupName = com.;
         if (TextUtils.isEmpty(groupName)) {
             mGroupName.setText("请选择群组");
         }
@@ -214,9 +214,9 @@ public class AttendStatisticsFragment extends Fragment {
             mKeyEventSnatchFragment.getDoingKeyEvent();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
-            String groupName= SPStaticUtils.getString("working_group_name");
+            String groupName= com.;
             LogUtils.i(TAG, "onGetMessage: groupName = " + groupName);
-            mGroupName.setText(SPStaticUtils.getString("working_group_name"));
+            mGroupName.setText(com.);
         }
     }
 

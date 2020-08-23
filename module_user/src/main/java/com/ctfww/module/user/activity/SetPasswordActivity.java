@@ -20,9 +20,10 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.network.NetworkConst;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.DataHelper;
+import com.ctfww.module.user.datahelper.Utils;
 import com.ctfww.module.user.datahelper.NetworkHelper;
-import com.ctfww.module.user.datahelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener{
@@ -90,7 +91,7 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
         else if (i == mFinish.getId()) { // 完成
             KeyboardUtils.hideSoftInput(this);
 
-            if (!DataHelper.getInstance().isValidSMS(mSms.getText().toString()) || !DataHelper.getInstance().isValidPassword(mPassword.getText().toString())) {
+            if (!Utils.isValidSMS(mSms.getText().toString()) || !Utils.isValidPassword(mPassword.getText().toString())) {
                 ToastUtils.showShort(R.string.user_toast_valid_mobile_or_sms);
                 return;
             }
@@ -157,9 +158,9 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
         NetworkHelper.getInstance().loginBySMS(mMobile.getText().toString(), mSms.getText().toString(), new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                UserInfo userInfo = DataHelper.getInstance().getUserInfo();
+                UserInfo userInfo = DBQuickEntry.getSelfInfo();
                 userInfo.setPassword(mPassword.getText().toString());
-                userInfo.setModifyTimestamp(System.currentTimeMillis());
+                userInfo.setTimeStamp(System.currentTimeMillis());
                 userInfo.setSynTag("modify");
                 DBHelper.getInstance().updateUser(userInfo);
                 ARouter.getInstance().build(getNavigationName()).navigation();

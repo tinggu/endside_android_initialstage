@@ -13,16 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.utils.MaxTextTwoLengthFilter;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.entity.UserInfo;
 
 public class OneValSetActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView mBack;
-    private TextView mTittle;
     private TextView mFinish;
     private EditText mVal;
-    private TextView mGrayElseDesc;
 
     private String key;
-    private String val;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -36,47 +36,53 @@ public class OneValSetActivity extends AppCompatActivity implements View.OnClick
 
     private void initViews() {
         mBack = findViewById(R.id.user_back);
-        mTittle = findViewById(R.id.user_top_bar_tittle);
+        TextView tittle = findViewById(R.id.user_top_bar_tittle);
         mFinish = findViewById(R.id.user_top_bar_right_btn);
         mVal = findViewById(R.id.user_line_edit);
-        mGrayElseDesc = findViewById(R.id.gray_else_desc);
+        TextView grayElseDesc = findViewById(R.id.gray_else_desc);
 
         if (TextUtils.isEmpty(key)) {
             return;
         }
 
-        if ("nickname".equals(key)) {
-            mTittle.setText("修改昵称");
-            mGrayElseDesc.setText("限2~20个字符，一个汉字为2个字符");
-            mVal.setFilters(new MaxTextTwoLengthFilter[]{new MaxTextTwoLengthFilter( this,20)});
-        }
-        else if ("email".equals(key)) {
-            mTittle.setText("绑定邮箱");
-            mGrayElseDesc.setText("请确保邮箱格式正确");
-        }
-        else if ("wechat".equals(key)) {
-            mTittle.setText("绑定微信");
-            mGrayElseDesc.setText("请确保输入正确");
-        }
-        else if ("blog".equals(key)) {
-            mTittle.setText("绑定微博");
-            mGrayElseDesc.setText("请确保输入正确");
-        }
-        else if ("qq".equals(key)) {
-            mTittle.setText("绑定QQ");
-            mGrayElseDesc.setText("请确保输入正确");
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
+        if (userInfo == null) {
+            return;
         }
 
-        if (!TextUtils.isEmpty(val)) {
-            mVal.setText(val);
-            mVal.setSelection(mVal.getText().length());
+        if ("nickname".equals(key)) {
+            tittle.setText("修改昵称");
+            grayElseDesc.setText("限2~20个字符，一个汉字为2个字符");
+            mVal.setFilters(new MaxTextTwoLengthFilter[]{new MaxTextTwoLengthFilter( this,20)});
+            mVal.setText(userInfo.getNickName());
         }
+        else if ("email".equals(key)) {
+            tittle.setText("绑定邮箱");
+            grayElseDesc.setText("请确保邮箱格式正确");
+            mVal.setText(userInfo.getEmail());
+        }
+        else if ("wechat".equals(key)) {
+            tittle.setText("绑定微信");
+            grayElseDesc.setText("请确保输入正确");
+            mVal.setText(userInfo.getWechatNum());
+        }
+        else if ("blog".equals(key)) {
+            tittle.setText("绑定微博");
+            grayElseDesc.setText("请确保输入正确");
+            mVal.setText(userInfo.getBlogNum());
+        }
+        else if ("qq".equals(key)) {
+            tittle.setText("绑定QQ");
+            grayElseDesc.setText("请确保输入正确");
+            mVal.setText(userInfo.getQqNum());
+        }
+
+        mVal.setSelection(mVal.getText().length());
     }
 
     private void processIntent() {
         Intent intent = this.getIntent();
         key = intent.getStringExtra("type");
-        val = intent.getStringExtra("value");
     }
 
     private void setOnClickListener() {
@@ -91,46 +97,57 @@ public class OneValSetActivity extends AppCompatActivity implements View.OnClick
             finish();
         }
         else if (id == mFinish.getId()) {
-            String email = mVal.getText().toString();
+            UserInfo userInfo = DBQuickEntry.getSelfInfo();
             if ("email".equals(key)) {
-                if (!isValidEmail(email)) {
+                if (!isValidEmail(mVal.getText().toString())) {
                     ToastUtils.showShort("无效邮箱！");
                     return;
                 }
+
+                userInfo.setEmail(mVal.getText().toString());
             }
 
             if ("nickname".equals(key)) {
-                if (!isValidNickname(email)) {
+                if (!isValidNickname(mVal.getText().toString())) {
                     ToastUtils.showShort("无效昵称！");
                     return;
                 }
+
+                userInfo.setNickName(mVal.getText().toString());
             }
 
             if ("wechat".equals(key)) {
-                if (!isValidWechat(email)) {
+                if (!isValidWechat(mVal.getText().toString())) {
                     ToastUtils.showShort("无效微信！");
                     return;
                 }
+
+                userInfo.setWechatNum(mVal.getText().toString());
             }
 
             if ("blog".equals(key)) {
-                if (!isValidWechat(email)) {
+                if (!isValidBlog(mVal.getText().toString())) {
                     ToastUtils.showShort("无效博客！");
                     return;
                 }
+
+                userInfo.setBlogNum(mVal.getText().toString());
             }
 
             if ("qq".equals(key)) {
-                if (!isValidWechat(email)) {
+                if (!isValidQq(mVal.getText().toString())) {
                     ToastUtils.showShort("无效QQ！");
                     return;
                 }
+
+                userInfo.setQqNum(mVal.getText().toString());
             }
 
-            Intent intent = new Intent();
-            intent.putExtra("key", key);
-            intent.putExtra("value", mVal.getText().toString());
-            setResult(RESULT_OK, intent);
+            userInfo.setTimeStamp(System.currentTimeMillis());
+            userInfo.setSynTag("modify");
+
+            DBHelper.getInstance().updateUser(userInfo);
+
             finish();
         }
     }

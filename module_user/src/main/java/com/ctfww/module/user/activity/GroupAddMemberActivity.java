@@ -9,16 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.Utils;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupInviteInfo;
-
-import org.greenrobot.eventbus.EventBus;
+import com.ctfww.module.user.entity.UserInfo;
 
 @Route(path = "/user/inviteMember")
 public class GroupAddMemberActivity extends AppCompatActivity implements View.OnClickListener {
@@ -59,20 +59,31 @@ public class GroupAddMemberActivity extends AppCompatActivity implements View.On
             finish();
         }
         else if (id == mConfirm.getId()) {
-            NetworkHelper.getInstance().addInvite(mGroupId, mMobile.getText().toString(), new IUIDataHelperCallback() {
-                @Override
-                public void onSuccess(Object obj) {
-                    ToastUtils.showShort("成功发送邀请，等待对方接受");
-                    GroupInviteInfo groupInviteInfo = (GroupInviteInfo)obj;
-                    EventBus.getDefault().post(new MessageEvent("send_invite_success", GsonUtils.toJson(groupInviteInfo)));
-                    finish();
-                }
+            if (!Utils.isValidMobileNum(mMobile.getText().toString())) {
+                DialogUtils.onlyPrompt("请输入有效电话号码！", this);
+                return;
+            }
 
-                @Override
-                public void onError(int code) {
-                    ToastUtils.showShort("邀请失败，请确认网络是否正常");
-                }
-            });
+            GroupInviteInfo groupInviteInfo = new GroupInviteInfo();
+            UserInfo userInfo = DBQuickEntry.getSelfInfo();
+            GroupInfo groupInfo = DBQuickEntry.getWorkingGroup();
+            groupInviteInfo.setFromUserId(userInfo.getUserId());
+            groupInviteInfo.setToUserId(mMobile.getText().toString());
+            groupInviteInfo.setGroupId(groupInfo.getGroupId());
+            groupInviteInfo.setTimeStamp(System.currentTimeMillis());
+            groupInviteInfo.setStatus("send");
+            groupInviteInfo.setFromMobile(userInfo.getMobile());
+            groupInviteInfo.setFromNickName(userInfo.getNickName());
+            groupInviteInfo.setToUserId(mMobile.getText().toString());
+            groupInviteInfo.setToNickName("");
+            groupInviteInfo.setGroupName(groupInfo.getGroupName());
+            groupInviteInfo.setSynTag("new");
+            groupInviteInfo.combineInviteId();
+
+            DBHelper.getInstance().addInvite(groupInviteInfo);
+            Airship.getInstance().synNoticeInfoToCloud();
+
+            finish();
         }
     }
 }

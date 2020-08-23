@@ -25,12 +25,13 @@ import com.ctfww.commonlib.location.MyLocation;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.fingerprint.entity.DistResult;
-import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
-import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
+import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
 import com.ctfww.module.keyevents.fragment.KeyEventReportFragment;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -240,7 +241,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
             mKeepWatchSigninInfo.setDeskType(desk.getDeskType());
         }
 
-        UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         if (userInfo != null) {
             mKeepWatchSigninInfo.setNickName(userInfo.getNickName());
         }
@@ -253,7 +254,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
         mKeepWatchSigninInfo.setSynTag("new");
         DBHelper.getInstance().addKeepWatchSignin(mKeepWatchSigninInfo);
 
-        Airship.getInstance().synKeepWatchSigninToCloud();
+        com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchSigninToCloud();
 
         ToastUtils.showShort("" + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
         LogUtils.i(TAG, "processSignin: " + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");

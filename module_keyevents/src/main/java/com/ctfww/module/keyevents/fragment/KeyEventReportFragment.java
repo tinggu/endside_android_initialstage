@@ -35,7 +35,8 @@ import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.activity.EventPreviewActivity;
 import com.ctfww.module.keyevents.activity.SoundRecord2Activity;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.keyevents.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 import java.io.File;
@@ -364,7 +365,7 @@ public class KeyEventReportFragment extends Fragment{
 
         keyEvent.setSynTag("new");
         DBHelper.getInstance().addKeyEvent(keyEvent);
-        Airship.getInstance().synKeyEventToCloud();
+        com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventToCloud();
 
         KeyEventTrace keyEventTrace = new KeyEventTrace();
         keyEventTrace.setEventId(keyEvent.getEventId());
@@ -372,7 +373,7 @@ public class KeyEventReportFragment extends Fragment{
         keyEventTrace.setGroupId(keyEvent.getGroupId());
         keyEventTrace.setDeskId(keyEvent.getDeskId());
         keyEventTrace.setMatchLevel("default");
-        UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
         if (userInfo == null) {
             return true;
         }

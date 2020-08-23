@@ -59,7 +59,7 @@ public class UserSelectUserListAdapter extends RecyclerView.Adapter<RecyclerView
             @Override
             public void onClick(View view) {
                 mUserId = groupUserInfo.getUserId();
-                EventBus.getDefault().post(new MessageEvent("select_user", GsonUtils.toJson(groupUserInfo)));
+                notifyDataSetChanged();
             }
         });
     }
@@ -67,6 +67,10 @@ public class UserSelectUserListAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public String getUserId() {
+        return mUserId;
     }
 }
 

@@ -31,6 +31,8 @@ import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.adapter.KeyEventTraceListAdapter;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.UserInfo;
 
@@ -186,7 +188,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             keyEventTrace.setGroupId(SPStaticUtils.getString("working_group_id"));
             keyEventTrace.setDeskId(mKeyEvent.getDeskId());
             keyEventTrace.setMatchLevel("default");
-            UserInfo userInfo = com.ctfww.module.user.datahelper.DataHelper.getInstance().getUserInfo();
+            UserInfo userInfo = DBQuickEntry.getSelfInfo();
             if (userInfo == null) {
                 return;
             }
@@ -221,7 +223,11 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             getActionList(mKeyEvent.getEventId());
         }
         else if ("selected_user".equals(messageEvent.getMessage())) {
-            GroupUserInfo groupUserInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupUserInfo.class);
+            String userId = messageEvent.getValue();
+            GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser(userId);
+            if (groupUserInfo == null) {
+                return;
+            }
 
             KeyEventTrace keyEventTrace = new KeyEventTrace();
             keyEventTrace.setEventId(mKeyEvent.getEventId());
@@ -356,7 +362,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         }
 
         String userId = SPStaticUtils.getString("user_open_id");
-        String role = SPStaticUtils.getString("role");
+        String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
         KeyEventTrace keyEventTrace = keyEventTraceList.get(keyEventTraceList.size() - 1);
         if ("end".equals(keyEventTrace.getStatus())) {
             mOperateLL.setVisibility(View.GONE);

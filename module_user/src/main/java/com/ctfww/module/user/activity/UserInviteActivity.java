@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.ctfww.module.user.datahelper.airship.Airship;
 import com.google.android.material.tabs.TabLayout;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.fragment.UserReceiveInviteListFragment;
@@ -33,6 +34,8 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.user_invite_activity);
         initViews();
         setOnClickListener();
+
+        Airship.getInstance().synInviteInfoFromCloud();
     }
 
     private void initViews() {
@@ -109,6 +112,7 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         int id = v.getId();
         if (id == mBack.getId()) {
+            Airship.getInstance().synInviteInfoToCloud();
             finish();
         }
     }

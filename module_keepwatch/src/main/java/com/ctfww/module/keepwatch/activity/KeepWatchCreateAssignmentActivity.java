@@ -20,12 +20,13 @@ import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.datapicker.data.DataPicker;
 import com.ctfww.module.datapicker.time.HourAndMinutePicker;
-import com.ctfww.module.keepwatch.DataHelper.airship.Airship;
-import com.ctfww.module.keepwatch.DataHelper.dbhelper.DBHelper;
+import com.ctfww.module.keepwatch.datahelper.airship.Airship;
+import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
 import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchRouteSummary;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.google.gson.reflect.TypeToken;
 
@@ -160,7 +161,12 @@ public class KeepWatchCreateAssignmentActivity extends AppCompatActivity impleme
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
         if ("selected_user".equals(messageEvent.getMessage())) {
-            mUserInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupUserInfo.class);
+            String userId = messageEvent.getValue();
+            mUserInfo = DBQuickEntry.getWorkingGroupUser(userId);
+            if (mUserInfo == null) {
+                return;
+            }
+
             mNickName.setText(mUserInfo.getNickName());
         }
     }

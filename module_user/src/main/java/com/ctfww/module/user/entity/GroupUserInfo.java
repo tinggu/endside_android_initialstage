@@ -1,41 +1,80 @@
 package com.ctfww.module.user.entity;
 
-public class GroupUserInfo {
+import com.ctfww.commonlib.entity.EntityInterface;
+import com.ctfww.commonlib.utils.GlobeFun;
+
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
+import org.greenrobot.greendao.annotation.Generated;
+
+@Entity
+public class GroupUserInfo implements EntityInterface {
+    @Id
+    private String id;
+
+    @Index
+    private String groupId;
+    @Index
     private String userId;
     private String nickName;
     private String mobile;
     private String headUrl;
     private String role;
 
+    private long timeStamp;
+    private String status;
+
+    @Index
+    private String synTag;
+
+    @Generated(hash = 1347609944)
+    public GroupUserInfo(String id, String groupId, String userId, String nickName,
+            String mobile, String headUrl, String role, long timeStamp,
+            String status, String synTag) {
+        this.id = id;
+        this.groupId = groupId;
+        this.userId = userId;
+        this.nickName = nickName;
+        this.mobile = mobile;
+        this.headUrl = headUrl;
+        this.role = role;
+        this.timeStamp = timeStamp;
+        this.status = status;
+        this.synTag = synTag;
+    }
+
+    @Generated(hash = 397523636)
+    public GroupUserInfo() {
+    }
+
     public String toString() {
-        return "userId = " + userId
+        return "group = " + groupId
+                + ", userId = " + userId
                 + ", nickName = " + nickName
                 + ", mobile = " + mobile
                 + ", headUrl = " + headUrl
                 + ", role = " + role;
     }
 
-    public GroupUserInfo() {
-
+    public void combineId() {
+        id = GlobeFun.getSHA(groupId + userId);
     }
 
-    public GroupUserInfo clone() {
-        GroupUserInfo groupUserInfo = new GroupUserInfo();
-        groupUserInfo.userId = userId;
-        groupUserInfo.nickName = nickName;
-        groupUserInfo.mobile = mobile;
-        groupUserInfo.headUrl = headUrl;
-        groupUserInfo.role = role;
-
-        return groupUserInfo;
+    public String getId() {
+        return this.id;
     }
 
-    public GroupUserInfo(String userId, String nickName, String mobile, String headUrl, String role) {
-        this.userId = userId;
-        this.nickName = nickName;
-        this.mobile = mobile;
-        this.headUrl = headUrl;
-        this.role = role;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getGroupId() {
+        return this.groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getUserId() {
@@ -55,7 +94,7 @@ public class GroupUserInfo {
     }
 
     public String getMobile() {
-        return mobile;
+        return this.mobile;
     }
 
     public void setMobile(String mobile) {
@@ -76,5 +115,29 @@ public class GroupUserInfo {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getSynTag() {
+        return this.synTag;
+    }
+
+    public void setSynTag(String synTag) {
+        this.synTag = synTag;
+    }
+
+    public long getTimeStamp() {
+        return this.timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

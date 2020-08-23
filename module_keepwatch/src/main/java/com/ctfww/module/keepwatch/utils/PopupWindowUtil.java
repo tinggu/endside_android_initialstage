@@ -43,7 +43,7 @@ public class PopupWindowUtil {
         LinearLayout mAddRouteLL = contentView.findViewById(R.id.keepwatch_add_route_ll);
         LinearLayout mCreateAssignmentLL = contentView.findViewById(R.id.keepwatch_create_assignment_ll);
         LinearLayout mCreateNoticeLL = contentView.findViewById(R.id.keepwatch_create_notice_ll);
-        if (!"admin".equals(SPStaticUtils.getString("role"))) {
+        if (!"admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup())) {
             mInviteMemberLL.setVisibility(View.GONE);
             mAddDeskLL.setVisibility(View.GONE);
             mAddRouteLL.setVisibility(View.GONE);

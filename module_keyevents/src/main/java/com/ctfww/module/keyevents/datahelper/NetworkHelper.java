@@ -193,7 +193,7 @@ public class NetworkHelper {
             return;
         }
 
-        String userId = "admin".equals(SPStaticUtils.getString("role")) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
 
         CloudClient.getInstance().getNoEndKeyEventCount(groupId, userId, new ICloudCallback() {
             @Override
@@ -222,7 +222,7 @@ public class NetworkHelper {
     }
 
     public void getEndKeyEventList(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String userId = "admin".equals(SPStaticUtils.getString("role")) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
         getEndKeyEventList(startTime, endTime, userId, callback);
     }
 
@@ -259,7 +259,7 @@ public class NetworkHelper {
             return;
         }
 
-        String userId = "admin".equals(SPStaticUtils.getString("role")) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
 
         CloudClient.getInstance().getNoEndKeyEventList(groupId, userId, new ICloudCallback() {
             @Override
@@ -288,7 +288,7 @@ public class NetworkHelper {
             return;
         }
 
-        String userId = "admin".equals(SPStaticUtils.getString("role")) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
 
         CloudClient.getInstance().getHistoryEveryDayKeyEventStatistics(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -344,7 +344,7 @@ public class NetworkHelper {
             return;
         }
 
-        String userId = "admin".equals(SPStaticUtils.getString("role")) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
         CloudClient.getInstance().getSomeOneDoingKeyEvent(groupId, userId, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {

@@ -7,8 +7,7 @@ import com.ctfww.commonlib.base.BaseApplication;
 import com.ctfww.commonlib.im.ConnectionStateMonitor;
 import com.ctfww.commonlib.network.CloudClient;
 import com.ctfww.commonlib.storage.sp.SPUtil;
-import com.ctfww.module.keepwatch.Utils;
-import com.ctfww.module.user.datahelper.Util;
+import com.ctfww.module.user.datahelper.Utils;
 
 public class KeepWatchApplication extends BaseApplication {
     private final static String TAG = "KeepWatchApplication";
@@ -26,7 +25,7 @@ public class KeepWatchApplication extends BaseApplication {
         CloudClient.getInstance().init("http://www.littlepine.cn"); // http://39.98.147.77:8888
 
         // 初始化各个业务模块的网络模块和数据库模块
-        Util.start(this);
+        Utils.start(this);
         com.ctfww.module.keepwatch.Utils.start(this);
 
         // 初始化tms
@@ -37,7 +36,7 @@ public class KeepWatchApplication extends BaseApplication {
         SDKInitializer.initialize(this);
         SDKInitializer.setCoordType(CoordType.BD09LL);
 
-        Utils.synData();
+        com.ctfww.module.keepwatch.Utils.synData();
 
         // 开启IM
         connectionStateMonitor = new ConnectionStateMonitor();
