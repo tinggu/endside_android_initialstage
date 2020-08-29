@@ -24,9 +24,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.FileInfo;
 import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.desk.entity.DeskInfo;
+import com.ctfww.module.desk.entity.RouteSummary;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchPersonTrends;
+import com.ctfww.module.keepwatch.entity.PersonTrends;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -99,7 +103,7 @@ public class KeepWatchPersonTrendsFragment extends Fragment {
         NetworkHelper.getInstance().getPersonTrends(count, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                List<KeepWatchPersonTrends> keepWatchPersonTrendsList = (List<KeepWatchPersonTrends>)obj;
+                List<PersonTrends> keepWatchPersonTrendsList = (List<PersonTrends>)obj;
                 updatePersonTrendsToUI(keepWatchPersonTrendsList);
                 LogUtils.i(TAG, "getPersonTrends success: keepWatchPersonTrendsList.size() = " + keepWatchPersonTrendsList.size());
             }
@@ -111,30 +115,44 @@ public class KeepWatchPersonTrendsFragment extends Fragment {
         });
     }
 
-    private void updatePersonTrendsToUI(List<KeepWatchPersonTrends> keepWatchPersonTrendsList) {
-        if (keepWatchPersonTrendsList.isEmpty()) {
+    private void updatePersonTrendsToUI(List<PersonTrends> personTrendsList) {
+        if (personTrendsList.isEmpty()) {
             mNoData.setVisibility(View.VISIBLE);
             mLL.setVisibility(View.GONE);
             return;
         }
 
-        KeepWatchPersonTrends keepWatchPersonTrends = keepWatchPersonTrendsList.get(0);
+        PersonTrends personTrends = personTrendsList.get(0);
 
-        if (!TextUtils.isEmpty(keepWatchPersonTrends.getHeadUrl())) {
-            Glide.with(this).load(keepWatchPersonTrends.getHeadUrl()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(mHead);
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(personTrends.getUserId());
+        if (userInfo != null) {
+            Glide.with(this).load(userInfo.getHeadUrl()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(mHead);
+            mNickName.setText(userInfo.getNickName());
         }
-//        updateHead(keepWatchPersonTrends.getHeadUrl(), keepWatchPersonTrends.getUserId());
 
-        mNickName.setText(keepWatchPersonTrends.getNickName());
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(keepWatchPersonTrends.getTimeStamp());
+        calendar.setTimeInMillis(personTrends.getTimeStamp());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         String time = String.format("%02d:%02d", hour, minute);
         mTime.setText(time);
-//        mPersonTrendsDeskType.setImageBitmap();
-        mDeskName.setText("[" + keepWatchPersonTrends.getDeskId() + "]" + "  " + keepWatchPersonTrends.getDeskName());
-        mStatus.setText(keepWatchPersonTrends.getStatusChinese());
+
+        if ("desk".equals(personTrends.getObjectType())) {
+            DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(personTrends.getGroupId(), GlobeFun.parseInt(personTrends.getObjectId()));
+            if (deskInfo != null) {
+                mDeskName.setText(deskInfo.getIdName());
+            }
+        }
+        else if ("route".equals(personTrends.getObjectType())) {
+            RouteSummary routeSummary = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(personTrends.getObjectId());
+            if (routeSummary != null) {
+                mDeskName.setText(routeSummary.getRouteName());
+            }
+        }
+        else {
+            mDeskName.setText("自由上报");
+        }
+        mStatus.setText(personTrends.getStatusChinese());
 
         mNoData.setVisibility(View.GONE);
         mLL.setVisibility(View.VISIBLE);

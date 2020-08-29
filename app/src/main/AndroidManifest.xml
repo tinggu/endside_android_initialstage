@@ -12,10 +12,6 @@
         android:networkSecurityConfig="@xml/network_config"
         android:name="com.ctfww.monitor.application.MonitorApplication">
 
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="46zOUbhuSLvdy2SkIPvhdvVcfG9szzzL"/>
-
     </application>
 
 </manifest>

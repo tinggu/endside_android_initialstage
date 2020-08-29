@@ -11,23 +11,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.desk.entity.DeskInfo;
+import com.ctfww.module.desk.entity.RouteSummary;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchPersonTrends;
+import com.ctfww.module.keepwatch.entity.PersonTrends;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.Calendar;
 import java.util.List;
 
 
 public class KeepWatchPersonTrendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<KeepWatchPersonTrends> list;
+    private List<PersonTrends> list;
     private Context mContext;
 
-    public KeepWatchPersonTrendsListAdapter(List<KeepWatchPersonTrends> list, Context context) {
+    public KeepWatchPersonTrendsListAdapter(List<PersonTrends> list, Context context) {
         this.list = list;
         mContext = context;
     }
 
-    public void setList(List<KeepWatchPersonTrends> list) {
+    public void setList(List<PersonTrends> list) {
         this.list = list;
     }
 
@@ -41,13 +45,33 @@ public class KeepWatchPersonTrendsListAdapter extends RecyclerView.Adapter<Recyc
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        KeepWatchPersonTrends keepWatchPersonTrends = list.get(position);
-        Glide.with(((KeepWatchPersonTrendsViewHolder)holder).view).load(keepWatchPersonTrends.getHeadUrl()).into(((KeepWatchPersonTrendsViewHolder)holder).head);
-        ((KeepWatchPersonTrendsViewHolder)holder).nickName.setText(keepWatchPersonTrends.getNickName());
+        PersonTrends keepWatchPersonTrends = list.get(position);
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keepWatchPersonTrends.getUserId());
+        if (userInfo != null) {
+            Glide.with(((KeepWatchPersonTrendsViewHolder)holder).view).load(userInfo.getHeadUrl()).into(((KeepWatchPersonTrendsViewHolder)holder).head);
+            ((KeepWatchPersonTrendsViewHolder)holder).nickName.setText(userInfo.getNickName());
+        }
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(keepWatchPersonTrends.getTimeStamp());
         ((KeepWatchPersonTrendsViewHolder)holder).dateTime.setText(String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
-        ((KeepWatchPersonTrendsViewHolder)holder).deskName.setText("[" + keepWatchPersonTrends.getDeskId() + "]" + "  " + keepWatchPersonTrends.getDeskName());
+
+        if ("desk".equals(keepWatchPersonTrends.getObjectType())) {
+            DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keepWatchPersonTrends.getGroupId(), GlobeFun.parseInt(keepWatchPersonTrends.getObjectId()));
+            if (deskInfo != null) {
+                ((KeepWatchPersonTrendsViewHolder)holder).deskName.setText(deskInfo.getIdName());
+            }
+        }
+        else if ("route".equals(keepWatchPersonTrends.getObjectType())) {
+            RouteSummary routeSummary = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(keepWatchPersonTrends.getObjectId());
+            if (routeSummary != null) {
+                ((KeepWatchPersonTrendsViewHolder)holder).deskName.setText(routeSummary.getRouteName());
+            }
+        }
+        else {
+            ((KeepWatchPersonTrendsViewHolder)holder).deskName.setText("自由上报");
+        }
+
         ((KeepWatchPersonTrendsViewHolder)holder).status.setText(keepWatchPersonTrends.getStatusChinese());
     }
 

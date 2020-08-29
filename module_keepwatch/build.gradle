@@ -90,19 +90,21 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api config_dependencies["recyclerview"]
     api project(':commonlib')
+    api project(':module_baidumap')
 //    api 'com.weigan:loopView:0.2.2'
     api project(':module_keyevents')
     api project(':module_camera')
     api project(':module_soundrecord')
     api project(':module_tms')
     api project(':module_user')
+    api project(':module_desk')
+    api project(':module_assignment')
     api project(':module_upgrade')
     api project(':module_fingerprint')
     api project(':module_datapicker')
     api project(':module_useim')
     annotationProcessor config_dependencies["arouter_compiler"]
 
-    implementation files('libs/BaiduLBS_Android.jar')
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation "com.alibaba:fastjson:1.2.49"
 

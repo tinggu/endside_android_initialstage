@@ -1,8 +1,4 @@
-if (isModule.toBoolean()) {
-    apply plugin: 'com.android.application'
-} else {
-    apply plugin: 'com.android.library'
-}
+apply plugin: 'com.android.library'
 
 def config_android = rootProject.ext.android
 def config_dependencies = rootProject.ext.dependencies
@@ -14,13 +10,11 @@ android {
     buildToolsVersion config_android.buildToolsVersion
 
     defaultConfig {
-        if (isModule.toBoolean()) {
-            applicationId "com.ctfww.module.baidumap"
-        }
-        minSdkVersion    config_android.minSdkVersion
+
+        minSdkVersion config_android.minSdkVersion
         targetSdkVersion config_android.targetSdkVersion
-        versionCode      config_android.versionCode
-        versionName      config_android.versionName
+        versionCode config_android.versionCode
+        versionName config_android.versionName
 
         testInstrumentationRunner config_android.testInstrumentationRunner
 
@@ -41,6 +35,11 @@ android {
 
     lintOptions {
         disable 'GoogleAppIndexingWarning'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     greendao {

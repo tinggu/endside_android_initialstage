@@ -50,4 +50,8 @@ public class GroupDBHelper {
     public static List<GroupInfo> getNoSynList(GroupInfoDao dao) {
         return dao.queryBuilder().where(dao.queryBuilder().or(GroupInfoDao.Properties.SynTag.eq("new"), GroupInfoDao.Properties.SynTag.eq("modify"))).list();
     }
+
+    public static void delete(GroupInfoDao dao, String groupId) {
+        dao.deleteByKey(groupId);
+    }
 }

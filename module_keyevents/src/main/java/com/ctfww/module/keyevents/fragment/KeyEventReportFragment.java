@@ -34,9 +34,8 @@ import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.activity.EventPreviewActivity;
 import com.ctfww.module.keyevents.activity.SoundRecord2Activity;
+import com.ctfww.module.keyevents.datahelper.airship.Airship;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.datahelper.airship.Airship;
-import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 import java.io.File;
@@ -341,6 +340,12 @@ public class KeyEventReportFragment extends Fragment{
             return false;
         }
 
+        String groupId = SPStaticUtils.getString("working_group_id");
+        String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
+            return false;
+        }
+
         KeyEvent keyEvent = new KeyEvent();
         keyEvent.setEventId(mEventId);
         keyEvent.setTimeStamp(System.currentTimeMillis());
@@ -358,14 +363,14 @@ public class KeyEventReportFragment extends Fragment{
         keyEvent.setVoicePath(getVoiceFilePath());
         keyEvent.setPicPath(getPicFilePath());
         keyEvent.setVideoPath(getVideoFilePath());
-        keyEvent.setGroupId(SPStaticUtils.getString("working_group_id"));
+        keyEvent.setGroupId(groupId);
         keyEvent.setStatus("create");
 
-        keyEvent.setUserId(SPStaticUtils.getString("user_open_id"));
+        keyEvent.setUserId(userId);
 
         keyEvent.setSynTag("new");
         DBHelper.getInstance().addKeyEvent(keyEvent);
-        com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventToCloud();
+        Airship.getInstance().synKeyEventToCloud();
 
         KeyEventTrace keyEventTrace = new KeyEventTrace();
         keyEventTrace.setEventId(keyEvent.getEventId());
@@ -373,18 +378,12 @@ public class KeyEventReportFragment extends Fragment{
         keyEventTrace.setGroupId(keyEvent.getGroupId());
         keyEventTrace.setDeskId(keyEvent.getDeskId());
         keyEventTrace.setMatchLevel("default");
-        UserInfo userInfo = DBQuickEntry.getSelfInfo();
-        if (userInfo == null) {
-            return true;
-        }
-
-        keyEventTrace.setNickName(userInfo.getUserId());
-        keyEventTrace.setNickName(userInfo.getNickName());
-        keyEventTrace.setHeadUrl(userInfo.getHeadUrl());
+        keyEventTrace.setUserId(userId);
         keyEventTrace.setStatus("create");
         keyEventTrace.setSynTag("new");
 
         DBHelper.getInstance().addKeyEventTrace(keyEventTrace);
+        Airship.getInstance().synKeyEventTraceToCloud();
 
         return true;
     }

@@ -48,4 +48,8 @@ public class UserDBHelper {
     public static UserInfo getNoSyn(UserInfoDao dao, String userId) {
         return dao.queryBuilder().where(dao.queryBuilder().and(UserInfoDao.Properties.UserId.eq(userId), dao.queryBuilder().or(UserInfoDao.Properties.SynTag.eq("new"), UserInfoDao.Properties.SynTag.eq("modify")))).unique();
     }
+
+    public static void delete(UserInfoDao dao, String userId) {
+        dao.deleteByKey(userId);
+    }
 }

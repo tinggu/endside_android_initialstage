@@ -37,11 +37,11 @@ import com.ctfww.commonlib.utils.ApkUtils;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
+import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.keepwatch.datahelper.airship.Airship;
 import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
-import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.fragment.KeepWatchMyFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchSigninFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchStatisticsFragment;
@@ -49,6 +49,7 @@ import com.ctfww.module.keepwatch.utils.IM;
 import com.ctfww.module.keepwatch.utils.PopupWindowUtil;
 import com.ctfww.module.upgrade.entity.ApkVersionInfo;
 import com.ctfww.module.useim.entity.Head;
+import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -179,12 +180,12 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         mGroupSelect = findViewById(R.id.top_select);
         mGroupSelect.setVisibility(View.VISIBLE);
         mGroupName = findViewById(R.id.top_tittle);
-        String groupName = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
-        if (TextUtils.isEmpty(groupName)) {
+        GroupInfo groupInfo = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroup();
+        if (groupInfo == null) {
             mGroupName.setText("请选择群组");
         }
         else {
-            mGroupName.setText(groupName);
+            mGroupName.setText(groupInfo.getGroupName());
         }
         mAddition = findViewById(R.id.top_addition);
         mAddition.setImageResource(R.drawable.keepwatch_add_pop);
@@ -316,22 +317,13 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             LogUtils.i(TAG, "onGetMessage: tms_first_token");
             checkUpgrade();
             Airship.getInstance().startTimedSyn();
-            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().startTimedSyn();
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().startTimedSyn();
+
 
             // 同步基本的用户信息与群组信息
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synUserInfoFromCloud();
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synGroupInfoFromCloud();
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synUserGroupInfoFromCloud();
+            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synFromCloud();
 
-            // 同步其他相关信息
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synGroupUserInfoFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchDeskFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteSummaryFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteDeskFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchAssignmentFromCloud();
-            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synNoticeInfoFromCloud();
+            // 同步签到点相关信息
+            com.ctfww.module.desk.datahelper.airship.Airship.getInstance().synFromCloud();
         }
         else if ("update_location".equals(msg)) {
             mMyPos = GsonUtils.fromJson(messageEvent.getValue(), MyPosition.class);
@@ -339,16 +331,11 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             EventBus.getDefault().post(new MessageEvent("location"));
         }
         else if ("bind_group".equals(msg)) {
-            String groupName= com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroupName();
-            mGroupName.setText(groupName);
+            GroupInfo groupInfo = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getWorkingGroup();
+            mGroupName.setText(groupInfo.getGroupName());
 
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synGroupUserInfoFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchDeskFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteSummaryFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchRouteDeskFromCloud();
-            com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchAssignmentFromCloud();
-            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
-            com.ctfww.module.user.datahelper.airship.Airship.getInstance().synNoticeInfoFromCloud();
+            String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
+            SPStaticUtils.put("role", role);
         }
         else if ("send_invite_success".equals(msg)) {
             GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
@@ -407,7 +394,6 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
                 else if (head.getMsgContentType() == 20) {
                     Airship.getInstance().synKeepWatchPersonTrendsFromCloud();
                     Airship.getInstance().synKeepWatchRankingFromCloud();
-                    Airship.getInstance().synKeepWatchAssignmentFinishStatusFromCloud();
                 }
             }
         }
@@ -511,9 +497,9 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
 
         List<Integer> idList = new ArrayList<Integer>();
         List<String> fingerPrintList = new ArrayList<>();
-        List<KeepWatchDesk> deskList = DBHelper.getInstance().getKeepWatchDeskList(groupId);
+        List<DeskInfo> deskList = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDeskList(groupId);
         for (int i = 0; i < deskList.size(); ++i) {
-            KeepWatchDesk desk = deskList.get(i);
+            DeskInfo desk = deskList.get(i);
             idList.add(desk.getDeskId());
             fingerPrintList.add(desk.getFingerPrint());
         }

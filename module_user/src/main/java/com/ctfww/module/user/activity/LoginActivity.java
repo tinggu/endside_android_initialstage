@@ -254,7 +254,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onSuccess(Object obj) {
                         UserInfo userInfo = (UserInfo)obj;
                         userInfo.setSynTag("cloud");
-                        Airship.getInstance().updateUserInfoByCloud(userInfo);
+                        DBHelper.getInstance().addUser(userInfo);
+
+                        SPStaticUtils.put("user_open_id", userInfo.getUserId());
 
                         ToastUtils.showShort(R.string.user_toast_success_login);
                         ARouter.getInstance().build(getNavigationName()).navigation();
@@ -290,7 +292,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onSuccess(Object obj) {
                         UserInfo userInfo = (UserInfo)obj;
                         userInfo.setSynTag("cloud");
-                        Airship.getInstance().updateUserInfoByCloud(userInfo);
+                        DBHelper.getInstance().addUser(userInfo);
+
+                        SPStaticUtils.put("user_open_id", userInfo.getUserId());
 
                         ToastUtils.showShort("登录成功");
                         ARouter.getInstance().build(getNavigationName()).navigation();

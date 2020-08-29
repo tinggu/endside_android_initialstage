@@ -34,53 +34,16 @@ public class Airship {
             @Override
             public void run() {
                 try {
-                    synKeepWatchDeskToCloud();
                     synKeepWatchSigninToCloud();
-                    synKeepWatchAssignmentToCloud();
-                    synKeepWatchRouteSummaryToCloud();
-                    synKeepWatchRouteDeskToCloud();
+                    com.ctfww.module.user.datahelper.airship.Airship.getInstance().synToCloud();
+                    com.ctfww.module.desk.datahelper.airship.Airship.getInstance().synToCloud();
+                    com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synToCloud();
                 }
                 catch (Exception e) {
                     LogUtils.i("com.ctfww.module.keepwatch.Airship", "e.getMessage() = " + e.getMessage());
                 }
             }
         }, 0, 60000, TimeUnit.MILLISECONDS);
-    }
-
-    // 1. 签到点的同步
-
-    // 同步签到点上云
-    public void synKeepWatchDeskToCloud() {
-        KeepWatchDeskAirship.synToCloud();
-    }
-
-    // 从云上同步签到点
-    public void synKeepWatchDeskFromCloud() {
-        KeepWatchDeskAirship.synFromCloud();
-    }
-
-    // 2. 签到路线相关
-
-    // 将路线数据同步上云
-    public void synKeepWatchRouteSummaryToCloud() {
-        KeepWatchRouteSummaryAirship.synToCloud();
-    }
-
-    // 从云上同步签到线路
-    public void synKeepWatchRouteSummaryFromCloud() {
-        KeepWatchRouteSummaryAirship.synFromCloud();
-    }
-
-    // 3. 签到路线点相关
-
-    // 将路线签到点数据同步上云
-    public void synKeepWatchRouteDeskToCloud() {
-        KeepWatchRouteSummaryAirship.synToCloud();
-    }
-
-    // 从云上同步路线签到点
-    public void synKeepWatchRouteDeskFromCloud() {
-        KeepWatchRouteSummaryAirship.synFromCloud();
     }
 
     // 10. 同步签到信息上云
@@ -95,32 +58,15 @@ public class Airship {
         KeepWatchSigninAirship.synFromCloud();
     }
 
-    // 20. 同步任务
-
-    // 同步任务上云
-    public void synKeepWatchAssignmentToCloud() {
-        KeepWatchAssignmentAirship.synToCloud();
-    }
-
-    // 从云上同步任务
-    public void synKeepWatchAssignmentFromCloud() {
-        KeepWatchAssignmentAirship.synFromCloud();
-    }
-
     // 30. 统计相关
 
     // 从云上同步动态
     public void synKeepWatchPersonTrendsFromCloud() {
-        KeepWatchPersonTrendsAirship.synFromCloud();
+        PersonTrendsAirship.synFromCloud();
     }
 
     // 从云上同步排行
     public void synKeepWatchRankingFromCloud() {
-        KeepWatchRankingAirship.synFromCloud();
-    }
-
-    // 从云上同步签到点签到统计
-    public void synKeepWatchAssignmentFinishStatusFromCloud() {
-        KeepWatchAssignmentFinishStatusAirship.synFromCloud();
+        RankingAirship.synFromCloud();
     }
 }

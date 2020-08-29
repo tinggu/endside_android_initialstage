@@ -1,6 +1,7 @@
 package com.ctfww.module.user.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,12 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.UserNoticeListAdapter;
 import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.NoticeInfo;
+import com.ctfww.module.user.entity.NoticeReadStatus;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -60,7 +64,6 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
         mNoticeListView.setLayoutManager(layoutManager);
 
         List<NoticeInfo> noticeInfoList = DBQuickEntry.getWorkingNoticeList();
-        addNoticeReadStatus(noticeInfoList);
         mNoticeListAdapter = new UserNoticeListAdapter(noticeInfoList, this);
         mNoticeListView.setAdapter(mNoticeListAdapter);
 
@@ -80,26 +83,10 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private boolean addNoticeReadStatus(List<NoticeInfo> noticeInfoList) {
-        boolean ret = false;
-        for (int i = 0; i < noticeInfoList.size(); ++i) {
-            NoticeInfo noticeInfo = noticeInfoList.get(i);
-            if (noticeInfo.getFlag() != 0) {
-                continue;
-            }
-
-            noticeInfo.setFlag(1);
-            ret = true;
-        }
-
-        return ret;
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(MessageEvent messageEvent) {
         if ("finish_notice_syn".equals(messageEvent.getMessage())) {
             List<NoticeInfo> noticeInfoList = DBQuickEntry.getWorkingNoticeList();
-            addNoticeReadStatus(noticeInfoList);
             mNoticeListAdapter.setList(noticeInfoList);
             mNoticeListAdapter.notifyDataSetChanged();
         }

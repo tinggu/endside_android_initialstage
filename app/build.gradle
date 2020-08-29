@@ -68,7 +68,6 @@ dependencies {
 //        api project(':module_device')
 //        api project(':module_setting')
 //        api project(':module_device')
-//        api project(':module_baidumap')
         api project(':module_keepwatch')
     }
 

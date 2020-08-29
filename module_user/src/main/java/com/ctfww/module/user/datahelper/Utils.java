@@ -5,11 +5,6 @@ import android.content.Context;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.module.user.constant.UserSPConstant;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.entity.UserGroupInfo;
-import com.ctfww.module.user.entity.UserInfo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Utils {
     public static void start(Context ctx){

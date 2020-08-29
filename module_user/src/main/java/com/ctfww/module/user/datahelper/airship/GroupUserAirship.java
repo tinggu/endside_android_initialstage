@@ -52,7 +52,7 @@ public class GroupUserAirship {
         }
 
         final String key = "group_user_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, CommonAirship.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(key, 0);
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
         String userId = SPStaticUtils.getString("user_open_id");

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.ctfww.commonlib.entity.Qr;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -21,23 +22,23 @@ import java.util.Hashtable;
 
 public class QRCodeUtils {
     public static final String TAG = "QRCodeUtils";
-    static public Bitmap createDataQRCodeBitmap(String content, int deskId, String deskName) {
+    static public Bitmap createDataQRCodeBitmap(Qr qr) {
         int width = 1080;
         int height = 1080;
 
-        if (content.length() <= 0) {
+        if (!qr.isValid()) {
             return null;
         }
 
-        Bitmap dataBitmap = ImageUtils.getDataBitmap("" + deskId, 100, 100);
+        Bitmap dataBitmap = ImageUtils.getDataBitmap(qr.getLogo(), 100, 100);
         if (dataBitmap == null) {
             return null;
         }
 
-        Bitmap qrBitmap = createQRCodeBitmap(content, width, height, "UTF-8",
+        Bitmap qrBitmap = createQRCodeBitmap(qr.getUrl(), width, height, "UTF-8",
                 "H", "1", Color.BLACK, Color.WHITE, dataBitmap, 0.2F, null);
 
-        Bitmap tittleBitmap = ImageUtils.getTittleBitmap(deskName, width, 80);
+        Bitmap tittleBitmap = ImageUtils.getTittleBitmap(qr.getName(), width, 80);
         qrBitmap = addTittle(qrBitmap, tittleBitmap);
 
         return qrBitmap;

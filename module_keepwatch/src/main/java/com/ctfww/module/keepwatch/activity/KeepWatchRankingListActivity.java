@@ -18,7 +18,7 @@ import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchRankingListAdapter;
-import com.ctfww.module.keepwatch.entity.KeepWatchRanking;
+import com.ctfww.module.keepwatch.entity.Ranking;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,7 +36,7 @@ public class KeepWatchRankingListActivity extends AppCompatActivity implements V
 
     private RecyclerView mRankingListView;
     private KeepWatchRankingListAdapter mKeepWatchRankingListAdapter;
-    private List<KeepWatchRanking> mKeepWatchRankingList = new ArrayList<>();
+    private List<Ranking> mKeepWatchRankingList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -69,7 +69,7 @@ public class KeepWatchRankingListActivity extends AppCompatActivity implements V
         NetworkHelper.getInstance().getKeepWatchRanking(startTime, endTime, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                mKeepWatchRankingList = (List<KeepWatchRanking>)obj;
+                mKeepWatchRankingList = (List<Ranking>)obj;
                 mKeepWatchRankingListAdapter.setList(mKeepWatchRankingList);
                 mKeepWatchRankingListAdapter.notifyDataSetChanged();
                 LogUtils.i(TAG, "getRankingList success!");

@@ -21,22 +21,16 @@
         <!--主界面-->
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchMainActivity"
+            android:name=".activity.KeepWatchMainActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchAddDeskActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchSettingActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchAboutAppActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.ViewMapActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchViewSigninDeskActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchSelectDeskActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchCreateAssignmentActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchLeakListActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchStatisticsDetailActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchPersonTrendsListActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchRankingListActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchSigninListActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.keepwatch.activity.KeepWatchAssignmentListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchSettingActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchAboutAppActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchLeakListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchStatisticsDetailActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchPersonTrendsListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchRankingListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.KeepWatchSigninListActivity" android:screenOrientation="portrait"/>
 
 
         <!--NFC页面-->
@@ -44,53 +38,33 @@
 
         <!--扫码页面-->
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.ScanActivity"
+            android:name=".activity.ScanActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchQrActivity"
+            android:name=".activity.KeepWatchImageAndVideoPreviewActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchDeskListActivity"
+            android:name=".activity.KeepWatchReportSigninActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchImageAndVideoPreviewActivity"
+            android:name=".activity.KeepWatchDayReportActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchReportSigninActivity"
+            android:name=".activity.KeepWatchWeekReportActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchDayReportActivity"
+            android:name=".activity.KeepWatchMonthReportActivity"
             android:screenOrientation="portrait"/>
+
 
         <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchWeekReportActivity"
+            android:name="com.ctfww.module.desk.activity.SelectActivity"
             android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchMonthReportActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchCreateRouteActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchAddRouteTagActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.ctfww.module.keepwatch.activity.KeepWatchSelectSigninObjectActivity"
-            android:screenOrientation="portrait"/>
-
-        <!--百度地图api_key-->
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="20SDGwlbBaN99EGF5qWhsda917runwup" />
         
     </application>
 

@@ -20,7 +20,7 @@ import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchSigninListAdapter;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class KeepWatchSigninListFragment extends Fragment {
     private TextView mNoData;
 
     private RecyclerView mKeepWatchSigninInfoListView;
-    private List<KeepWatchSigninInfo> mKeepWatchSigninInfoList = new ArrayList<>();
+    private List<SigninInfo> mKeepWatchSigninInfoList = new ArrayList<>();
     KeepWatchSigninListAdapter mKeepWatchSigninInfoListAdapter;
     private View mV;
 
@@ -81,8 +81,8 @@ public class KeepWatchSigninListFragment extends Fragment {
         NetworkHelper.getInstance().getKeepWatchSigninList(startTime, endTime, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                mKeepWatchSigninInfoList = (List<KeepWatchSigninInfo>)obj;
-                List<KeepWatchSigninInfo> list = _getSigninList(mKeepWatchSigninInfoList);
+                mKeepWatchSigninInfoList = (List<SigninInfo>)obj;
+                List<SigninInfo> list = _getSigninList(mKeepWatchSigninInfoList);
                 mKeepWatchSigninInfoListAdapter.setList(list);
                 mKeepWatchSigninInfoListAdapter.notifyDataSetChanged();
                 LogUtils.i(TAG, "getSigninList: mKeepWatchSigninInfoList.size() =  " + mKeepWatchSigninInfoList.size());
@@ -110,7 +110,7 @@ public class KeepWatchSigninListFragment extends Fragment {
         this.mMaxtCount = maxCount;
     }
 
-    private List<KeepWatchSigninInfo> _getSigninList(List<KeepWatchSigninInfo> keepWatchSigninInfoList) {
+    private List<SigninInfo> _getSigninList(List<SigninInfo> keepWatchSigninInfoList) {
         if (mMaxtCount <= 0 || mMaxtCount >= keepWatchSigninInfoList.size()) {
             return keepWatchSigninInfoList;
         }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context="com.ctfww.module.desk.activity.SelectActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_white_100"
+        style="@style/Theme.AppCompat.Light"
+        android:elevation="0dp">
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/user_invite_toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="48dp"-->
+<!--            app:layout_scrollFlags="scroll|enterAlways">-->
+
+<!--        </androidx.appcompat.widget.Toolbar>-->
+        <include layout="@layout/sub_top_bar"/>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/select_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="53.5dp"
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/TabLayoutNormalTextStyle"
+            app:tabSelectedTextColor="#50A2FF"
+            app:tabIndicatorColor="#50A2FF">
+
+        </com.google.android.material.tabs.TabLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/select_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </androidx.viewpager.widget.ViewPager>
+</LinearLayout>

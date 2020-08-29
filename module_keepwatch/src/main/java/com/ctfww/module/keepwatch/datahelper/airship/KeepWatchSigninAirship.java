@@ -6,10 +6,11 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
+import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,19 +21,19 @@ public class KeepWatchSigninAirship {
 
     // 同步签到信息上云
     public static void synToCloud() {
-        List<KeepWatchSigninInfo> signinList = DBHelper.getInstance().getNoSynKeepWatchSignin();
+        List<SigninInfo> signinList = DBHelper.getInstance().getNoSynSigninList();
         if (signinList.isEmpty()) {
             return;
         }
 
-        CargoToCloud<KeepWatchSigninInfo> cargoToCloud = new CargoToCloud<>(signinList);
+        CargoToCloud<SigninInfo> cargoToCloud = new CargoToCloud<>(signinList);
         NetworkHelper.getInstance().synKeepWatchSigninToCloud(cargoToCloud, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 for (int i = 0; i < signinList.size(); ++i) {
-                    KeepWatchSigninInfo signin = signinList.get(i);
+                    SigninInfo signin = signinList.get(i);
                     signin.setSynTag("cloud");
-                    DBHelper.getInstance().updateKeepWatchSignin(signin);
+                    DBHelper.getInstance().updateSignin(signin);
                 }
             }
 
@@ -50,8 +51,7 @@ public class KeepWatchSigninAirship {
             return;
         }
 
-        String key = "keepwatch_signin_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, CommonAirship.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(AirshipConst.SIGNIN_SYN_TIME_STAMP_CLOUD, MyDateTimeUtils.getTodayStartTime());
         long endTime = System.currentTimeMillis();
         QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
@@ -63,7 +63,7 @@ public class KeepWatchSigninAirship {
         NetworkHelper.getInstance().synKeepWatchSigninFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                List<KeepWatchSigninInfo> signinList = (List<KeepWatchSigninInfo>)obj;
+                List<SigninInfo> signinList = (List<SigninInfo>)obj;
 
                 if (!signinList.isEmpty()) {
                     if (updateTabByCloud(signinList)) {
@@ -71,7 +71,7 @@ public class KeepWatchSigninAirship {
                     }
                 }
 
-                SPStaticUtils.put(key, condition.getEndTime());
+                SPStaticUtils.put(AirshipConst.SIGNIN_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override
@@ -81,12 +81,12 @@ public class KeepWatchSigninAirship {
         });
     }
 
-    private static boolean updateTabByCloud(List<KeepWatchSigninInfo> signinList) {
+    private static boolean updateTabByCloud(List<SigninInfo> signinList) {
         boolean ret = false;
         for (int i = 0; i < signinList.size(); ++i) {
-            KeepWatchSigninInfo signin = signinList.get(i);
+            SigninInfo signin = signinList.get(i);
             signin.setSynTag("cloud");
-            if (DBHelper.getInstance().addKeepWatchSignin(signin)) {
+            if (DBHelper.getInstance().addSignin(signin)) {
                 ret = true;
             }
         }

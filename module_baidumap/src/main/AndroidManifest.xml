@@ -7,9 +7,13 @@
             android:screenOrientation="portrait">
         </activity>
 
+<!--        <meta-data-->
+<!--            android:name="com.baidu.lbsapi.API_KEY"-->
+<!--            android:value="46zOUbhuSLvdy2SkIPvhdvVcfG9szzzL" />-->
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="46zOUbhuSLvdy2SkIPvhdvVcfG9szzzL" />
+            android:value="20SDGwlbBaN99EGF5qWhsda917runwup" />
 
     </application>
 

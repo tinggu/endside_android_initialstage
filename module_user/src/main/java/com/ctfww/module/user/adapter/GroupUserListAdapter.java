@@ -1,6 +1,7 @@
 package com.ctfww.module.user.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.bumptech.glide.Glide;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.activity.GroupUserListActivity;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupUserInfo;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.List;
 
@@ -149,9 +152,19 @@ public class GroupUserListAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         GroupUserInfo groupUserInfo = list.get(position);
-        ((GroupUserViewHolder)holder).headImg.setImageResource(R.mipmap.user_group_member_head);
-        ((GroupUserViewHolder)holder).userName.setText(groupUserInfo.getNickName());
-        ((GroupUserViewHolder)holder).mobile.setText(groupUserInfo.getMobile());
+        UserInfo userInfo = DBHelper.getInstance().getUser(groupUserInfo.getUserId());
+        if (userInfo != null) {
+            if (TextUtils.isEmpty(userInfo.getHeadUrl())) {
+                ((GroupUserViewHolder)holder).headImg.setImageResource(R.drawable.default_head);
+            }
+            else {
+                Glide.with(((GroupUserViewHolder)holder).view).load(userInfo.getHeadUrl()).into(((GroupUserViewHolder)holder).headImg);
+            }
+
+            ((GroupUserViewHolder)holder).userName.setText(userInfo.getNickName());
+            ((GroupUserViewHolder)holder).mobile.setText(userInfo.getMobile());
+        }
+
         if ("admin".equals(groupUserInfo.getRole())) {
             ((GroupUserViewHolder)holder).role.setImageResource(R.drawable.user_admin);
         }

@@ -7,7 +7,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.alibaba.android.arouter.launcher.ARouter;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.model.LatLng;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.location.GPSLocationManager;
 import com.ctfww.commonlib.location.MyLocation;
@@ -37,8 +31,6 @@ import com.ctfww.module.fingerprint.entity.DistResult;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.activity.KeepWatchReportSigninActivity;
 import com.ctfww.module.keepwatch.activity.ScanActivity;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
-import com.ctfww.module.keepwatch.map.BaiduMapHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -57,9 +49,6 @@ public class KeepWatchSigninFragment extends Fragment {
 
     private NfcAdapter nfcAdapter;
     private Location mLocation;
-
-    private MapView mMapView;
-    private BaiduMap mBaiduMap;
 
     @Nullable
     @Override
@@ -80,11 +69,7 @@ public class KeepWatchSigninFragment extends Fragment {
         mScanSignin = v.findViewById(R.id.keepwatch_scan_signin);
         mNfcSignin = v.findViewById(R.id.keepwatch_nfc_signin);
 
-        mMapView = v.findViewById(R.id.keepwatch_baidu_map);
-        mBaiduMap = mMapView.getMap();
-
         mLocation = MyLocation.getLocation(v.getContext());
-        show();
     }
 
     private void setOnClickListener() {
@@ -108,7 +93,7 @@ public class KeepWatchSigninFragment extends Fragment {
                     }
 
                     LogUtils.i(TAG, "distResult = " + distResult.toString());
-                    KeepWatchSigninInfo keepWatchSigninInfo = new KeepWatchSigninInfo();
+                    SigninInfo keepWatchSigninInfo = new SigninInfo();
                     keepWatchSigninInfo.setDeskId(distResult.getId());
                     keepWatchSigninInfo.setFinishType("gps");
                     keepWatchSigninInfo.setMatchLevel(distResult.getStringMatchLevel());
@@ -175,7 +160,7 @@ public class KeepWatchSigninFragment extends Fragment {
             if (deskId != 0) {
                 com.ctfww.module.fingerprint.Utils.startScan("calc");
 
-                KeepWatchSigninInfo keepWatchSigninInfo = new KeepWatchSigninInfo();
+                SigninInfo keepWatchSigninInfo = new SigninInfo();
                 keepWatchSigninInfo.setDeskId(deskId);
                 keepWatchSigninInfo.setFinishType("qr");
                 Intent intent = new Intent(getContext(), KeepWatchReportSigninActivity.class);
@@ -227,18 +212,6 @@ public class KeepWatchSigninFragment extends Fragment {
         ToastUtils.showShort(str);
 
         return str;
-    }
-
-    public void show() {
-        double lat = 22.0;
-        double lng = 113.0;
-        if (mLocation != null) {
-            lat = mLocation.getLatitude();
-            lng = mLocation.getLongitude();
-        }
-
-        LatLng center = BaiduMapHelper.gps2Baidu(new LatLng(lat, lng));
-        BaiduMapHelper.showMapByPt(center, mBaiduMap);
     }
 
     @Override

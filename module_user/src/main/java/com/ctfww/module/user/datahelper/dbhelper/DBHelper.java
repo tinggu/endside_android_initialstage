@@ -2,9 +2,7 @@ package com.ctfww.module.user.datahelper.dbhelper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
-import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.module.user.entity.DaoMaster;
 import com.ctfww.module.user.entity.DaoSession;
 import com.ctfww.module.user.entity.GroupInfo;
@@ -17,13 +15,9 @@ import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeInfoDao;
 import com.ctfww.module.user.entity.NoticeReadStatus;
 import com.ctfww.module.user.entity.NoticeReadStatusDao;
-import com.ctfww.module.user.entity.UserGroupInfo;
-import com.ctfww.module.user.entity.UserGroupInfoDao;
 import com.ctfww.module.user.entity.UserInfo;
 import com.ctfww.module.user.entity.UserInfoDao;
 
-import java.security.acl.Group;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper {
@@ -33,7 +27,6 @@ public class DBHelper {
 
     private UserInfoDao userInfoDao;
     private GroupInfoDao groupInfoDao;
-    private UserGroupInfoDao userGroupInfoDao;
     private GroupInviteInfoDao groupInviteInfoDao;
     private NoticeInfoDao noticeInfoDao;
     private GroupUserInfoDao groupUserInfoDao;
@@ -62,7 +55,6 @@ public class DBHelper {
         DaoSession daoSession = daoMaster.newSession();
         userInfoDao = daoSession.getUserInfoDao();
         groupInfoDao = daoSession.getGroupInfoDao();
-        userGroupInfoDao = daoSession.getUserGroupInfoDao();
         groupInviteInfoDao = daoSession.getGroupInviteInfoDao();
         noticeInfoDao = daoSession.getNoticeInfoDao();
         groupUserInfoDao = daoSession.getGroupUserInfoDao();
@@ -105,6 +97,10 @@ public class DBHelper {
         return UserDBHelper.getNoSyn(userInfoDao, userId);
     }
 
+    public void deleteUser(String userId) {
+        UserDBHelper.delete(userInfoDao, userId);
+    }
+
     // 2. 与群组有关
 
     /**
@@ -140,47 +136,11 @@ public class DBHelper {
         return GroupDBHelper.getNoSynList(groupInfoDao);
     }
 
-    // 3. 与用户对应群组有关
-
-    /**
-     * 插入用户对应的群组信息
-     * @param userGroupInfo 用户信息
-     */
-    public boolean addUserGroup(UserGroupInfo userGroupInfo) {
-        return UserGroupDBHelper.add(userGroupInfoDao, userGroupInfo);
+    public void deleteGroup(String groupId) {
+        GroupDBHelper.delete(groupInfoDao, groupId);
     }
 
-    /**
-     * 更新用户对应群组信息
-     * @param userGroupInfo 群组信息
-     */
-    public void updateUserGroup(UserGroupInfo userGroupInfo) {
-        UserGroupDBHelper.update(userGroupInfoDao, userGroupInfo);
-    }
-
-    /**
-     * 根据userID、GroupId查询用户对应的群组
-     * @param userId 用户ID
-     * @param groupId 群组Id
-     * @return 对应的群组信息
-     */
-    public UserGroupInfo getUserGroup(String groupId, String userId) {
-        return UserGroupDBHelper.get(userGroupInfoDao, groupId, userId);
-    }
-
-    public List<UserGroupInfo> getUserGroupList(String userId) {
-        return UserGroupDBHelper.getList(userGroupInfoDao, userId);
-    }
-
-    /**
-     * 查询未同步的用户对应群组记录
-     * @return
-     */
-    public List<UserGroupInfo> getNoSynUserGroupList() {
-        return UserGroupDBHelper.getNoSynList(userGroupInfoDao);
-    }
-
-    // 4. 与邀请有关
+    // 3. 与邀请有关
 
     /**
      * 插入邀请信息
@@ -223,7 +183,7 @@ public class DBHelper {
         return GroupInviteDBHelper.getNoSynList(groupInviteInfoDao);
     }
 
-    // 5. 与通知有关
+    // 4. 与通知有关
 
     /**
      * 插入通知信息
@@ -262,7 +222,7 @@ public class DBHelper {
         return NoticeDBHelper.getNoSynList(noticeInfoDao);
     }
 
-    // 6. 与群组成员有关
+    // 5. 与群组成员有关
 
     /**
      * 插入成员信息
@@ -303,10 +263,22 @@ public class DBHelper {
      * @return
      */
     public List<GroupUserInfo> getGroupUserList(String groupId) {
-        return GroupUserDBHelper.getList(groupUserInfoDao, groupId);
+        return GroupUserDBHelper.getListByGroupId(groupUserInfoDao, groupId);
     }
 
-    // 7. 与通知读取状态有关
+    public List<GroupUserInfo> getUserGroupList(String userId) {
+        return GroupUserDBHelper.getListByUserId(groupUserInfoDao, userId);
+    }
+
+    public void deleteGroupUser(String groupId, String userId) {
+        GroupUserDBHelper.delete(groupUserInfoDao, groupId, userId);
+    }
+
+    public void deleteGroupUserLeaveUserId(String groupId, String userId) {
+        GroupUserDBHelper.deleteLeaveUserId(groupUserInfoDao, groupId, userId);
+    }
+
+    // 6. 与通知读取状态有关
 
     /**
      * 插入通知读取状态

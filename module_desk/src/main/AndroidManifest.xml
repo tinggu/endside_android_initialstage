@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ctfww.module.desk" >
+    <application android:theme="@style/AppTheme">
+        <activity
+            android:name="com.ctfww.module.desk.activity.AddDeskActivity"
+            android:screenOrientation="portrait"/>
+    </application>
+</manifest>

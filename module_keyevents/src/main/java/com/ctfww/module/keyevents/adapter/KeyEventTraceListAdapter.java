@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.Calendar;
 import java.util.List;
@@ -44,10 +45,17 @@ public class KeyEventTraceListAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         KeyEventTrace keyEventTrace = list.get(position);
         ((KeyEventTraceViewHolder) holder).contentLL.setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(keyEventTrace.getHeadUrl())) {
-            Glide.with(((KeyEventTraceViewHolder) holder).view).load(keyEventTrace.getHeadUrl()).into(((KeyEventTraceViewHolder) holder).head);
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keyEventTrace.getUserId());
+        String headUrl = userInfo == null ? "" : userInfo.getHeadUrl();
+        if (TextUtils.isEmpty(headUrl)) {
+            (((KeyEventTraceViewHolder) holder).head).setImageResource(R.drawable.default_head);
         }
-        ((KeyEventTraceViewHolder) holder).nickName.setText(keyEventTrace.getNickName());
+        else {
+            Glide.with(((KeyEventTraceViewHolder) holder).view).load(headUrl).into(((KeyEventTraceViewHolder) holder).head);
+        }
+
+        String nickName = userInfo == null ? "" : userInfo.getNickName();
+        ((KeyEventTraceViewHolder) holder).nickName.setText(nickName);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(keyEventTrace.getTimeStamp());
         ((KeyEventTraceViewHolder) holder).monthDay.setText(String.format("%02d-%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));

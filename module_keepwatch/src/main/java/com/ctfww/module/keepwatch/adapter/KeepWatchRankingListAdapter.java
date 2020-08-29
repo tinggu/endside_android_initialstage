@@ -10,21 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchRanking;
+import com.ctfww.module.keepwatch.entity.Ranking;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.List;
 
 
 public class KeepWatchRankingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<KeepWatchRanking> list;
+    private List<Ranking> list;
     private Context mContext;
 
-    public KeepWatchRankingListAdapter(List<KeepWatchRanking> list, Context context) {
+    public KeepWatchRankingListAdapter(List<Ranking> list, Context context) {
         this.list = list;
         mContext = context;
     }
 
-    public void setList(List<KeepWatchRanking> list) {
+    public void setList(List<Ranking> list) {
         this.list = list;
     }
 
@@ -38,9 +39,12 @@ public class KeepWatchRankingListAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        KeepWatchRanking keepWatchRanking = list.get(position);
+        Ranking keepWatchRanking = list.get(position);
         ((KeepWatchRankingViewHolder)holder).position.setText("" + (position + 1));
-        ((KeepWatchRankingViewHolder)holder).nickName.setText(keepWatchRanking.getNickName());
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keepWatchRanking.getUserId());
+        if (userInfo != null) {
+            ((KeepWatchRankingViewHolder)holder).nickName.setText(userInfo.getNickName());
+        }
         ((KeepWatchRankingViewHolder)holder).score.setText("" + keepWatchRanking.getScore());
     }
 

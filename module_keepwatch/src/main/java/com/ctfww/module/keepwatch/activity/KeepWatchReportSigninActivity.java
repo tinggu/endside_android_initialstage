@@ -15,30 +15,31 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.commonlib.entity.Qr;
 import com.ctfww.commonlib.location.GPSLocationManager;
 import com.ctfww.commonlib.location.MyLocation;
 import com.ctfww.commonlib.utils.DialogUtils;
+import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
+import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.fingerprint.entity.DistResult;
 import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
 import com.ctfww.module.keyevents.fragment.KeyEventReportFragment;
-import com.ctfww.module.user.datahelper.airship.Airship;
-import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
+@Route(path = "/keepwatch/reportSignin")
 public class KeepWatchReportSigninActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "KeepWatchReportSigninActivity";
@@ -56,7 +57,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
     private Fragment mReportFragment;
     private LinearLayout mReportContentLL;
 
-    private KeepWatchSigninInfo mKeepWatchSigninInfo;
+    private SigninInfo mSigninInfo;
 
     private Location mLocation;
 
@@ -65,6 +66,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.keepwatch_report_signin_activity);
 
+        processLocation();
         processIntent();
         initViews();
 
@@ -76,28 +78,32 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
             PermissionUtils.requestCameraPermission(this);
         }
 
-        processLocation();
+        com.ctfww.module.fingerprint.Utils.startScan("calc");
     }
 
     private void processIntent() {
-        String str = getIntent().getStringExtra("signin");
-        if (TextUtils.isEmpty(str)) {
-            return;
+        mSigninInfo = new SigninInfo();
+        mSigninInfo.setUserId(SPStaticUtils.getString("user_open_id"));
+        mSigninInfo.setTimeStamp(System.currentTimeMillis());
+        mSigninInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
+        mSigninInfo.setSynTag("new");
+        mSigninInfo.setMatchLevel("default");
+        String qrStr = getIntent().getStringExtra("qr");
+        String gpsStr = getIntent().getStringExtra("gps");
+        if (!TextUtils.isEmpty(qrStr)) {
+            Qr qr = GsonUtils.fromJson(qrStr, Qr.class);
+            mSigninInfo.setDeskId(GlobeFun.parseInt(qr.getLogo()));
+            mSigninInfo.setFinishType("qr");
         }
 
-        mKeepWatchSigninInfo = GsonUtils.fromJson(str, KeepWatchSigninInfo.class);
-        if ("qr".equals(mKeepWatchSigninInfo.getFinishType())) {
-            String print = com.ctfww.module.fingerprint.Utils.getWifiCalculateFingerPrint();
-            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeepWatchSigninInfo.getDeskId());
-            mKeepWatchSigninInfo.setMatchLevel(distResult.getStringMatchLevel());
-
-            String wifiFingerPrintStr = com.ctfww.module.fingerprint.Utils.combineWifiStandardFingerPrint(print);
-            String gpsFingerPrintStr = mLocation == null ? "" : com.ctfww.module.fingerprint.Utils.combineGpsStandardFingerPrint(mLocation);
-            String fingerPrintStr = com.ctfww.module.fingerprint.Utils.appendOtherFingerPrint(wifiFingerPrintStr, gpsFingerPrintStr);
-            mKeepWatchSigninInfo.setFingerPrint(fingerPrintStr);
+        if (!TextUtils.isEmpty(gpsStr)) {
+            DistResult distResult = GsonUtils.fromJson(gpsStr, DistResult.class);
+            mSigninInfo.setDeskId(distResult.getId());
+            mSigninInfo.setFinishType("gps");
+            mSigninInfo.setMatchLevel(distResult.getStringMatchLevel());
         }
 
-        SPStaticUtils.put("curr_desk_id", mKeepWatchSigninInfo.getDeskId());
+        SPStaticUtils.put("curr_desk_id", mSigninInfo.getDeskId());
     }
 
     private void initViews() {
@@ -120,7 +126,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
         mReportContentLL.setVisibility(View.GONE);
 
         String groupId = SPStaticUtils.getString("working_group_id");
-        KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(groupId, mKeepWatchSigninInfo.getDeskId());
+        DeskInfo desk = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(groupId, mSigninInfo.getDeskId());
         if (desk != null) {
             mDeskName.setText("[" + desk.getDeskId() + "]" + "  " + desk.getDeskName());
         }
@@ -141,7 +147,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
         }
         else if (id == mFinish.getId()) {
             if (mAbnormal.isChecked()) {
-                ((KeyEventReportFragment)mReportFragment).setDeskId(mKeepWatchSigninInfo.getDeskId());
+                ((KeyEventReportFragment)mReportFragment).setDeskId(mSigninInfo.getDeskId());
                 if (!((KeyEventReportFragment)mReportFragment).reportKeyEvent()) {
                     return;
                 }
@@ -171,30 +177,30 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
             String gpsFingerPrintStr = mLocation == null ? "" : com.ctfww.module.fingerprint.Utils.combineGpsStandardFingerPrint(mLocation);
             String fingerPrintStr = com.ctfww.module.fingerprint.Utils.appendOtherFingerPrint(wifiFingerPrintStr, gpsFingerPrintStr);
 
-            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(messageEvent.getValue(), mKeepWatchSigninInfo.getDeskId());
+            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(messageEvent.getValue(), mSigninInfo.getDeskId());
 //            String aa = "[{\"mac\":\"e83f67db80fc\",\"rssi\":-88},{\"mac\":\"08107b0c38ef\",\"rssi\":-87},{\"mac\":\"08107b0c38eb\",\"rssi\":-87},{\"mac\":\"88bfe4089dd8\",\"rssi\":-90},{\"mac\":\"70192f80f810\",\"rssi\":-65},{\"mac\":\"50bd5f87d0cc\",\"rssi\":-76},{\"mac\":\"88bfe4089dd4\",\"rssi\":-59},{\"mac\":\"00e04cdbe8de\",\"rssi\":-71},{\"mac\":\"08107b0c38f2\",\"rssi\":-79},{\"mac\":\"88bfe4f89dd8\",\"rssi\":-92},{\"mac\":\"10327e821d24\",\"rssi\":-77},{\"mac\":\"10327e821d29\",\"rssi\":-75},{\"mac\":\"286c074e5dfe\",\"rssi\":-84},{\"mac\":\"34b20abb9e24\",\"rssi\":-86},{\"mac\":\"88bfe4089dd9\",\"rssi\":-65},{\"mac\":\"6cb749beb7c0\",\"rssi\":-77},{\"mac\":\"d88adcd45f80\",\"rssi\":-85},{\"mac\":\"b83a08197828\",\"rssi\":-86},{\"mac\":\"08107b0c38e9\",\"rssi\":-73},{\"mac\":\"a8ad3df367c8\",\"rssi\":-85},{\"mac\":\"94772b363190\",\"rssi\":-89},{\"mac\":\"7844fddf5989\",\"rssi\":-87},{\"mac\":\"e83f67b5d719\",\"rssi\":-87}]";
 //            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(aa, 1500);
             LogUtils.i("aaaaaaaaaaaa", "distResult = " + distResult.toString());
             String level = distResult.getStringMatchLevel();
             if ("excellent".equals(level)) {
-                mKeepWatchSigninInfo.setMatchLevel(level);
-                mKeepWatchSigninInfo.setFingerPrint(fingerPrintStr);
+                mSigninInfo.setMatchLevel(level);
+                mSigninInfo.setFingerPrint(fingerPrintStr);
             }
-            else if ("good".equals(level) && !"excellent".equals(mKeepWatchSigninInfo.getMatchLevel())) {
-                mKeepWatchSigninInfo.setMatchLevel(level);
-                mKeepWatchSigninInfo.setFingerPrint(fingerPrintStr);
+            else if ("good".equals(level) && !"excellent".equals(mSigninInfo.getMatchLevel())) {
+                mSigninInfo.setMatchLevel(level);
+                mSigninInfo.setFingerPrint(fingerPrintStr);
             }
-            else if ("bad".equals(level) && !"excellent".equals(mKeepWatchSigninInfo.getMatchLevel()) && !"good".equals(mKeepWatchSigninInfo.getMatchLevel())) {
-                mKeepWatchSigninInfo.setMatchLevel(level);
-                mKeepWatchSigninInfo.setFingerPrint(fingerPrintStr);
+            else if ("bad".equals(level) && !"excellent".equals(mSigninInfo.getMatchLevel()) && !"good".equals(mSigninInfo.getMatchLevel())) {
+                mSigninInfo.setMatchLevel(level);
+                mSigninInfo.setFingerPrint(fingerPrintStr);
             }
             else {
-                mKeepWatchSigninInfo.setMatchLevel(level);
-                mKeepWatchSigninInfo.setFingerPrint(fingerPrintStr);
+                mSigninInfo.setMatchLevel(level);
+                mSigninInfo.setFingerPrint(fingerPrintStr);
             }
 
             showMatchLevel();
-            LogUtils.i("aaaaaaaaaaaa", "deskId = " + mKeepWatchSigninInfo.getDeskId() + ", mWifiFingerPrintStr = " + messageEvent.getValue());
+            LogUtils.i("aaaaaaaaaaaa", "deskId = " + mSigninInfo.getDeskId() + ", mWifiFingerPrintStr = " + messageEvent.getValue());
         }
     }
 
@@ -212,15 +218,15 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
     }
 
     private void showMatchLevel() {
-        if ("excellent".equals(mKeepWatchSigninInfo.getMatchLevel())) {
+        if ("excellent".equals(mSigninInfo.getMatchLevel())) {
             mMatchLevel.setBackgroundColor(0xFF7ED321);
             mMatchLevel.setText("匹配度：优");
         }
-        else if ("good".equals(mKeepWatchSigninInfo.getMatchLevel())) {
+        else if ("good".equals(mSigninInfo.getMatchLevel())) {
             mMatchLevel.setBackgroundColor(0xFFFFC90E);
             mMatchLevel.setText("匹配度：良");
         }
-        else if ("bad".equals(mKeepWatchSigninInfo.getMatchLevel())) {
+        else if ("bad".equals(mSigninInfo.getMatchLevel())) {
             mMatchLevel.setBackgroundColor(0xFFF65066);
             mMatchLevel.setText("匹配度：差");
         }
@@ -231,33 +237,18 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
     }
 
     private void processSignin() {
-        mKeepWatchSigninInfo.setUserId(SPStaticUtils.getString("user_open_id"));
-        mKeepWatchSigninInfo.setTimeStamp(System.currentTimeMillis());
-        mKeepWatchSigninInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
-        mKeepWatchSigninInfo.setSynTag("new");
-        KeepWatchDesk desk = DBHelper.getInstance().getKeepWatchDesk(mKeepWatchSigninInfo.getGroupId(), mKeepWatchSigninInfo.getDeskId());
-        if (desk != null) {
-            mKeepWatchSigninInfo.setDeskName(desk.getDeskName());
-            mKeepWatchSigninInfo.setDeskType(desk.getDeskType());
-        }
-
-        UserInfo userInfo = DBQuickEntry.getSelfInfo();
-        if (userInfo != null) {
-            mKeepWatchSigninInfo.setNickName(userInfo.getNickName());
-        }
-
         // 要判断是否是自己的签到点
+//        KeepWatchAssignment assignment = DBHelper.getInstance().getKeepWatchAssignment()
 
         // 要更新签到点指纹
 //        com.ctfww.module.fingerprint.Utils.synthesizeFingerPrint()
 
-        mKeepWatchSigninInfo.setSynTag("new");
-        DBHelper.getInstance().addKeepWatchSignin(mKeepWatchSigninInfo);
+        DBHelper.getInstance().addSignin(mSigninInfo);
 
         com.ctfww.module.keepwatch.datahelper.airship.Airship.getInstance().synKeepWatchSigninToCloud();
 
-        ToastUtils.showShort("" + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
-        LogUtils.i(TAG, "processSignin: " + mKeepWatchSigninInfo.getDeskId() + "号点签到成功！");
+        ToastUtils.showShort("" + mSigninInfo.getDeskId() + "号点签到成功！");
+        LogUtils.i(TAG, "processSignin: " + mSigninInfo.getDeskId() + "号点签到成功！");
     }
 
     private void processLocation() {

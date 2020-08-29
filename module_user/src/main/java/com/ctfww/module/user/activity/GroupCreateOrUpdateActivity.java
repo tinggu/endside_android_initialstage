@@ -18,7 +18,6 @@ import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupInfo;
-import com.ctfww.module.user.entity.UserGroupInfo;
 
 @Route(path = "/user/createGroup")
 public class GroupCreateOrUpdateActivity extends AppCompatActivity implements View.OnClickListener {
@@ -30,7 +29,7 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
     private TextView mConfirm;
 
     private boolean mIsCreate;
-    private UserGroupInfo mUserGroupInfo;
+    private GroupInfo mGroupInfo;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -44,7 +43,8 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
     private void processIntent() {
         mIsCreate = getIntent().getBooleanExtra("isCreate", true);
         if (!mIsCreate) {
-            mUserGroupInfo = GsonUtils.fromJson(getIntent().getStringExtra("userGroupInfo"), UserGroupInfo.class);
+            String groupId = getIntent().getStringExtra("group_id");
+            mGroupInfo = DBHelper.getInstance().getGroup(groupId);
         }
     }
     private void initViews() {
@@ -57,8 +57,8 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
             mTittle.setText("更新群组信息");
         }
         mName = findViewById(R.id.user_group_name);
-        if (mUserGroupInfo != null) {
-            mName.setText(mUserGroupInfo.getGroupName());
+        if (mGroupInfo != null) {
+            mName.setText(mGroupInfo.getGroupName());
         }
         mConfirm = findViewById(R.id.user_confirm);
     }
@@ -92,7 +92,7 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
                 DBHelper.getInstance().addGroup(groupInfo);
             }
             else {
-                String groupId = mUserGroupInfo.getGroupId();
+                String groupId = mGroupInfo.getGroupId();
                 GroupInfo groupInfo = DBHelper.getInstance().getGroup(groupId);
                 groupInfo.setGroupName(mName.getText().toString());
                 groupInfo.setTimeStamp(System.currentTimeMillis());

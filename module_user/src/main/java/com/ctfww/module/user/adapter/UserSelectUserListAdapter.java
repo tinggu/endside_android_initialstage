@@ -13,7 +13,9 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupUserInfo;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,7 +49,9 @@ public class UserSelectUserListAdapter extends RecyclerView.Adapter<RecyclerView
         LogUtils.i(TAG, "onBindViewHolder = " + position);
 
         final GroupUserInfo groupUserInfo = list.get(position);
-        ((UserSelectUserViewHolder) holder).nickName.setText(groupUserInfo.getNickName());
+        UserInfo userInfo = DBHelper.getInstance().getUser(groupUserInfo.getUserId());
+        String nickName = userInfo == null ? "" : userInfo.getNickName();
+        ((UserSelectUserViewHolder) holder).nickName.setText(nickName);
         if (groupUserInfo.getUserId().equals(mUserId)) {
             ((UserSelectUserViewHolder) holder).groupSelect.setImageResource(R.drawable.radio_button_selected);
         }

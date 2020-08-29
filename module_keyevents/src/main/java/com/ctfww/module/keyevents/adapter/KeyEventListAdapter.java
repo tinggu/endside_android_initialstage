@@ -13,8 +13,10 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.R;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,9 +49,17 @@ public class KeyEventListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         KeyEvent keyEvent = list.get(position);
-        ((KeyEventViewHolder)holder).deskName.setText("[" + keyEvent.getDeskId() + "]" + "  " + keyEvent.getDeskName());
+        String deskName = "[" + keyEvent.getDeskId() + "]";
+        DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getDeskId());
+        if (deskInfo != null) {
+            deskName += " " + deskInfo.getDeskName();
+        }
+        ((KeyEventViewHolder)holder).deskName.setText(deskName);
         ((KeyEventViewHolder)holder).keyEventName.setText(keyEvent.getEventName());
-        ((KeyEventViewHolder)holder).nickName.setText(keyEvent.getNickName());
+
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keyEvent.getUserId());
+        String nickName = userInfo == null ? "" : userInfo.getNickName();
+        ((KeyEventViewHolder)holder).nickName.setText(nickName);
         ((KeyEventViewHolder)holder).dateTime.setText(GlobeFun.stampToDateTime(keyEvent.getTimeStamp()));
     }
 

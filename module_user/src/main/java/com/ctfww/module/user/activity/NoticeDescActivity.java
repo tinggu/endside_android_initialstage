@@ -17,6 +17,7 @@ import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -68,7 +69,9 @@ public class NoticeDescActivity extends AppCompatActivity implements View.OnClic
         mNoticeContent = findViewById(R.id.user_notice_desc);
         mNoticeContent.setText(mNoticeInfo.getContent());
         mReleaseNickName = findViewById(R.id.user_release_nick_name);
-        mReleaseNickName.setText(mNoticeInfo.getNickName());
+        UserInfo userInfo = DBHelper.getInstance().getUser(mNoticeInfo.getUserId());
+        String nickName = userInfo == null ? "" : userInfo.getNickName();
+        mReleaseNickName.setText(nickName);
         mReleaseDateTime = findViewById(R.id.user_release_date_time);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(mNoticeInfo.getTimeStamp());

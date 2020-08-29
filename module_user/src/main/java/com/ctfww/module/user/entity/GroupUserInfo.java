@@ -17,9 +17,6 @@ public class GroupUserInfo implements EntityInterface {
     private String groupId;
     @Index
     private String userId;
-    private String nickName;
-    private String mobile;
-    private String headUrl;
     private String role;
 
     private long timeStamp;
@@ -28,16 +25,12 @@ public class GroupUserInfo implements EntityInterface {
     @Index
     private String synTag;
 
-    @Generated(hash = 1347609944)
-    public GroupUserInfo(String id, String groupId, String userId, String nickName,
-            String mobile, String headUrl, String role, long timeStamp,
-            String status, String synTag) {
+    @Generated(hash = 1423913977)
+    public GroupUserInfo(String id, String groupId, String userId, String role,
+            long timeStamp, String status, String synTag) {
         this.id = id;
         this.groupId = groupId;
         this.userId = userId;
-        this.nickName = nickName;
-        this.mobile = mobile;
-        this.headUrl = headUrl;
         this.role = role;
         this.timeStamp = timeStamp;
         this.status = status;
@@ -51,9 +44,6 @@ public class GroupUserInfo implements EntityInterface {
     public String toString() {
         return "group = " + groupId
                 + ", userId = " + userId
-                + ", nickName = " + nickName
-                + ", mobile = " + mobile
-                + ", headUrl = " + headUrl
                 + ", role = " + role;
     }
 
@@ -83,30 +73,6 @@ public class GroupUserInfo implements EntityInterface {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getNickName() {
-        return this.nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getMobile() {
-        return this.mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getHeadUrl() {
-        return this.headUrl;
-    }
-
-    public void setHeadUrl(String headUrl) {
-        this.headUrl = headUrl;
     }
 
     public String getRole() {

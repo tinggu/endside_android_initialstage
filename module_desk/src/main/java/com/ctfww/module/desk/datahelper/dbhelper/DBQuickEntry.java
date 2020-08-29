@@ -1,0 +1,31 @@
+package com.ctfww.module.desk.datahelper.dbhelper;
+
+import android.text.TextUtils;
+
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.module.desk.entity.DeskInfo;
+import com.ctfww.module.desk.entity.RouteDesk;
+import com.ctfww.module.desk.entity.RouteSummary;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DBQuickEntry {
+    public static List<DeskInfo> getWorkingDeskList() {
+        String groupId = SPStaticUtils.getString("working_group_id");
+        if (TextUtils.isEmpty(groupId)) {
+            return new ArrayList<DeskInfo>();
+        }
+
+        return DBHelper.getInstance().getDeskList(groupId);
+    }
+
+    public static List<RouteSummary> getWorkingRouteSummaryList() {
+        String groupId = SPStaticUtils.getString("working_group_id");
+        if (TextUtils.isEmpty(groupId)) {
+            return new ArrayList<RouteSummary>();
+        }
+
+        return DBHelper.getInstance().getRouteSummaryList(groupId);
+    }
+}

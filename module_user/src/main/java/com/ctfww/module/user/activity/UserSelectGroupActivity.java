@@ -17,14 +17,12 @@ import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.UserSelectGroupListAdapter;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.user.entity.GroupInfo;
-import com.ctfww.module.user.entity.UserGroupInfo;
+import com.ctfww.module.user.entity.GroupUserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Route(path = "/user/selectGroup")
@@ -47,7 +45,7 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         setOnClickListener();
 
         EventBus.getDefault().register(this);
-        Airship.getInstance().synUserGroupInfoFromCloud();
+        Airship.getInstance().synGroupUserInfoFromCloud();
     }
 
     private void initViews() {
@@ -60,10 +58,10 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         mUserSelectGroupListView = findViewById(R.id.user_group_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mUserSelectGroupListView.setLayoutManager(layoutManager);
-        List<UserGroupInfo> userGroupInfoList = DBQuickEntry.getSelfGroupList();
-        mUserSelectGroupListAdapter = new UserSelectGroupListAdapter(userGroupInfoList);
+        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getSelfGroupUserList();
+        mUserSelectGroupListAdapter = new UserSelectGroupListAdapter(groupUserInfoList);
         mUserSelectGroupListView.setAdapter(mUserSelectGroupListAdapter);
-        if (userGroupInfoList.isEmpty()) {
+        if (groupUserInfoList.isEmpty()) {
             mNoGroupPrompt.setVisibility(View.VISIBLE);
             mUserSelectGroupListView.setVisibility(View.GONE);
         }
@@ -80,11 +78,11 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
 
     @Subscribe(threadMode= ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
-        if ("finish_user_group_syn".equals(messageEvent.getMessage())) {
-            List<UserGroupInfo> userGroupInfoList = DBQuickEntry.getSelfGroupList();
-            mUserSelectGroupListAdapter.setList(userGroupInfoList);
+        if ("finish_group_user_syn".equals(messageEvent.getMessage())) {
+            List<GroupUserInfo> infoList = DBQuickEntry.getSelfGroupUserList();
+            mUserSelectGroupListAdapter.setList(infoList);
             mUserSelectGroupListAdapter.notifyDataSetChanged();
-            if (userGroupInfoList.isEmpty()) {
+            if (infoList.isEmpty()) {
                 mNoGroupPrompt.setVisibility(View.VISIBLE);
                 mUserSelectGroupListView.setVisibility(View.GONE);
             }

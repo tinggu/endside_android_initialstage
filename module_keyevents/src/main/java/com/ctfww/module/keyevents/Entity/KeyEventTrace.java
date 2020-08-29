@@ -20,16 +20,14 @@ public class KeyEventTrace implements EntityInterface {
     private String groupId;
     private int deskId;
     private String matchLevel;
-    private String nickName;
-    private String headUrl;
 
     @Index
     private String synTag;
 
-    @Generated(hash = 387030589)
+    @Generated(hash = 38369210)
     public KeyEventTrace(String eventId, long timeStamp, String userId,
             String status, String groupId, int deskId, String matchLevel,
-            String nickName, String headUrl, String synTag) {
+            String synTag) {
         this.eventId = eventId;
         this.timeStamp = timeStamp;
         this.userId = userId;
@@ -37,8 +35,6 @@ public class KeyEventTrace implements EntityInterface {
         this.groupId = groupId;
         this.deskId = deskId;
         this.matchLevel = matchLevel;
-        this.nickName = nickName;
-        this.headUrl = headUrl;
         this.synTag = synTag;
     }
 
@@ -53,9 +49,7 @@ public class KeyEventTrace implements EntityInterface {
                 + ", status = " + status
                 + ", groupId = " + groupId
                 + ", deskId = " + deskId
-                + ", matchLevel = " + matchLevel
-                + ", nickName = " + nickName
-                + ", headUrl = " + headUrl;
+                + ", matchLevel = " + matchLevel;
     }
 
     public String getEventId() {
@@ -112,22 +106,6 @@ public class KeyEventTrace implements EntityInterface {
 
     public void setMatchLevel(String matchLevel) {
         this.matchLevel = matchLevel;
-    }
-
-    public String getNickName() {
-        return this.nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getHeadUrl() {
-        return this.headUrl;
-    }
-
-    public void setHeadUrl(String headUrl) {
-        this.headUrl = headUrl;
     }
 
     public String getSynTag() {

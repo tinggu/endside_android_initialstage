@@ -16,7 +16,7 @@ import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchPersonTrendsListAdapter;
-import com.ctfww.module.keepwatch.entity.KeepWatchPersonTrends;
+import com.ctfww.module.keepwatch.entity.PersonTrends;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class KeepWatchPersonTrendsListActivity extends AppCompatActivity impleme
 
     private RecyclerView mPersonTrendsListView;
     private KeepWatchPersonTrendsListAdapter mKeepWatchPersonTrendsListAdapter;
-    private List<KeepWatchPersonTrends> mKeepWatchPersonTrendsList = new ArrayList<>();
+    private List<PersonTrends> mKeepWatchPersonTrendsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -65,7 +65,7 @@ public class KeepWatchPersonTrendsListActivity extends AppCompatActivity impleme
         NetworkHelper.getInstance().getPersonTrends(1000, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                mKeepWatchPersonTrendsList = (List<KeepWatchPersonTrends>)obj;
+                mKeepWatchPersonTrendsList = (List<PersonTrends>)obj;
                 mKeepWatchPersonTrendsListAdapter.setList(mKeepWatchPersonTrendsList);
                 mKeepWatchPersonTrendsListAdapter.notifyDataSetChanged();
                 LogUtils.i(TAG, "getPersonTrendsList success!");

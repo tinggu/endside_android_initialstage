@@ -25,7 +25,6 @@ import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
-import com.ctfww.module.user.entity.UserGroupInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,9 +63,9 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
     private void initViews() {
         mBack = findViewById(R.id.user_top_back);
         mTittle = findViewById(R.id.user_top_tittle);
-        String groupName = DBQuickEntry.getWorkingGroupName();
-        if (!TextUtils.isEmpty(groupName)) {
-            mTittle.setText(groupName);
+        GroupInfo groupInfo = DBQuickEntry.getWorkingGroup();
+        if (groupInfo != null) {
+            mTittle.setText(groupInfo.getGroupName());
         }
 
         mAddMember = findViewById(R.id.user_top_addition);
@@ -143,8 +142,8 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
             });
         }
         else if (id == mWithdrawGroup.getId()) {
-            UserGroupInfo userGroupInfo = DBQuickEntry.getSelfGroup("");
-            if (userGroupInfo == null) {
+            GroupUserInfo info = DBQuickEntry.getWorkingGroupUser("");
+            if (info == null) {
                 return;
             }
 
@@ -204,16 +203,23 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
     }
 
     private void withdrawGroup() {
-        UserGroupInfo userGroupInfo = DBQuickEntry.getSelfGroup("");
-        if (userGroupInfo == null) {
+        GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser("");
+        groupUserInfo.setStatus("delete");
+        groupUserInfo.setTimeStamp(System.currentTimeMillis());
+        groupUserInfo.setSynTag("modify");
+        DBHelper.getInstance().updateGroupUser(groupUserInfo);
+        Airship.getInstance().synGroupUserInfoToCloud();
+
+        DBHelper.getInstance().deleteGroupUserLeaveUserId(groupUserInfo.getUserId(), groupUserInfo.getUserId());
+
+        GroupInfo groupInfo = DBQuickEntry.getWorkingGroup();
+        if (groupInfo == null) {
             return;
         }
 
-        userGroupInfo.setStatus("delete");
-        userGroupInfo.setTimeStamp(System.currentTimeMillis());
-        DBHelper.getInstance().updateUserGroup(userGroupInfo);
+        DBHelper.getInstance().deleteGroup(groupInfo.getGroupId());
 
-        Airship.getInstance().synUserGroupInfoToCloud();
+        SPStaticUtils.remove("working_group_id");
     }
 
     @Subscribe(threadMode= ThreadMode.MAIN)

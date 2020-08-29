@@ -55,9 +55,10 @@ public class UserAirship {
         NetworkHelper.getInstance().synUserInfoFromCloud(userId, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
+                List<UserInfo> infoList = (List<UserInfo>)obj;
+
                 UserInfo userInfo = (UserInfo)obj;
-                userInfo.setSynTag("cloud");
-                if (updateByCloud(userInfo)) {
+                if (updateByCloud(infoList)) {
                     EventBus.getDefault().post("finish_user_info_syn");
                 };
             }
@@ -69,26 +70,20 @@ public class UserAirship {
         });
     }
 
-    public static boolean updateByCloud(UserInfo userInfo) {
-        if (DBHelper.getInstance().addUser(userInfo)) {
-            return true;
-        }
-        else {
-            UserInfo localUserInfo = DBHelper.getInstance().getUser(userInfo.getUserId());
-            if (localUserInfo.getTimeStamp() < userInfo.getTimeStamp()) {
-                DBHelper.getInstance().updateUser(userInfo);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static boolean updateByCloud(List<UserInfo> userList) {
+    public static boolean updateByCloud(List<UserInfo> infoList) {
         boolean ret = false;
-        for (int i = 0; i < userList.size(); ++i) {
-            UserInfo userInfo = userList.get(i);
-            if (updateByCloud(userInfo))  {
+        for (int i = 0; i < infoList.size(); ++i) {
+            UserInfo info = infoList.get(i);
+            info.setSynTag("cloud");
+            if (DBHelper.getInstance().addUser(info)) {
+                ret = true;
+                continue;
+            }
+
+            UserInfo localInfo = DBHelper.getInstance().getUser(info.getUserId());
+            if (localInfo.getTimeStamp() < info.getTimeStamp()) {
+                info.setSynTag("cloud");
+                DBHelper.getInstance().updateUser(info);
                 ret = true;
             }
         }

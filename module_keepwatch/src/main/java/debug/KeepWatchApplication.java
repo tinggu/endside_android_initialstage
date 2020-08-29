@@ -1,12 +1,11 @@
 package debug;
 
-import com.baidu.mapapi.CoordType;
-import com.baidu.mapapi.SDKInitializer;
 import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.base.BaseApplication;
 import com.ctfww.commonlib.im.ConnectionStateMonitor;
 import com.ctfww.commonlib.network.CloudClient;
 import com.ctfww.commonlib.storage.sp.SPUtil;
+import com.ctfww.module.baidumap.utils.BaiduMapUtils;
 import com.ctfww.module.user.datahelper.Utils;
 
 public class KeepWatchApplication extends BaseApplication {
@@ -33,8 +32,7 @@ public class KeepWatchApplication extends BaseApplication {
 //        com.ctfww.module.tms.datahelper.NetworkHelper.getInstance().startTimedRefresh(); // 改写到主界面出现后再获取token，这样有助于数据的刷新后及时显示
 
         // 初始化百度地圖
-        SDKInitializer.initialize(this);
-        SDKInitializer.setCoordType(CoordType.BD09LL);
+        BaiduMapUtils.init(this);
 
         com.ctfww.module.keepwatch.Utils.synData();
 

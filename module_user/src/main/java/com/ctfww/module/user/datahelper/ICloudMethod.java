@@ -2,7 +2,6 @@ package com.ctfww.module.user.datahelper;
 
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.module.user.bean.NoticeReadStatusBean;
 import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
 import com.ctfww.module.user.entity.GroupInfo;
@@ -10,7 +9,6 @@ import com.ctfww.module.user.entity.GroupInviteInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
-import com.ctfww.module.user.entity.UserGroupInfo;
 import com.ctfww.module.user.entity.UserInfo;
 
 import okhttp3.MultipartBody;
@@ -90,22 +88,6 @@ public interface ICloudMethod {
      */
     @POST("/microusermanagement/userMgt/synGroupInfoFromCloud")
     Call<ResponseBody> synGroupInfoFromCloud(@Body QueryCondition condition);
-
-    /**
-     * 同步用户对应的群组信息上云
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microusermanagement/userMgt/synUserGroupInfoToCloud")
-    Call<ResponseBody> synUserGroupInfoToCloud(@Body CargoToCloud<UserGroupInfo> info);
-
-    /**
-     * 从云上同步用户对应的群组信息
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microusermanagement/userMgt/synUserGroupInfoFromCloud")
-    Call<ResponseBody> synUserGroupInfoFromCloud(@Body QueryCondition condition);
 
     /**
      * 同步邀请信息上云

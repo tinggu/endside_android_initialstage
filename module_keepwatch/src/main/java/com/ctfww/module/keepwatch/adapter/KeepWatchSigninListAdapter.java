@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.List;
 
@@ -23,11 +25,11 @@ public class KeepWatchSigninListAdapter extends RecyclerView.Adapter<RecyclerVie
     private static final String TAG = "KeepWatchSigninListAdapter";
 
     private Context mContext;
-    private List<KeepWatchSigninInfo> list;
+    private List<SigninInfo> list;
 
     private View mV;
 
-    public KeepWatchSigninListAdapter(List<KeepWatchSigninInfo> list) {
+    public KeepWatchSigninListAdapter(List<SigninInfo> list) {
         this.list = list;
     }
 
@@ -45,9 +47,11 @@ public class KeepWatchSigninListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         LogUtils.i(TAG, "onBindViewHolder = " + position);
-        KeepWatchSigninInfo keepWatchSigninInfo =  list.get(position);
+        SigninInfo keepWatchSigninInfo =  list.get(position);
         LogUtils.i(TAG, "onBindViewHolder: keepWatchSigninInfo = " + keepWatchSigninInfo.toString());
-        ((KeepWatchSigninViewHolder) holder).deskName.setText("[" + keepWatchSigninInfo.getDeskId() + "] " + keepWatchSigninInfo.getDeskName());
+        DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keepWatchSigninInfo.getGroupId(), keepWatchSigninInfo.getDeskId());
+        String deskName = deskInfo == null ? "" : deskInfo.getDeskName();
+        ((KeepWatchSigninViewHolder) holder).deskName.setText("[" + keepWatchSigninInfo.getDeskId() + "] " + deskName);
 
         if ("excellent".equals(keepWatchSigninInfo.getMatchLevel())) {
             ((KeepWatchSigninViewHolder) holder).matchLevel.setText("优");
@@ -66,7 +70,9 @@ public class KeepWatchSigninListAdapter extends RecyclerView.Adapter<RecyclerVie
             ((KeepWatchSigninViewHolder) holder).matchLevel.setTextColor(Color.GRAY);
         }
 
-        ((KeepWatchSigninViewHolder) holder).nickName.setText(keepWatchSigninInfo.getNickName());
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keepWatchSigninInfo.getUserId());
+        String nickName = userInfo == null ? "" : userInfo.getNickName();
+        ((KeepWatchSigninViewHolder) holder).nickName.setText(nickName);
         ((KeepWatchSigninViewHolder) holder).dateTime.setText(GlobeFun.stampToDateTime(keepWatchSigninInfo.getTimeStamp()));
     }
 
@@ -75,7 +81,7 @@ public class KeepWatchSigninListAdapter extends RecyclerView.Adapter<RecyclerVie
         return list.size();
     }
 
-    public void setList(List<KeepWatchSigninInfo> keepWatchSigninList) {
+    public void setList(List<SigninInfo> keepWatchSigninList) {
         list = keepWatchSigninList;
     }
 

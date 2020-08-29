@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="#F2F3F5"
-    tools:context=".activity.KeepWatchCreateAssignmentActivity">
+    tools:context="com.ctfww.module.assignment.activity.CreateAssignmentActivity">
 
     <include layout="@layout/sub_top_bar" />
 

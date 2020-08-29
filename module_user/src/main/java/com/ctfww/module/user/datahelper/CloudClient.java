@@ -2,14 +2,12 @@ package com.ctfww.module.user.datahelper;
 
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
-import com.ctfww.module.user.bean.NoticeReadStatusBean;
 import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
 import com.ctfww.module.user.entity.GroupInfo;
@@ -17,7 +15,6 @@ import com.ctfww.module.user.entity.GroupInviteInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
-import com.ctfww.module.user.entity.UserGroupInfo;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.json.JSONArray;
@@ -243,7 +240,7 @@ public class CloudClient {
     public void synUserInfoFromCloud(String userId, final ICloudCallback callback) {
         LogUtils.i(TAG, "userId = " + userId);
         Call<ResponseBody> responseBodyCall = mCloudMethod.synUserInfoFromCloud(userId);
-        processSingleObjRsp(responseBodyCall, callback);
+        processListRsp(responseBodyCall, callback);
     }
 
     public void synGroupInfoToCloud(CargoToCloud<GroupInfo> cargoToCloud, final ICloudCallback callback) {
@@ -255,18 +252,6 @@ public class CloudClient {
     public void synGroupInfoFromCloud(QueryCondition condition, final ICloudCallback callback) {
         LogUtils.i(TAG, "condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.synGroupInfoFromCloud(condition);
-        processListRsp(responseBodyCall, callback);
-    }
-
-    public void synUserGroupInfoToCloud(CargoToCloud<UserGroupInfo> cargoToCloud, final ICloudCallback callback) {
-        LogUtils.i(TAG, "cargoToCloud = " + cargoToCloud.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synUserGroupInfoToCloud(cargoToCloud);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void synUserGroupInfoFromCloud(QueryCondition condition, final ICloudCallback callback) {
-        LogUtils.i(TAG, "condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synUserGroupInfoFromCloud(condition);
         processListRsp(responseBodyCall, callback);
     }
 

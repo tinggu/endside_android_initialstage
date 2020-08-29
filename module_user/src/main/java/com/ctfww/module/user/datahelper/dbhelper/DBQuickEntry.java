@@ -7,7 +7,6 @@ import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.NoticeInfo;
-import com.ctfww.module.user.entity.UserGroupInfo;
 import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.ArrayList;
@@ -51,6 +50,15 @@ public class DBQuickEntry {
         return DBHelper.getInstance().getGroupUserList(groupId);
     }
 
+    public static List<GroupUserInfo> getSelfGroupUserList() {
+        String userId = SPStaticUtils.getString("user_open_id");
+        if (TextUtils.isEmpty(userId)) {
+            return new ArrayList<GroupUserInfo>();
+        }
+
+        return DBHelper.getInstance().getUserGroupList(userId);
+    }
+
     // 获得自己在工作组中的角色
     public static String getRoleInWorkingGroup() {
         GroupUserInfo groupUserInfo = getWorkingGroupUser("");
@@ -59,43 +67,6 @@ public class DBQuickEntry {
         }
 
         return groupUserInfo.getRole();
-    }
-
-    // 获得自己对应的群组信息
-    public static UserGroupInfo getSelfGroup(String groupId) {
-        String userId = SPStaticUtils.getString("user_open_id");
-        if (TextUtils.isEmpty(userId)) {
-            return null;
-        }
-
-        if (TextUtils.isEmpty(groupId)) {
-            groupId = SPStaticUtils.getString("working_group_id");
-            if (TextUtils.isEmpty(groupId)) {
-                return null;
-            }
-        }
-
-        return DBHelper.getInstance().getUserGroup(groupId, userId);
-    }
-
-    // 获得自己对应的群组列表
-    public static List<UserGroupInfo> getSelfGroupList() {
-        String userId = SPStaticUtils.getString("user_open_id");
-        if (TextUtils.isEmpty(userId)) {
-            return new ArrayList<UserGroupInfo>();
-        }
-
-        return DBHelper.getInstance().getUserGroupList(userId);
-    }
-
-    // 获得工作群组的名称
-    public static String getWorkingGroupName() {
-        UserGroupInfo userGroupInfo = getSelfGroup("");
-        if (userGroupInfo == null) {
-            return "";
-        }
-
-        return userGroupInfo.getGroupName();
     }
 
     // 获得工作群组信息

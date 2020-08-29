@@ -36,15 +36,10 @@ public class KeyEvent implements EntityInterface {
     @Index
     private String synTag;
 
-    private String nickName;
-    private String deskName;
-    private String deskType;
-
-    @Generated(hash = 1669352667)
+    @Generated(hash = 2055128624)
     public KeyEvent(String eventId, long timeStamp, String userId, int type, String eventName, double lat,
             double lng, String address, int deskId, String description, String voicePath, String picPath,
-            String videoPath, String status, String groupId, int level, String synTag, String nickName,
-            String deskName, String deskType) {
+            String videoPath, String status, String groupId, int level, String synTag) {
         this.eventId = eventId;
         this.timeStamp = timeStamp;
         this.userId = userId;
@@ -62,9 +57,6 @@ public class KeyEvent implements EntityInterface {
         this.groupId = groupId;
         this.level = level;
         this.synTag = synTag;
-        this.nickName = nickName;
-        this.deskName = deskName;
-        this.deskType = deskType;
     }
 
     @Generated(hash = 427852174)
@@ -88,10 +80,7 @@ public class KeyEvent implements EntityInterface {
                 + ", status = " + status
                 + ", level = " + level
                 + ", groupId = " + groupId
-                + ", synTag = " + synTag
-                + ", nickName = " + nickName
-                + ", deskName = " + deskName
-                + ", deskType = " + deskType;
+                + ", synTag = " + synTag;
 
     }
 
@@ -249,29 +238,5 @@ public class KeyEvent implements EntityInterface {
 
     public void setSynTag(String synTag) {
         this.synTag = synTag;
-    }
-
-    public String getNickName() {
-        return this.nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getDeskName() {
-        return this.deskName;
-    }
-
-    public void setDeskName(String deskName) {
-        this.deskName = deskName;
-    }
-
-    public String getDeskType() {
-        return this.deskType;
-    }
-
-    public void setDeskType(String deskType) {
-        this.deskType = deskType;
     }
 }

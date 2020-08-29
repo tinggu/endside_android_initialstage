@@ -52,7 +52,19 @@ public class GroupUserDBHelper {
         return dao.queryBuilder().where(dao.queryBuilder().or(GroupUserInfoDao.Properties.SynTag.eq("new"), GroupUserInfoDao.Properties.SynTag.eq("modify"))).list();
     }
 
-    public static List<GroupUserInfo> getList(GroupUserInfoDao dao, String groupId) {
+    public static List<GroupUserInfo> getListByGroupId(GroupUserInfoDao dao, String groupId) {
         return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.SynTag.notEq("delete"))).list();
+    }
+
+    public static List<GroupUserInfo> getListByUserId(GroupUserInfoDao dao, String userId) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.UserId.eq(userId), GroupUserInfoDao.Properties.SynTag.notEq("delete"))).list();
+    }
+
+    public static void delete(GroupUserInfoDao dao, String groupId, String userId) {
+        dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.UserId.eq(userId))).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    public static void deleteLeaveUserId(GroupUserInfoDao dao, String groupId, String userId) {
+        dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.UserId.notEq(userId))).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 }

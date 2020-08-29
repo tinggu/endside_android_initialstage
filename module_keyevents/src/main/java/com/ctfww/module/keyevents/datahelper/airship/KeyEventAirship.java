@@ -8,6 +8,7 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.commonlib.utils.AirshipUtils;
 import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
@@ -59,7 +60,7 @@ public class KeyEventAirship {
         }
 
         String key = "keyevent_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, CommonAirship.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(key, AirshipUtils.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);

@@ -24,6 +24,7 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.VoiceUtils;
+import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.fingerprint.entity.DistResult;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
@@ -193,9 +194,6 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
                 return;
             }
 
-            keyEventTrace.setNickName(userInfo.getUserId());
-            keyEventTrace.setNickName(userInfo.getNickName());
-            keyEventTrace.setHeadUrl(userInfo.getHeadUrl());
             keyEventTrace.setSynTag("modify");
 
             if (id == mAccept.getId()) {
@@ -235,9 +233,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             keyEventTrace.setGroupId(SPStaticUtils.getString("working_group_id"));
             keyEventTrace.setDeskId(mKeyEvent.getDeskId());
             keyEventTrace.setMatchLevel("default");
-            keyEventTrace.setNickName(groupUserInfo.getUserId());
-            keyEventTrace.setNickName(groupUserInfo.getNickName());
-            keyEventTrace.setHeadUrl(groupUserInfo.getHeadUrl());
+            keyEventTrace.setUserId(groupUserInfo.getUserId());
             keyEventTrace.setStatus("received");
             keyEventTrace.setSynTag("modify");
 
@@ -250,8 +246,17 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
     private void showEventInfoInUI(KeyEvent keyEvent) {
         long timeStamp = keyEvent.getTimeStamp();
         mDateTime.setText(GlobeFun.stampToDateTime(timeStamp));
-        mCreate.setText(keyEvent.getNickName());
-        mDeskName.setText("[" + keyEvent.getDeskId() + "] " + keyEvent.getDeskName());
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keyEvent.getUserId());
+        if (userInfo != null) {
+            mCreate.setText(userInfo.getNickName());
+        }
+
+        String deskName = "[" + keyEvent.getDeskId() + "]";
+        DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getDeskId());
+        if (deskInfo != null) {
+            deskName += " " + deskInfo.getDeskName();
+        }
+        mDeskName.setText(deskName);
         mEventName.setText(keyEvent.getEventName());
         if (!TextUtils.isEmpty(mKeyEvent.getPicPath())) {
             Glide.with(this).load(mKeyEvent.getPicPath()).into(mPic);
@@ -324,31 +329,21 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             mCurrentStatus.setText("抢单或分配中");
         }
         else {
-            KeyEventTrace keyEventTrace1 = keyEventTraceList.get(keyEventTraceList.size() - 1);
-            KeyEventTrace keyEventTrace2 = keyEventTraceList.get(keyEventTraceList.size() - 2);
-            if ("end".equals(keyEventTrace1.getStatus())) {
-                mResponsible.setText(keyEventTrace1.getNickName());
+            KeyEventTrace keyEventTrace = keyEventTraceList.get(keyEventTraceList.size() - 1);
+            UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keyEventTrace.getUserId());
+            String nickName = userInfo == null ? "" : userInfo.getNickName();
+            mResponsible.setText(nickName);
+            if ("end".equals(keyEventTrace.getStatus())) {
+                mResponsible.setText(nickName);
                 mCurrentStatus.setText("已完成");
             }
-            else if ("accepted".equals(keyEventTrace1.getStatus())) {
+            else if ("accepted".equals(keyEventTrace.getStatus())) {
                 mCurrentStatus.setText("处理中");
-                if ("accepted".equals(keyEventTrace1.getStatus())) {
-                    mResponsible.setText(keyEventTrace1.getNickName());
-                }
-                else {
-                    mResponsible.setText(keyEventTrace2.getNickName());
-                }
             }
-            else if ("received".equals(keyEventTrace1.getStatus()) || "received".equals(keyEventTrace2.getStatus())) {
+            else if ("received".equals(keyEventTrace.getStatus())) {
                 mCurrentStatus.setText("领取任务中");
-                if ("received".equals(keyEventTrace1.getStatus())) {
-                    mResponsible.setText(keyEventTrace1.getNickName());
-                }
-                else {
-                    mResponsible.setText(keyEventTrace2.getNickName());
-                }
             }
-            else if ("free".equals(keyEventTrace1.getStatus())) {
+            else if ("free".equals(keyEventTrace.getStatus())) {
                 mResponsible.setText("群组成员");
                 mCurrentStatus.setText("抢单或分配中");
             }

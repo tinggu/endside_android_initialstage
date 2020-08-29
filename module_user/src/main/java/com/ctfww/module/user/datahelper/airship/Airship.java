@@ -32,13 +32,30 @@ public class Airship {
             public void run() {
                 synUserInfoToCloud();
                 synGroupInfoToCloud();
-                synUserGroupInfoToCloud();
                 synGroupUserInfoToCloud();
                 synInviteInfoToCloud();
                 synNoticeInfoToCloud();
                 synNoticeReadStatusToCloud();
             }
         }, 0, 60000, TimeUnit.MILLISECONDS);
+    }
+
+    public void synToCloud() {
+        synUserInfoToCloud();
+        synGroupInfoToCloud();
+        synGroupUserInfoToCloud();
+        synInviteInfoToCloud();
+        synNoticeInfoToCloud();
+        synNoticeReadStatusToCloud();
+    }
+
+    public void synFromCloud() {
+        synUserInfoFromCloud();
+        synGroupInfoFromCloud();
+        synGroupUserInfoFromCloud();
+        synInviteInfoFromCloud();
+        synNoticeInfoFromCloud();
+        synNoticeReadStatusFromCloud();
     }
 
     // 1.与用户信息相关
@@ -51,10 +68,6 @@ public class Airship {
         UserAirship.synFromCloud();
     }
 
-    public void updateUserInfoByCloud(UserInfo userInfo) {
-        UserAirship.updateByCloud(userInfo);
-    }
-
     // 2.与群组信息相关
 
     public void synGroupInfoToCloud() {
@@ -65,17 +78,7 @@ public class Airship {
         GroupAirship.synFromCloud();
     }
 
-    // 3.与用户对应的群组信息相关
-
-    public void synUserGroupInfoToCloud() {
-        UserGroupAirship.synToCloud();
-    }
-
-    public void synUserGroupInfoFromCloud() {
-        UserGroupAirship.synFromCloud();
-    }
-
-    // 4.与邀请信息相关
+    // 3.与邀请信息相关
 
     public void synInviteInfoToCloud() {
         GroupInviteAirship.synToCloud();
@@ -85,7 +88,7 @@ public class Airship {
         GroupInviteAirship.synFromCloud();
     }
 
-    // 5.与通知信息相关
+    // 4.与通知信息相关
 
     public void synNoticeInfoToCloud() {
         NoticeAirship.synToCloud();
@@ -95,7 +98,7 @@ public class Airship {
         NoticeAirship.synFromCloud();
     }
 
-    // 6.与群组成员信息相关
+    // 5.与群组成员信息相关
 
     public void synGroupUserInfoToCloud() {
         GroupUserAirship.synToCloud();

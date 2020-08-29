@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 public class GlobeFun {
@@ -259,5 +260,39 @@ public class GlobeFun {
             view.setFocusable(false);                 //无焦点
             view.setFocusableInTouchMode(false);      //触摸时也得不到焦点
         }
+    }
+
+    public static String getTodayWeekDayStr() {
+        String ret = "Monday";
+        Calendar calendar = Calendar.getInstance();
+        int weekDayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+        switch (weekDayIndex) {
+            case 1:
+                ret = "Sunday";
+                break;
+            case 2:
+                ret = "Monday";
+                break;
+            case 3:
+                ret = "Tuesday";
+                break;
+            case 4:
+                ret = "Wedndesday";
+                break;
+            case 5:
+                ret = "Thursday";
+                break;
+            case 6:
+                ret = "Friday";
+                break;
+            case 7:
+                ret = "Sunday";
+                break;
+            default:
+                ret = "Monday";
+                break;
+        }
+
+        return ret;
     }
 }

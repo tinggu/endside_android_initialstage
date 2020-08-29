@@ -42,8 +42,7 @@ public class Airship {
             @Override
             public void run() {
                 try {
-                    synKeyEventToCloud();
-                    synKeyEventTraceToCloud();
+                    synToCloud();
                 }
                 catch (Exception e) {
                     LogUtils.i("com.ctfww.module.keyevents.Airship", "e.getMessage() = " + e.getMessage());
@@ -52,9 +51,18 @@ public class Airship {
         }, 0, 60000, TimeUnit.MILLISECONDS);
     }
 
+    public void synToCloud() {
+        synKeyEventToCloud();
+        synKeyEventTraceToCloud();
+    }
+
+    public void synFromCloud() {
+        synKeyEventFromCloud();
+        synKeyEventTraceFromCloud();
+    }
+
     public void synKeyEventToCloud() {
         KeyEventAirship.synToCloud();
-        KeyEventAirship.synAdditionToCloud();
     }
 
     public void synKeyEventFromCloud() {

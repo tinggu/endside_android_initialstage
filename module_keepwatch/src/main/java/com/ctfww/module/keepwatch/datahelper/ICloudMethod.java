@@ -2,13 +2,7 @@ package com.ctfww.module.keepwatch.datahelper;
 
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.commonlib.entity.Cargo;
-import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
-import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
-import com.ctfww.module.keepwatch.entity.KeepWatchRoute;
-import com.ctfww.module.keepwatch.entity.KeepWatchRouteDesk;
-import com.ctfww.module.keepwatch.entity.KeepWatchRouteSummary;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -23,69 +17,12 @@ public interface ICloudMethod {
     /***********************new**********************/
 
     /**
-     * 同步签到点
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchDeskList")
-    Call<ResponseBody> synKeepWatchDesk(@Body Cargo<KeepWatchDesk> info);
-
-    /**
-     * 同步签到点上云
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchDeskToCloud")
-    Call<ResponseBody> synKeepWatchDeskToCloud(@Body CargoToCloud<KeepWatchDesk> info);
-
-    /**
-     * 从云上同步签到点
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchDeskFromCloud")
-    Call<ResponseBody> synKeepWatchDeskFromCloud(@Body QueryCondition condition);
-
-    /**
-     * 同步签到路线概要信息
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchRouteSummaryToCloud")
-    Call<ResponseBody> synKeepWatchRouteSummaryToCloud(@Body CargoToCloud<KeepWatchRouteSummary> info);
-
-    /**
-     * 从云上同步路线概要信息
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchRouteSummaryFromCloud")
-    Call<ResponseBody> synKeepWatchRouteSummaryFromCloud(@Body QueryCondition condition);
-
-    /**
-     * 同步签到路线签到点信息
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchRouteDeskToCloud")
-    Call<ResponseBody> synKeepWatchRouteDeskToCloud(@Body CargoToCloud<KeepWatchRouteDesk> info);
-
-    /**
-     * 从云上同步路线签到点信息
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchRouteDeskFromCloud")
-    Call<ResponseBody> synKeepWatchRouteDeskFromCloud(@Body QueryCondition condition);
-
-
-    /**
      * 同步签到信息上云
      * @param info
      * @return 返回值
      */
     @POST("/microcloudkeyevents/keepWatch/synKeepWatchSigninToCloud")
-    Call<ResponseBody> synKeepWatchSigninToCloud(@Body CargoToCloud<KeepWatchSigninInfo> info);
+    Call<ResponseBody> synKeepWatchSigninToCloud(@Body CargoToCloud<SigninInfo> info);
 
     /**
      * 从云上同步签到信息
@@ -94,22 +31,6 @@ public interface ICloudMethod {
      */
     @POST("/microcloudkeyevents/keepWatch/synKeepWatchSigninFromCloud")
     Call<ResponseBody> synKeepWatchSigninFromCloud(@Body QueryCondition condition);
-
-    /**
-     * 同步任务上云
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchAssignmentToCloud")
-    Call<ResponseBody> synKeepWatchAssignmentToCloud(@Body CargoToCloud<KeepWatchAssignment> info);
-
-    /**
-     * 从云上同步任务
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchAssignmentFromCloud")
-    Call<ResponseBody> synKeepWatchAssignmentFromCloud(@Body QueryCondition condition);
 
     /**
      * 从云上同步今天动态
@@ -264,20 +185,4 @@ public interface ICloudMethod {
      */
     @POST("/microcloudkeyevents/keepWatch/getHistoryEveryDayStatistics")
     Call<ResponseBody> getHistoryEveryDayStatistics(@Body QueryCondition condition);
-
-    /**
-     * 增加巡检路线路线
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/addKeepWatchRoute")
-    Call<ResponseBody> addKeepWatchRoute(@Body KeepWatchRoute info);
-
-    /**
-     * 获得线路
-     * @param groupId
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/getKeepWatchRoute")
-    Call<ResponseBody> getKeepWatchRoute(@Body String groupId);
 }

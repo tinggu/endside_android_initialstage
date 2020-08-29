@@ -1,6 +1,7 @@
 package com.ctfww.module.user.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.NoticeInfo;
+import com.ctfww.module.user.entity.NoticeReadStatus;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,10 +35,15 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
     private EditText mNoticeTittle;
     private EditText mNoticeDesc;
 
+    private UserInfo mSelfInfo;
+    private String mGroupId;
+
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.user_create_notice_activity);
+        mGroupId = SPStaticUtils.getString("working_group_id");
+        mSelfInfo = DBQuickEntry.getSelfInfo();
         initViews();
         setOnClickListener();
     }
@@ -64,27 +71,33 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
             finish();
         }
         else if (id == mRelease.getId()) {
-            UserInfo userInfo = DBQuickEntry.getSelfInfo();
-            if (userInfo == null) {
+            if (TextUtils.isEmpty(mGroupId) || mSelfInfo == null) {
                 return;
             }
 
             NoticeInfo noticeInfo = new NoticeInfo();
             noticeInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
-            noticeInfo.setUserId(userInfo.getUserId());
-            noticeInfo.setNickName(userInfo.getNickName());
+            noticeInfo.setUserId(mSelfInfo.getUserId());
             noticeInfo.setTittle(mNoticeTittle.getText().toString());
             noticeInfo.setContent(mNoticeDesc.getText().toString());
             noticeInfo.setType(0);
             noticeInfo.setTimeStamp(System.currentTimeMillis());
-            noticeInfo.setFlag(2);
             noticeInfo.setSynTag("new");
-
             noticeInfo.combineNoticeId();
-
             DBHelper.getInstance().addNotice(noticeInfo);
-
             Airship.getInstance().synNoticeInfoToCloud();
+
+            NoticeReadStatus readStatus = new NoticeReadStatus();
+            readStatus.setGroupId(mGroupId);
+            readStatus.setNoticeId(noticeInfo.getNoticeId());
+            readStatus.setUserId(mSelfInfo.getUserId());
+            readStatus.setTimeStamp(System.currentTimeMillis());
+            readStatus.setFlag(2);
+            readStatus.combieId();
+            readStatus.setSynTag("new");
+            readStatus.setNickName(mSelfInfo.getNickName());
+            DBHelper.getInstance().addNoticeReadStatus(readStatus);
+            Airship.getInstance().synNoticeReadStatusToCloud();
 
             finish();
         }

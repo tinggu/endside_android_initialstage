@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.entity.UserGroupInfo;
-
-import org.greenrobot.eventbus.EventBus;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.entity.GroupInfo;
+import com.ctfww.module.user.entity.GroupUserInfo;
 
 import java.util.List;
 
@@ -23,15 +23,15 @@ import java.util.List;
 public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static String TAG = "UserSelectGroupListAdapter";
 
-    private List<UserGroupInfo> list;
+    private List<GroupUserInfo> list;
     private String mGroupId;
 
-    public UserSelectGroupListAdapter(List<UserGroupInfo> list) {
+    public UserSelectGroupListAdapter(List<GroupUserInfo> list) {
         this.list = list;
         mGroupId = SPStaticUtils.getString("working_group_id");
     }
 
-    public void setList(List<UserGroupInfo> list) {
+    public void setList(List<GroupUserInfo> list) {
         this.list = list;
     }
 
@@ -47,9 +47,11 @@ public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         LogUtils.i(TAG, "onBindViewHolder = " + position);
 
-        final UserGroupInfo userGroupInfo = list.get(position);
-        ((UserSelectGroupViewHolder) holder).groupName.setText(userGroupInfo.getGroupName());
-        if (userGroupInfo.getGroupId().equals(mGroupId)) {
+        final GroupUserInfo groupUserInfo = list.get(position);
+        GroupInfo groupInfo = DBHelper.getInstance().getGroup(groupUserInfo.getGroupId());
+        String groupName = groupInfo == null ? "" : groupInfo.getGroupName();
+        ((UserSelectGroupViewHolder) holder).groupName.setText(groupName);
+        if (groupUserInfo.getGroupId().equals(mGroupId)) {
             ((UserSelectGroupViewHolder) holder).groupSelect.setImageResource(R.mipmap.selected);
         }
         else {
@@ -59,7 +61,7 @@ public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerVie
         ((UserSelectGroupViewHolder) holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mGroupId = userGroupInfo.getGroupId();
+                mGroupId = groupUserInfo.getGroupId();
                 notifyDataSetChanged();
             }
         });

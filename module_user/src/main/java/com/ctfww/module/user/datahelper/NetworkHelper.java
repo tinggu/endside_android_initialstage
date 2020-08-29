@@ -3,13 +3,8 @@ package com.ctfww.module.user.datahelper;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.CargoToCloud;
-import com.ctfww.commonlib.entity.GeneralRsp;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.commonlib.im.UdpHelper;
-import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
@@ -17,17 +12,13 @@ import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.network.NetworkConst;
-import com.ctfww.module.user.constant.UserSPConstant;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
-import com.ctfww.module.user.entity.UserGroupInfo;
 import com.ctfww.module.user.entity.UserInfo;
-import com.ctfww.module.user.storage.sp.SPConstant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -157,8 +148,9 @@ public class NetworkHelper {
         CloudClient.getInstance().synUserInfoFromCloud(userId, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                UserInfo userInfo = GsonUtils.fromJson(data, UserInfo.class);
-                callback.onSuccess(userInfo);
+                Type type = new TypeToken<List<UserInfo>>(){}.getType();
+                List<UserInfo> userInfoList = GsonUtils.fromJson(data, type);
+                callback.onSuccess(userInfoList);
             }
 
             @Override
@@ -200,48 +192,6 @@ public class NetworkHelper {
             public void onSuccess(String data) {
                 Type type = new TypeToken<List<GroupInfo>>() {}.getType();
                 List<GroupInfo> groupInfoList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(groupInfoList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-
-    }
-
-    public void synUserGroupInfoToCloud(CargoToCloud<UserGroupInfo> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synUserGroupInfoToCloud(cargoToCloud, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-
-    }
-
-    public void synUserGroupInfoFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synUserGroupInfoFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<UserGroupInfo>>() {}.getType();
-                List<UserGroupInfo> groupInfoList = GsonUtils.fromJson(data, type);
                 callback.onSuccess(groupInfoList);
             }
 

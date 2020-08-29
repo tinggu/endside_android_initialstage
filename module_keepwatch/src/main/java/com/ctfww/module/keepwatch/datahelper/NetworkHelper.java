@@ -7,21 +7,15 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.commonlib.entity.Cargo;
-import com.ctfww.module.keepwatch.entity.KeepWatchRoute;
-import com.ctfww.module.keepwatch.entity.KeepWatchRouteDesk;
-import com.ctfww.module.keepwatch.entity.KeepWatchRouteSummary;
+import com.ctfww.module.keepwatch.entity.PersonTrends;
+import com.ctfww.module.keepwatch.entity.Ranking;
 import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.network.NetworkConst;
-import com.ctfww.module.keepwatch.entity.KeepWatchAssignment;
-import com.ctfww.module.keepwatch.entity.KeepWatchDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchGroupSummary;
-import com.ctfww.module.keepwatch.entity.KeepWatchPersonTrends;
-import com.ctfww.module.keepwatch.entity.KeepWatchRanking;
-import com.ctfww.module.keepwatch.entity.KeepWatchSigninInfo;
+import com.ctfww.module.keepwatch.entity.SigninInfo;
 import com.ctfww.module.keepwatch.entity.KeepWatchSigninStatistics;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
@@ -45,160 +39,7 @@ public class NetworkHelper {
         return NetworkHelper.Inner.INSTANCE;
     }
 
-    public void synKeepWatchDesk(Cargo<KeepWatchDesk> deskCargo, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        CloudClient.getInstance().synKeepWatchDesk(deskCargo, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<Cargo<KeepWatchDesk>>() {}.getType();
-                Cargo<KeepWatchDesk> deskCargoRsp = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synKeepWatchDesk: deskCargoRsp = " + deskCargoRsp.toString());
-                callback.onSuccess(deskCargoRsp);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchDesk fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchDeskToCloud(CargoToCloud<KeepWatchDesk> cargo, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchDeskToCloud(cargo, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchDeskToCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchDeskFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchDeskFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchDesk>>() {}.getType();
-                List<KeepWatchDesk> deskList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synKeepWatchDeskFromCloud: deskList.size() = " + deskList.size());
-                callback.onSuccess(deskList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchDeskFromCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchRouteSummaryToCloud(CargoToCloud<KeepWatchRouteSummary> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchRouteSummaryToCloud(cargoToCloud, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchRouteSummaryToCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchRouteSummaryFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchRouteSummaryFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchRouteSummary>>() {}.getType();
-                List<KeepWatchRouteSummary> routeSummaryList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synKeepWatchRouteSummaryFromCloud: routeSummaryList.size() = " + routeSummaryList.size());
-                callback.onSuccess(routeSummaryList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchRouteSummaryFromCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchRouteDeskToCloud(CargoToCloud<KeepWatchRouteDesk> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchRouteDeskToCloud(cargoToCloud, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchRouteDeskToCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchRouteDeskFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchRouteDeskFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchRouteDesk>>() {}.getType();
-                List<KeepWatchRouteDesk> routeDeskList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synKeepWatchRouteDeskFromCloud: routeDeskList.size() = " + routeDeskList.size());
-                callback.onSuccess(routeDeskList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchRouteDeskFromCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchSigninToCloud(CargoToCloud<KeepWatchSigninInfo> cargoToCloud, final IUIDataHelperCallback callback) {
+    public void synKeepWatchSigninToCloud(CargoToCloud<SigninInfo> cargoToCloud, final IUIDataHelperCallback callback) {
         CloudClient.getInstance().synKeepWatchSigninToCloud(cargoToCloud, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
@@ -222,8 +63,8 @@ public class NetworkHelper {
         CloudClient.getInstance().synKeepWatchSigninFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchSigninInfo>>() {}.getType();
-                List<KeepWatchSigninInfo> signinList = GsonUtils.fromJson(data, type);
+                Type type = new TypeToken<List<SigninInfo>>() {}.getType();
+                List<SigninInfo> signinList = GsonUtils.fromJson(data, type);
                 LogUtils.i(TAG, "synKeepWatchSigninFromCloud: signinList.size() = " + signinList.size());
                 callback.onSuccess(signinList);
             }
@@ -241,55 +82,12 @@ public class NetworkHelper {
         });
     }
 
-    public void synKeepWatchAssignmentToCloud(CargoToCloud<KeepWatchAssignment> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchAssignmentToCloud(cargoToCloud, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchAssignmentToCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchAssignmentFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchAssignmentFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchAssignment>>() {}.getType();
-                List<KeepWatchAssignment> assignmentList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synKeepWatchAssignmentFromCloud: assignmentList.size() = " + assignmentList.size());
-                callback.onSuccess(assignmentList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchAssignmentFromCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
     public void synTodayKeepWatchPersonTrendsFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
         CloudClient.getInstance().synTodayKeepWatchPersonTrendsFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchPersonTrends>>() {}.getType();
-                List<KeepWatchPersonTrends> assignmentList = GsonUtils.fromJson(data, type);
+                Type type = new TypeToken<List<PersonTrends>>() {}.getType();
+                List<PersonTrends> assignmentList = GsonUtils.fromJson(data, type);
                 LogUtils.i(TAG, "synTodayKeepWatchPersonTrendsFromCloud: assignmentList.size() = " + assignmentList.size());
                 callback.onSuccess(assignmentList);
             }
@@ -311,8 +109,8 @@ public class NetworkHelper {
         CloudClient.getInstance().synTodayKeepWatchRankingFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchRanking>>() {}.getType();
-                List<KeepWatchRanking> assignmentList = GsonUtils.fromJson(data, type);
+                Type type = new TypeToken<List<Ranking>>() {}.getType();
+                List<Ranking> assignmentList = GsonUtils.fromJson(data, type);
                 LogUtils.i(TAG, "synTodayKeepRankingTrendsFromCloud: assignmentList.size() = " + assignmentList.size());
                 callback.onSuccess(assignmentList);
             }
@@ -367,8 +165,8 @@ public class NetworkHelper {
         CloudClient.getInstance().getPersonTrends(groupId, startTime, endTime, count, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchPersonTrends>>() {}.getType();
-                List<KeepWatchPersonTrends> keepWatchPersonTrendsList = GsonUtils.fromJson(data, type);
+                Type type = new TypeToken<List<PersonTrends>>() {}.getType();
+                List<PersonTrends> keepWatchPersonTrendsList = GsonUtils.fromJson(data, type);
                 callback.onSuccess(keepWatchPersonTrendsList);
             }
 
@@ -395,8 +193,8 @@ public class NetworkHelper {
         CloudClient.getInstance().getKeepWatchRanking(groupId, startTime, endTime, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchRanking>>() {}.getType();
-                List<KeepWatchRanking> keepWatchRankingList = GsonUtils.fromJson(data, type);
+                Type type = new TypeToken<List<Ranking>>() {}.getType();
+                List<Ranking> keepWatchRankingList = GsonUtils.fromJson(data, type);
                 callback.onSuccess(keepWatchRankingList);
             }
 
@@ -512,8 +310,8 @@ public class NetworkHelper {
         CloudClient.getInstance().getKeepWatchSigninList(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchSigninInfo>>() {}.getType();
-                List<KeepWatchSigninInfo> keepWatchSigninInfoList = GsonUtils.fromJson(data, type);
+                Type type = new TypeToken<List<SigninInfo>>() {}.getType();
+                List<SigninInfo> keepWatchSigninInfoList = GsonUtils.fromJson(data, type);
                 callback.onSuccess(keepWatchSigninInfoList);
             }
 
@@ -578,64 +376,6 @@ public class NetworkHelper {
             @Override
             public void onError(int code, String errorMsg) {
                 LogUtils.i(TAG, "getKeepWatchSigninStatistics fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void getKeepWatchAssignmentList(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
-
-        CloudClient.getInstance().getKeepWatchAssignmentList(groupId, userId, startTime, endTime, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchAssignment>>() {}.getType();
-                List<KeepWatchAssignment> keepWatchAssignmentList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(keepWatchAssignmentList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getKeepWatchAssignmentList fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void getKeepWatchPeriodAssignmentList(final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
-
-        CloudClient.getInstance().getKeepWatchPeriodAssignmentList(groupId, userId, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchAssignment>>() {}.getType();
-                List<KeepWatchAssignment> keepWatchAssignmentList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(keepWatchAssignmentList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getKeepWatchPeriodAssignmentList fail: code = " + code);
                 callback.onError(code);
             }
 
@@ -815,33 +555,4 @@ public class NetworkHelper {
             }
         });
     }
-
-    public void getKeepWatchRouteList(final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        CloudClient.getInstance().getKeepWatchRoute(groupId, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchRoute>>() {}.getType();
-                List<KeepWatchRoute> routeList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(routeList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getKeepWatchRouteList fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-
 }

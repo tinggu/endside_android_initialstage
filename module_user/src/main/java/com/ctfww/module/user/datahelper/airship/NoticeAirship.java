@@ -9,6 +9,7 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.commonlib.utils.AirshipUtils;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.NoticeInfo;
@@ -58,7 +59,7 @@ public class NoticeAirship {
         }
 
         final String key = "notice_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, CommonAirship.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(key, AirshipUtils.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
         String userId = SPStaticUtils.getString("user_open_id");

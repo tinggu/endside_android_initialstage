@@ -44,7 +44,7 @@ public class GroupAirship {
 
     // 从云上同步群组信息
     public static void synFromCloud() {
-        long startTime = SPStaticUtils.getLong("group_syn_time_stamp_cloud", CommonAirship.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong("group_syn_time_stamp_cloud", 0);
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
         String userId = SPStaticUtils.getString("user_open_id");

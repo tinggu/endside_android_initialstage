@@ -25,7 +25,8 @@ import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchRanking;
+import com.ctfww.module.keepwatch.entity.Ranking;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -135,7 +136,7 @@ public class KeepWatchRankingFragment extends Fragment {
         NetworkHelper.getInstance().getKeepWatchRanking(startTime, endTime, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                List<KeepWatchRanking> keepWatchRankingList = (List<KeepWatchRanking>)obj;
+                List<Ranking> keepWatchRankingList = (List<Ranking>)obj;
                 updateRankingToUI(keepWatchRankingList);
             }
 
@@ -146,30 +147,38 @@ public class KeepWatchRankingFragment extends Fragment {
         });
     }
 
-    private void updateRankingToUI(List<KeepWatchRanking> keepWatchRankingList) {
+    private void updateRankingToUI(List<Ranking> keepWatchRankingList) {
         if (keepWatchRankingList.isEmpty()) {
             mNoData.setVisibility(View.VISIBLE);
             mLL.setVisibility(View.GONE);
             return;
         }
 
-        KeepWatchRanking keepWatchRanking = keepWatchRankingList.get(0);
-        Glide.with(this).load(keepWatchRanking.getHeadUrl()).into(mGoldHead);
-//        updateHead(keepWatchRanking.getHeadUrl(), keepWatchRanking.getUserId());
-        mGoldNickName.setText(keepWatchRanking.getNickName());
+        Ranking keepWatchRanking = keepWatchRankingList.get(0);
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keepWatchRanking.getUserId());
+        if (userInfo != null) {
+            Glide.with(this).load(userInfo.getHeadUrl()).into(mGoldHead);
+            mGoldNickName.setText(userInfo.getNickName());
+        }
         mGoldPower.setText("综合分 " + keepWatchRanking.getScore());
 
         if (keepWatchRankingList.size() >= 2) {
             keepWatchRanking = keepWatchRankingList.get(1);
-            Glide.with(this).load(keepWatchRanking.getHeadUrl()).into(mSilverHead);
-            mSilverNickName.setText(keepWatchRanking.getNickName());
+            userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keepWatchRanking.getUserId());
+            if (userInfo != null) {
+                Glide.with(this).load(userInfo.getHeadUrl()).into(mSilverHead);
+                mSilverNickName.setText(userInfo.getNickName());
+            }
             mSilverPower.setText("综合分 " + keepWatchRanking.getScore());
         }
 
         if (keepWatchRankingList.size() >= 3) {
             keepWatchRanking = keepWatchRankingList.get(2);
-            Glide.with(this).load(keepWatchRanking.getHeadUrl()).into(mBronzeHead);
-            mBronzeNickName.setText(keepWatchRanking.getNickName());
+            userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keepWatchRanking.getUserId());
+            if (userInfo != null) {
+                Glide.with(this).load(userInfo.getHeadUrl()).into(mBronzeHead);
+                mBronzeNickName.setText(userInfo.getNickName());
+            }
             mBronzePower.setText("综合分 " + keepWatchRanking.getScore());
         }
 
