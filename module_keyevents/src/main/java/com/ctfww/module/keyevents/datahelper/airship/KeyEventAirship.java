@@ -6,14 +6,12 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.utils.AirshipUtils;
-import com.ctfww.commonlib.utils.FileUtils;
-import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -54,7 +52,7 @@ public class KeyEventAirship {
     }
 
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }

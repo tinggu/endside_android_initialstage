@@ -10,6 +10,7 @@ import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.assignment.datahelper.NetworkHelper;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,7 +47,7 @@ public class AssignmentAirship {
 
     // 从云上同步任务
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }

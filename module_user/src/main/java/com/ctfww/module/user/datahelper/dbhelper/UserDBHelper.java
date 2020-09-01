@@ -45,8 +45,8 @@ public class UserDBHelper {
         return dao.queryBuilder().where(UserInfoDao.Properties.UserId.eq(userId)).unique();
     }
 
-    public static UserInfo getNoSyn(UserInfoDao dao, String userId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(UserInfoDao.Properties.UserId.eq(userId), dao.queryBuilder().or(UserInfoDao.Properties.SynTag.eq("new"), UserInfoDao.Properties.SynTag.eq("modify")))).unique();
+    public static List<UserInfo> getNoSynList(UserInfoDao dao) {
+        return dao.queryBuilder().where(dao.queryBuilder().or(UserInfoDao.Properties.SynTag.eq("new"), UserInfoDao.Properties.SynTag.eq("modify"))).list();
     }
 
     public static void delete(UserInfoDao dao, String userId) {

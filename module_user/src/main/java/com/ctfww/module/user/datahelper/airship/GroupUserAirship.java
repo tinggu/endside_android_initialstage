@@ -1,12 +1,11 @@
 package com.ctfww.module.user.datahelper.airship;
 
-import android.text.TextUtils;
-
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupUserInfo;
@@ -46,33 +45,29 @@ public class GroupUserAirship {
 
     // 从云上同步通知信息
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        final String key = "group_user_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, 0);
+        long startTime = SPStaticUtils.getLong(Const.GROUP_USER_SYN_TIME_STAMP_CLOUD, 0);
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
-        String userId = SPStaticUtils.getString("user_open_id");
-        condition.setGroupId(groupId);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
+
+        LogUtils.i(TAG, "synFromCloud: condition = " + condition.toString());
 
         NetworkHelper.getInstance().synGroupUserInfoFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 List<GroupUserInfo> userList = (List<GroupUserInfo>)obj;
+                LogUtils.i(TAG, "synFromCloud: userList.size() = " + userList.size());
 
                 if (!userList.isEmpty()) {
                     if (updateByCloud(userList)) {
-                        EventBus.getDefault().post("finish_group_user_syn");
+                        EventBus.getDefault().post(Const.FINISH_GROUP_USER_SYN);
                     }
                 }
 
-                SPStaticUtils.put(key, condition.getEndTime());
+                SPStaticUtils.put(Const.GROUP_USER_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override
@@ -86,7 +81,9 @@ public class GroupUserAirship {
         boolean ret = false;
         for (int i = 0; i < userList.size(); ++i) {
             GroupUserInfo user = userList.get(i);
+            user.combineId();
             user.setSynTag("cloud");
+            LogUtils.i(TAG, "updateByCloud: user = " + user.toString());
             if (DBHelper.getInstance().addGroupUser(user)) {
                 ret = true;
                 continue;
@@ -94,7 +91,6 @@ public class GroupUserAirship {
 
             GroupUserInfo localUser = DBHelper.getInstance().getGroupUser(user.getGroupId(), user.getUserId());
             if (localUser.getTimeStamp() < user.getTimeStamp()) {
-                user.setSynTag("cloud");
                 DBHelper.getInstance().updateGroupUser(user);
                 ret = true;
             }

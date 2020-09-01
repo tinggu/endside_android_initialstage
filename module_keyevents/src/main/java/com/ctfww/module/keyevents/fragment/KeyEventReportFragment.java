@@ -36,7 +36,7 @@ import com.ctfww.module.keyevents.activity.EventPreviewActivity;
 import com.ctfww.module.keyevents.activity.SoundRecord2Activity;
 import com.ctfww.module.keyevents.datahelper.airship.Airship;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.entity.UserInfo;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import java.io.File;
 
@@ -83,7 +83,7 @@ public class KeyEventReportFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.keyevent_report_fragment, container, false);
 
-        mEventId = GlobeFun.getSHA(SPStaticUtils.getString("user_open_id") + System.currentTimeMillis());
+        mEventId = GlobeFun.getSHA(SPStaticUtils.getString(Const.USER_OPEN_ID) + System.currentTimeMillis());
         initViews(view);
         setOnClickListener();
 
@@ -340,8 +340,8 @@ public class KeyEventReportFragment extends Fragment{
             return false;
         }
 
-        String groupId = SPStaticUtils.getString("working_group_id");
-        String userId = SPStaticUtils.getString("user_open_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
             return false;
         }

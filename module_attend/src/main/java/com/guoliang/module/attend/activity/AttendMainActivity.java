@@ -356,7 +356,7 @@ public class AttendMainActivity extends FragmentActivity implements View.OnClick
     }
 
     private void refreshFingerprint() {
-//        String groupId = SPStaticUtils.getString("working_group_id");
+//        String groupId = SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID);
 //        if (TextUtils.isEmpty(groupId)) {
 //            return;
 //        }

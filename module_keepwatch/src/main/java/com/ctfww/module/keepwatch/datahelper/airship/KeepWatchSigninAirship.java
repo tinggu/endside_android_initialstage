@@ -11,6 +11,7 @@ import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.entity.SigninInfo;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,7 +47,7 @@ public class KeepWatchSigninAirship {
 
     // 从云上同步签到信息
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
@@ -55,7 +56,7 @@ public class KeepWatchSigninAirship {
         long endTime = System.currentTimeMillis();
         QueryCondition condition = new QueryCondition();
         condition.setGroupId(groupId);
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
         condition.setCondition(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);

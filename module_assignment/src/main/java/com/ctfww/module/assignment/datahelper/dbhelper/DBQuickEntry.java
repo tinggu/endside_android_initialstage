@@ -5,15 +5,15 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class DBQuickEntry {
     public static List<AssignmentInfo> getWorkingAssignmentList() {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        String userId = SPStaticUtils.getString("user_open_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
             return new ArrayList<AssignmentInfo>();
         }
@@ -24,8 +24,8 @@ public class DBQuickEntry {
     }
 
     public static List<AssignmentInfo> getTodayWorkingAssignmentList() {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        String userId = SPStaticUtils.getString("user_open_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
             return new ArrayList<AssignmentInfo>();
         }
@@ -36,8 +36,8 @@ public class DBQuickEntry {
     }
 
     public static boolean transfer(String toUserId, boolean isForever) {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        String userId = SPStaticUtils.getString("user_open_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
             return false;
         }

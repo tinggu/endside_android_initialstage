@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.UserSelectGroupListAdapter;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupUserInfo;
@@ -100,11 +102,11 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
             finish();
         } else if (id == mConfirm.getId()) {
             String groupId = mUserSelectGroupListAdapter.getGroupId();
-            if (TextUtils.isEmpty(groupId) || groupId.equals(SPStaticUtils.getString("working_group_id"))) {
+            if (TextUtils.isEmpty(groupId) || groupId.equals(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                 return;
             }
 
-            SPStaticUtils.put("working_group_id", groupId);
+            SPStaticUtils.put(Const.WORKING_GROUP_ID, groupId);
             EventBus.getDefault().post(new MessageEvent("bind_group"));
 
             finish();

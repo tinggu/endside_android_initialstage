@@ -124,4 +124,12 @@ public class DBHelper {
     public List<KeyEventTrace> getNoSynKeyEventTraceList() {
         return KeyEventTraceDBHelper.getNoSynList(keyEventTraceDao);
     }
+
+    public List<KeyEventTrace> getCanSnatcKeyEventhList(String groupId) {
+        return KeyEventTraceDBHelper.getCanSnatchList(keyEventTraceDao, groupId);
+    }
+
+    public List<KeyEventTrace> getDoingKeyEventList(String groupId, String userId) {
+        return KeyEventTraceDBHelper.getDoingList(keyEventTraceDao, groupId, userId);
+    }
 }

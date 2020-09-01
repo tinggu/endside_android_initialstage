@@ -63,22 +63,22 @@ public interface ICloudMethod {
      * @return 返回值
      */
     @POST("/microusermanagement/userMgt/synUserInfoToCloud")
-    Call<ResponseBody> synUserInfoToCloud(@Body UserInfo info);
+    Call<ResponseBody> synUserInfoToCloud(@Body CargoToCloud<UserInfo> info);
 
     /**
      * 从云上同步用户信息
-     * @param userId
+     * @param condition
      * @return 返回值
      */
     @POST("/microusermanagement/userMgt/synUserInfoFromCloud")
-    Call<ResponseBody> synUserInfoFromCloud(@Body String userId);
+    Call<ResponseBody> synUserInfoFromCloud(@Body QueryCondition condition);
 
     /**
      * 同步群组信息上云
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synGroupInfoToCloud")
+    @POST("/microusermanagement/groupMgt/synGroupInfoToCloud")
     Call<ResponseBody> synGroupInfoToCloud(@Body CargoToCloud<GroupInfo> info);
 
     /**
@@ -86,7 +86,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synGroupInfoFromCloud")
+    @POST("/microusermanagement/groupMgt/synGroupInfoFromCloud")
     Call<ResponseBody> synGroupInfoFromCloud(@Body QueryCondition condition);
 
     /**
@@ -94,7 +94,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synInviteInfoToCloud")
+    @POST("/microusermanagement/groupMgt/synInviteInfoToCloud")
     Call<ResponseBody> synInviteInfoToCloud(@Body CargoToCloud<GroupInviteInfo> info);
 
     /**
@@ -102,7 +102,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synInviteInfoFromCloud")
+    @POST("/microusermanagement/groupMgt/synInviteInfoFromCloud")
     Call<ResponseBody> synInviteInfoFromCloud(@Body QueryCondition condition);
 
     /**
@@ -110,7 +110,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synGroupUserInfoToCloud")
+    @POST("/microusermanagement/groupMgt/synGroupUserInfoToCloud")
     Call<ResponseBody> synGroupUserInfoToCloud(@Body CargoToCloud<GroupUserInfo> info);
 
     /**
@@ -118,7 +118,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synGroupUserInfoFromCloud")
+    @POST("/microusermanagement/groupMgt/synGroupUserInfoFromCloud")
     Call<ResponseBody> synGroupUserInfoFromCloud(@Body QueryCondition condition);
 
     /**

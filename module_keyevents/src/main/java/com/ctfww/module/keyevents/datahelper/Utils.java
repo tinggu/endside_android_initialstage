@@ -1,48 +1,15 @@
 package com.ctfww.module.keyevents.datahelper;
 
-import com.ctfww.module.keyevents.Entity.KeyEvent;
-import com.ctfww.module.keyevents.bean.KeyEventBean;
+import android.content.Context;
 
 public class Utils {
-    public static KeyEventBean keyEvent2KeyEventBean(KeyEvent keyEvent) {
-        KeyEventBean keyEventBean = new KeyEventBean();
-        keyEventBean.setAddress(keyEvent.getAddress());
-        keyEventBean.setLat(keyEvent.getLat());
-        keyEventBean.setLng(keyEvent.getLng());
-        keyEventBean.setDescription(keyEvent.getDescription());
-        keyEventBean.setEventId(keyEvent.getEventId());
-        keyEventBean.setEventName(keyEvent.getEventName());
-        keyEventBean.setPicPath(keyEvent.getPicPath());
-        keyEventBean.setStatus(keyEvent.getStatus());
-        keyEventBean.setDeskId(keyEvent.getDeskId());
-        keyEventBean.setTimeStamp(keyEvent.getTimeStamp());
-        keyEventBean.setType(keyEvent.getType());
-        keyEventBean.setVideoPath(keyEvent.getVideoPath());
-        keyEventBean.setVoicePath(keyEvent.getVoicePath());
-        keyEventBean.setUserId(keyEvent.getUserId());
-        keyEventBean.setGroupId(keyEvent.getGroupId());
+    public static void init(Context context) {
+        // 初始化keyevents网络设置
+        com.ctfww.module.keyevents.datahelper.CloudClient.getInstance().
+                setCloudMethod(com.ctfww.commonlib.network.CloudClient.getInstance().
+                        create(com.ctfww.module.keyevents.datahelper.ICloudMethod.class));
 
-        return keyEventBean;
-    }
-
-    public static KeyEvent keyEventBean2KeyEvent(KeyEventBean keyEventBean) {
-        KeyEvent keyEvent = new KeyEvent();
-        keyEvent.setAddress(keyEventBean.getAddress());
-        keyEvent.setLat(keyEventBean.getLat());
-        keyEvent.setLng(keyEventBean.getLng());
-        keyEvent.setDescription(keyEventBean.getDescription());
-        keyEvent.setEventId(keyEventBean.getEventId());
-        keyEvent.setEventName(keyEventBean.getEventName());
-        keyEvent.setPicPath(keyEventBean.getPicPath());
-        keyEvent.setStatus(keyEventBean.getStatus());
-        keyEvent.setDeskId(keyEventBean.getDeskId());
-        keyEvent.setTimeStamp(keyEventBean.getTimeStamp());
-        keyEvent.setType(keyEventBean.getType());
-        keyEvent.setVideoPath(keyEventBean.getVideoPath());
-        keyEvent.setVoicePath(keyEventBean.getVoicePath());
-        keyEvent.setUserId(keyEventBean.getUserId());
-        keyEvent.setGroupId(keyEventBean.getGroupId());
-
-        return keyEvent;
+        // 初始化keyevents数据库模块
+        com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper.getInstance().init(context);
     }
 }

@@ -5,6 +5,7 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupInfo;
@@ -19,6 +20,7 @@ public class GroupAirship {
     // 同步群组信息上云
     public static void synToCloud() {
         final List<GroupInfo> groupList = DBHelper.getInstance().getNoSynGroupList();
+        LogUtils.i(TAG, "synToCloud: groupList.size() = " + groupList.size());
         if (groupList.isEmpty()) {
             return;
         }
@@ -33,6 +35,8 @@ public class GroupAirship {
                     groupInfo.setSynTag("cloud");
                     DBHelper.getInstance().updateGroup(groupInfo);
                 }
+
+                LogUtils.i(TAG, "synToCloud success!");
             }
 
             @Override
@@ -44,26 +48,29 @@ public class GroupAirship {
 
     // 从云上同步群组信息
     public static void synFromCloud() {
-        long startTime = SPStaticUtils.getLong("group_syn_time_stamp_cloud", 0);
+        long startTime = SPStaticUtils.getLong(Const.GROUP_SYN_TIME_STAMP_CLOUD, 0);
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
+
+        LogUtils.i(TAG, "synFromCloud: condition = " + condition.toString());
 
         NetworkHelper.getInstance().synGroupInfoFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 List<GroupInfo> groupList = (List<GroupInfo>)obj;
+                LogUtils.i(TAG, "synFromCloud: groupList.size() = " + groupList.size());
 
                 if (!groupList.isEmpty()) {
                     if (updateByCloud(groupList)) {
-                        EventBus.getDefault().post("finish_group_syn");
+                        EventBus.getDefault().post(Const.FINISH_GROUP_SYN);
                     }
                 }
 
-                SPStaticUtils.put("group_syn_time_stamp_cloud", condition.getEndTime());
+                SPStaticUtils.put(Const.GROUP_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override

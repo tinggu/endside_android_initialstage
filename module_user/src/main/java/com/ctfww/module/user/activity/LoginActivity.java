@@ -26,8 +26,8 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.network.NetworkConst;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.Utils;
-import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button mSmsLoginBtn;
     private Button mPasswordLoginBtn;
 
-//    private TextView mServiceStatement;
+    private TextView mServiceStatement;
 
 
     // 短信验证码登录
@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         setOnEditListener();
 
-//        setServiceStatementStyle();
+        setServiceStatementStyle();
     }
 
     private void setOnEditListener() {
@@ -148,7 +148,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         SpannableString spannableString = new SpannableString(getString(R.string.user_login_privacy_statement_entrance));
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#50A2FF"));
         spannableString.setSpan(colorSpan, spannableString.length() - 7, spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-//        mServiceStatement.setText(spannableString);
+        mServiceStatement.setText(spannableString);
     }
 
     private void setOnClickListener() {
@@ -173,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mPhoneNumEt = findViewById(R.id.user_mobile_edit);
         mSmsLoginBtn = findViewById(R.id.user_sms_login_btn);
         mPasswordLoginBtn = findViewById(R.id.user_password_login_btn);
-//        mServiceStatement = findViewById(R.id.user_app_service_statement);
+        mServiceStatement = findViewById(R.id.user_app_service_statement);
 
         mSmsLoginLayout = findViewById(R.id.user_login_with_sms_layout_all);
         mSmsNumEt = findViewById(R.id.user_sms_edit);
@@ -256,7 +256,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         userInfo.setSynTag("cloud");
                         DBHelper.getInstance().addUser(userInfo);
 
-                        SPStaticUtils.put("user_open_id", userInfo.getUserId());
+                        SPStaticUtils.put(Const.USER_OPEN_ID, userInfo.getUserId());
 
                         ToastUtils.showShort(R.string.user_toast_success_login);
                         ARouter.getInstance().build(getNavigationName()).navigation();
@@ -294,7 +294,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         userInfo.setSynTag("cloud");
                         DBHelper.getInstance().addUser(userInfo);
 
-                        SPStaticUtils.put("user_open_id", userInfo.getUserId());
+                        SPStaticUtils.put(Const.USER_OPEN_ID, userInfo.getUserId());
 
                         ToastUtils.showShort("登录成功");
                         ARouter.getInstance().build(getNavigationName()).navigation();

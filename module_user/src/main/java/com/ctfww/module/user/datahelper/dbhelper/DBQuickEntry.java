@@ -3,6 +3,7 @@ package com.ctfww.module.user.datahelper.dbhelper;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
@@ -15,7 +16,7 @@ import java.util.List;
 public class DBQuickEntry {
     // 获得自己的用户信息
     public static UserInfo getSelfInfo() {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return null;
         }
@@ -25,13 +26,13 @@ public class DBQuickEntry {
 
     // 获得用户在工作组中的成员信息
     public static GroupUserInfo getWorkingGroupUser(String userId) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return null;
         }
 
         if (TextUtils.isEmpty(userId)) {
-            userId = SPStaticUtils.getString("user_open_id");
+            userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
             if (TextUtils.isEmpty(userId)) {
                 return null;
             }
@@ -42,7 +43,7 @@ public class DBQuickEntry {
 
     // 获得工作组中的成员信息列表
     public static List<GroupUserInfo> getWorkingGroupUserList() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return new ArrayList<GroupUserInfo>();
         }
@@ -51,7 +52,7 @@ public class DBQuickEntry {
     }
 
     public static List<GroupUserInfo> getSelfGroupUserList() {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return new ArrayList<GroupUserInfo>();
         }
@@ -69,9 +70,18 @@ public class DBQuickEntry {
         return groupUserInfo.getRole();
     }
 
+    public static long getAdminCountInWorkingGroup() {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return 0;
+        }
+
+        return DBHelper.getInstance().getGroupUserAdminCount(groupId);
+    }
+
     // 获得工作群组信息
     public static GroupInfo getWorkingGroup() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return null;
         }
@@ -81,7 +91,7 @@ public class DBQuickEntry {
 
     // 获得工作群组的通知信息
     public static List<NoticeInfo> getWorkingNoticeList() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return new ArrayList<NoticeInfo>();
         }
@@ -91,7 +101,7 @@ public class DBQuickEntry {
 
     // 获得当前使用者的发出邀请信息
     public static List<GroupInviteInfo> getSelfSendInviteList() {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return new ArrayList<GroupInviteInfo>();
         }
@@ -101,7 +111,7 @@ public class DBQuickEntry {
 
     // 获得当前使用者的接收邀请信息
     public static List<GroupInviteInfo> getSelfReceivedInviteList() {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return new ArrayList<GroupInviteInfo>();
         }
@@ -111,12 +121,12 @@ public class DBQuickEntry {
 
     // 获得本人本群未读取通知个数
     public static long getSelfNoLookOverNoticeCount() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return 0;
         }
 
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return 0;
         }

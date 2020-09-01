@@ -26,6 +26,8 @@ public class KeepWatchApplication extends BaseApplication {
         // 初始化各个业务模块的网络模块和数据库模块
         Utils.start(this);
         com.ctfww.module.keepwatch.Utils.start(this);
+        com.ctfww.module.desk.datahelper.Utils.start(this);
+        com.ctfww.module.keyevents.datahelper.Utils.init(this);
 
         // 初始化tms
         com.ctfww.module.tms.network.CloudClient.getInstance().init();

@@ -12,6 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.Utils;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
@@ -34,7 +35,7 @@ public class GroupAddMemberActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.group_add_member_activity);
-        mGroupId = SPStaticUtils.getString("working_group_id");
+        mGroupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         initViews();
         setOnClickListener();
     }
@@ -72,11 +73,7 @@ public class GroupAddMemberActivity extends AppCompatActivity implements View.On
             groupInviteInfo.setGroupId(groupInfo.getGroupId());
             groupInviteInfo.setTimeStamp(System.currentTimeMillis());
             groupInviteInfo.setStatus("send");
-            groupInviteInfo.setFromMobile(userInfo.getMobile());
-            groupInviteInfo.setFromNickName(userInfo.getNickName());
             groupInviteInfo.setToUserId(mMobile.getText().toString());
-            groupInviteInfo.setToNickName("");
-            groupInviteInfo.setGroupName(groupInfo.getGroupName());
             groupInviteInfo.setSynTag("new");
             groupInviteInfo.combineInviteId();
 

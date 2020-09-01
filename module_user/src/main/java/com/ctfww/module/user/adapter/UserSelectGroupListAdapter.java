@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
 
@@ -28,7 +28,7 @@ public class UserSelectGroupListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public UserSelectGroupListAdapter(List<GroupUserInfo> list) {
         this.list = list;
-        mGroupId = SPStaticUtils.getString("working_group_id");
+        mGroupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
     }
 
     public void setList(List<GroupUserInfo> list) {

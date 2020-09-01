@@ -93,8 +93,8 @@ public class DBHelper {
      * 查询未同步记录
      * @return
      */
-    public UserInfo getNoSynUser(String userId) {
-        return UserDBHelper.getNoSyn(userInfoDao, userId);
+    public List<UserInfo> getNoSynUserList() {
+        return UserDBHelper.getNoSynList(userInfoDao);
     }
 
     public void deleteUser(String userId) {
@@ -276,6 +276,10 @@ public class DBHelper {
 
     public void deleteGroupUserLeaveUserId(String groupId, String userId) {
         GroupUserDBHelper.deleteLeaveUserId(groupUserInfoDao, groupId, userId);
+    }
+
+    public long getGroupUserAdminCount(String groupId) {
+        return GroupUserDBHelper.getAdminCount(groupUserInfoDao, groupId);
     }
 
     // 6. 与通知读取状态有关

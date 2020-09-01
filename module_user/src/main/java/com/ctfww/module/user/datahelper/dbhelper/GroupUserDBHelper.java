@@ -2,10 +2,10 @@ package com.ctfww.module.user.datahelper.dbhelper;
 
 import android.database.sqlite.SQLiteConstraintException;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.GroupUserInfoDao;
-import com.ctfww.module.user.entity.NoticeInfo;
-import com.ctfww.module.user.entity.NoticeInfoDao;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class GroupUserDBHelper {
      * @return 对应的成员信息
      */
     public static GroupUserInfo get(GroupUserInfoDao dao, String groupId, String userId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(NoticeInfoDao.Properties.GroupId.eq(groupId), NoticeInfoDao.Properties.UserId.eq(userId))).unique();
+        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.UserId.eq(userId))).unique();
     }
 
     public static List<GroupUserInfo> getNoSynList(GroupUserInfoDao dao) {
@@ -53,11 +53,11 @@ public class GroupUserDBHelper {
     }
 
     public static List<GroupUserInfo> getListByGroupId(GroupUserInfoDao dao, String groupId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.SynTag.notEq("delete"))).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.Status.notEq("delete"))).list();
     }
 
     public static List<GroupUserInfo> getListByUserId(GroupUserInfoDao dao, String userId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.UserId.eq(userId), GroupUserInfoDao.Properties.SynTag.notEq("delete"))).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.UserId.eq(userId), GroupUserInfoDao.Properties.Status.notEq("delete"))).list();
     }
 
     public static void delete(GroupUserInfoDao dao, String groupId, String userId) {
@@ -66,5 +66,9 @@ public class GroupUserDBHelper {
 
     public static void deleteLeaveUserId(GroupUserInfoDao dao, String groupId, String userId) {
         dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.UserId.notEq(userId))).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    public static long getAdminCount(GroupUserInfoDao dao, String groupId) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.Role.eq(Const.ROLE_ADMIN))).buildCount().count();
     }
 }

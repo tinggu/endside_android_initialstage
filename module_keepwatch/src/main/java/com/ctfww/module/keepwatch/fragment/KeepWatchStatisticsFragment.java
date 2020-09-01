@@ -29,6 +29,7 @@ import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keyevents.fragment.KeyEventSnatchFragment;
 import com.ctfww.module.useim.entity.Head;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -117,7 +118,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
             public void onRefresh() {
                 getTodayKeepWatchStatistics();
                 getNoEndKeyEventCount();
-                mKeyEventSnatchFragment.getDoingKeyEvent();
+                mKeyEventSnatchFragment.refresh();
                 mKeepWatchPersonTrendsFragment.getPersonTrends();
                 mKeepWatchRankingFragment.getTodayRanking();
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -175,7 +176,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
             LogUtils.i(TAG, "tms_first_token refresh!");
             getTodayKeepWatchStatistics();
             getNoEndKeyEventCount();
-            mKeyEventSnatchFragment.getDoingKeyEvent();
+            mKeyEventSnatchFragment.refresh();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
         }
@@ -183,7 +184,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
             LogUtils.i(TAG, "bind_group refresh!");
             getTodayKeepWatchStatistics();
             getNoEndKeyEventCount();
-            mKeyEventSnatchFragment.getDoingKeyEvent();
+            mKeyEventSnatchFragment.refresh();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
         }
@@ -191,7 +192,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
             Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
             if (head.getMsgType() == 3001) {
                 if (head.getMsgContentType() == 10) {
-                    mKeyEventSnatchFragment.getDoingKeyEvent();
+                    mKeyEventSnatchFragment.refresh();
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
                     if (!mKeyEventSnatchFragment.isDoing()) {
                         Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -205,20 +206,20 @@ public class KeepWatchStatisticsFragment extends Fragment {
                 }
                 else if (head.getMsgContentType() == 11) {
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
-                    String userId = SPStaticUtils.getString("user_open_id");
+                    String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
                     String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
                     if (userId.equals(head.getFromId()) || "admin".equals(role)) {
                         getNoEndKeyEventCount();
                     }
 
                     if (userId.equals(head.getFromId())) {
-                        mKeyEventSnatchFragment.getDoingKeyEvent();
+                        mKeyEventSnatchFragment.refresh();
                     }
                 }
                 else if (head.getMsgContentType() == 20) {
                     mKeepWatchPersonTrendsFragment.getPersonTrends();
                     String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
-                    String userId = SPStaticUtils.getString("user_open_id");
+                    String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
                     if ("admin".equals(role) || userId.equals(head.getFromId())) {
                         getTodayKeepWatchStatistics();
                     }
@@ -234,7 +235,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
             LogUtils.i(TAG, "onResume refresh!");
             getTodayKeepWatchStatistics();
             getNoEndKeyEventCount();
-            mKeyEventSnatchFragment.getDoingKeyEvent();
+            mKeyEventSnatchFragment.refresh();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
         }

@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.keepwatch.R;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import static com.blankj.utilcode.util.ActivityUtils.finishAllActivities;
 
@@ -92,7 +93,7 @@ public class KeepWatchSettingActivity extends AppCompatActivity implements View.
             DialogUtils.selectDialog("退出后再进App，需要重新进行登录，请确认是否要退出？", this, new DialogUtils.Callback() {
                 @Override
                 public void onConfirm(int radioSelectItem) {
-                    SPStaticUtils.remove("user_had_login_flag");
+                    SPStaticUtils.remove(Const.USER_OPEN_ID);
                     finishAllActivities();
                 }
 

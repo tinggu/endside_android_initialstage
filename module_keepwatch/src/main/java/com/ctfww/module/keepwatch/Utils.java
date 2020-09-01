@@ -22,11 +22,6 @@ public class Utils {
         CloudClient.getInstance().setCloudMethod(keepWatchMethod);
 //        CloudClient.getInstance().createCloudMethod();
 
-        // 初始化keyevents网络设置
-        com.ctfww.module.keyevents.datahelper.CloudClient.getInstance().
-                setCloudMethod(com.ctfww.commonlib.network.CloudClient.getInstance().
-                        create(com.ctfww.module.keyevents.datahelper.ICloudMethod.class));
-
         // 初始化签到点的网络设置
 //        com.ctfww.module.
 
@@ -35,9 +30,6 @@ public class Utils {
 
         // 初始化keepwatch数据库模块
         DBHelper.getInstance().init(ctx);
-
-        // 初始化keyevents数据库模块
-        com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper.getInstance().init(ctx);
     }
 
     public static void synData() {

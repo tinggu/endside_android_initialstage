@@ -43,9 +43,6 @@ public class UserSendInviteListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mV = inflater.inflate(R.layout.user_invite_list_fragment, container, false);
         initViews(mV);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
 
         return mV;
     }
@@ -68,50 +65,22 @@ public class UserSendInviteListFragment extends Fragment {
         }
     }
 
-    //处理事件
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public  void onGetMessage(MessageEvent messageEvent) {
-        if ("finish_invite_syn".equals(messageEvent.getMessage())) {
-            List<GroupInviteInfo> inviteInfoList = DBQuickEntry.getSelfSendInviteList();
-            mUserSendInviteListAdapter.setList(inviteInfoList);
-            mUserSendInviteListAdapter.notifyDataSetChanged();
-            if (inviteInfoList.isEmpty()) {
-                mNoInvitePrompt.setVisibility(View.VISIBLE);
-                mUserSendInviteListView.setVisibility(View.GONE);
-            }
-            else {
-                mNoInvitePrompt.setVisibility(View.GONE);
-                mUserSendInviteListView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+    }
+
+    public void onFinishInviteSyn() {
+        List<GroupInviteInfo> inviteInfoList = DBQuickEntry.getSelfSendInviteList();
+        mUserSendInviteListAdapter.setList(inviteInfoList);
+        mUserSendInviteListAdapter.notifyDataSetChanged();
+        if (inviteInfoList.isEmpty()) {
+            mNoInvitePrompt.setVisibility(View.VISIBLE);
+            mUserSendInviteListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoInvitePrompt.setVisibility(View.GONE);
+            mUserSendInviteListView.setVisibility(View.VISIBLE);
         }
     }
-}
-
-class UserSendInviteListFragmentData {
-    List<GroupInviteInfo> groupInviteInfoList = new ArrayList<>();
-    public UserSendInviteListFragmentData() {
-
-    }
-
-    public void setGroupInviteInfoList(List<GroupInviteInfo> groupInviteInfoList) {
-        this.groupInviteInfoList = groupInviteInfoList;
-    }
-
-    public List<GroupInviteInfo> getGroupInviteInfoList() {
-        return groupInviteInfoList;
-    }
-
-    public void delete(int position) {
-        if (groupInviteInfoList.size() > position) {
-            groupInviteInfoList.remove(position);
-        }
-    }
-}
+ }

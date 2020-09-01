@@ -24,6 +24,7 @@ import com.ctfww.module.desk.R;
 import com.ctfww.module.desk.adapter.RouteDeskListAdapter;
 import com.ctfww.module.desk.datahelper.airship.Airship;
 import com.ctfww.module.desk.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.desk.datahelper.sp.Const;
 import com.ctfww.module.desk.entity.RouteDesk;
 import com.ctfww.module.desk.entity.RouteSummary;
 
@@ -220,7 +221,7 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void addRoute() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         String routeName = mRouteName.getText().toString();
         RouteSummary route = new RouteSummary();
         route.setGroupId(groupId);

@@ -17,7 +17,7 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.bumptech.glide.Glide;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.activity.GroupUserListActivity;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupUserInfo;
@@ -43,7 +43,7 @@ public class GroupUserListAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void updateSelfGroupUserInfo(List<GroupUserInfo> list) {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         for (int i = 0; i < list.size(); ++i) {
             if (list.get(i).getUserId().equals(userId)) {
                 mSelfGroupUserInfo = list.get(i);
@@ -101,6 +101,8 @@ public class GroupUserListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 GroupUserInfo groupUserInfo = list.get(position);
                 groupUserInfo.setStatus("delete");
                 groupUserInfo.setTimeStamp(System.currentTimeMillis());
+                String synTag = "new".equals(groupUserInfo.getSynTag()) ? "new" : "modify";
+                groupUserInfo.setSynTag(synTag);
 
                 DBHelper.getInstance().updateGroupUser(groupUserInfo);
                 Airship.getInstance().synGroupUserInfoToCloud();
@@ -131,8 +133,9 @@ public class GroupUserListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         }
 
                         groupUserInfo.setRole(role);
-                        groupUserInfo.setSynTag("modify");
                         groupUserInfo.setTimeStamp(System.currentTimeMillis());
+                        String synTag = "new".equals(groupUserInfo.getSynTag()) ? "new" : "modify";
+                        groupUserInfo.setSynTag(synTag);
 
                         DBHelper.getInstance().updateGroupUser(groupUserInfo);
                         Airship.getInstance().synGroupUserInfoToCloud();

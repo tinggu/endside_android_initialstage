@@ -33,6 +33,7 @@ import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.SigninInfo;
 import com.ctfww.module.keyevents.fragment.KeyEventReportFragment;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -83,9 +84,9 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
 
     private void processIntent() {
         mSigninInfo = new SigninInfo();
-        mSigninInfo.setUserId(SPStaticUtils.getString("user_open_id"));
+        mSigninInfo.setUserId(SPStaticUtils.getString(Const.USER_OPEN_ID));
         mSigninInfo.setTimeStamp(System.currentTimeMillis());
-        mSigninInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
+        mSigninInfo.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
         mSigninInfo.setSynTag("new");
         mSigninInfo.setMatchLevel("default");
         String qrStr = getIntent().getStringExtra("qr");
@@ -125,7 +126,7 @@ public class KeepWatchReportSigninActivity extends AppCompatActivity implements 
         mReportContentLL = mReportFragment.getView().findViewById(R.id.keyevent_report_all_ll);
         mReportContentLL.setVisibility(View.GONE);
 
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         DeskInfo desk = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(groupId, mSigninInfo.getDeskId());
         if (desk != null) {
             mDeskName.setText("[" + desk.getDeskId() + "]" + "  " + desk.getDeskName());

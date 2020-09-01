@@ -24,7 +24,7 @@ import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.entity.KeepWatchGroupSummary;
-import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
@@ -103,7 +103,7 @@ public class KeepWatchMyFragment extends Fragment {
         mSigninListTittle.setText("今日巡检记录");
         mKeepWatchSigninListFragment.setMaxCount(3);
 
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             mRole.setText("");
             mMemberCount.setText("");
@@ -122,7 +122,7 @@ public class KeepWatchMyFragment extends Fragment {
         mAssignmentLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -134,7 +134,7 @@ public class KeepWatchMyFragment extends Fragment {
         mGroupMemberLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -146,7 +146,7 @@ public class KeepWatchMyFragment extends Fragment {
         mDeskLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -158,7 +158,7 @@ public class KeepWatchMyFragment extends Fragment {
         mKeyEventLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -170,7 +170,7 @@ public class KeepWatchMyFragment extends Fragment {
         mDayReportLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -182,7 +182,7 @@ public class KeepWatchMyFragment extends Fragment {
         mWeekReportLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -194,7 +194,7 @@ public class KeepWatchMyFragment extends Fragment {
         mMonthReportLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -206,7 +206,7 @@ public class KeepWatchMyFragment extends Fragment {
         mInviteLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(Const.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }

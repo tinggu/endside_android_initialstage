@@ -10,10 +10,8 @@ import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
-import com.ctfww.module.keyevents.bean.KeyEventBean;
 import com.ctfww.module.keyevents.bean.KeyEventTraceBean;
-import com.ctfww.module.keyevents.bean.SomeoneStartEndTimeBean;
-import com.ctfww.module.keyevents.bean.StartEndTimeBean;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -221,7 +219,7 @@ public class CloudClient {
         RequestBody fileRQ = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), fileRQ);
 
-        Call<ResponseBody> responseBodyCall = mCloudMethod.uploadFile(SPStaticUtils.getString("user_open_id"), part);
+        Call<ResponseBody> responseBodyCall = mCloudMethod.uploadFile(SPStaticUtils.getString(Const.USER_OPEN_ID), part);
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {

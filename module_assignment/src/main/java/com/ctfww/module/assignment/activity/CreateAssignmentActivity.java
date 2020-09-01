@@ -1,6 +1,5 @@
 package com.ctfww.module.assignment.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,6 +23,7 @@ import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.assignment.entity.AssignmentInfo;
 import com.ctfww.module.datapicker.data.DataPicker;
 import com.ctfww.module.datapicker.time.HourAndMinutePicker;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.entity.UserInfo;
 import com.google.gson.reflect.TypeToken;
 
@@ -208,7 +208,7 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
 
         AssignmentInfo assignment = new AssignmentInfo();
 
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         assignment.setGroupId(groupId);
         assignment.setUserId(mUserInfo.getUserId());
         assignment.setCircleType(circleType);

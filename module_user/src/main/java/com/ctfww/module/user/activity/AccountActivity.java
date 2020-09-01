@@ -16,6 +16,7 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.NetworkHelper;
@@ -232,7 +233,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void unregister() {
-        NetworkHelper.getInstance().deleteAccount(SPStaticUtils.getString("user_open_id"), new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().deleteAccount(SPStaticUtils.getString(Const.USER_OPEN_ID), new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 SPStaticUtils.clear();

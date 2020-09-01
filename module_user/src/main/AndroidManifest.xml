@@ -39,15 +39,11 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.ctfww.module.user.activity.GroupMgtActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
         <activity android:name="com.ctfww.module.user.activity.GroupCreateOrUpdateActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.ctfww.module.user.activity.GroupActivity"
+        <activity android:name="com.ctfww.module.user.activity.GroupUserListActivity"
             android:screenOrientation="portrait">
         </activity>
 

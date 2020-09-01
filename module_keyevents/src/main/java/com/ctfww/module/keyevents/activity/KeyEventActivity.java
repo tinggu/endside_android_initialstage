@@ -32,7 +32,7 @@ import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.adapter.KeyEventTraceListAdapter;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.UserInfo;
@@ -67,15 +67,17 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
 
     private RecyclerView mKeyEventTraceListView;
     private KeyEventTraceListAdapter mKeyEventTraceListAdapter;
-    List<KeyEventTrace> mKeyEventTraceList = new ArrayList<>();
+    private List<KeyEventTrace> mKeyEventTraceList = new ArrayList<>();
 
-    LinearLayout mOperateLL;
-    TextView mSnatch;
-    TextView mFree;
-    TextView mTransfer;
-    TextView mAssignment;
-    TextView mAccept;
-    TextView mEnd;
+    private LinearLayout mOperateLL;
+    private TextView mSnatch;
+    private TextView mFree;
+    private TextView mTransfer;
+    private TextView mAssignment;
+    private TextView mAccept;
+    private TextView mEnd;
+
+    private KeyEvent mKeyEvent;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -89,6 +91,8 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         EventBus.getDefault().register(this);
 
         com.ctfww.module.fingerprint.Utils.startScan("calc");
+
+        processIntent();
     }
 
     private void initViews() {
@@ -135,6 +139,16 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         mAssignment.setOnClickListener(this);
         mAccept.setOnClickListener(this);
         mEnd.setOnClickListener(this);
+    }
+
+    private void processIntent() {
+        KeyEvent keyEvent = GsonUtils.fromJson(getIntent().getStringExtra("key_event"), KeyEvent.class);
+        if (keyEvent == null) {
+            return;
+        }
+
+        showEventInfoInUI(mKeyEvent);
+        getActionList(mKeyEvent.getEventId());
     }
 
     @Override
@@ -186,7 +200,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             KeyEventTrace keyEventTrace = new KeyEventTrace();
             keyEventTrace.setEventId(mKeyEvent.getEventId());
             keyEventTrace.setTimeStamp(System.currentTimeMillis());
-            keyEventTrace.setGroupId(SPStaticUtils.getString("working_group_id"));
+            keyEventTrace.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
             keyEventTrace.setDeskId(mKeyEvent.getDeskId());
             keyEventTrace.setMatchLevel("default");
             UserInfo userInfo = DBQuickEntry.getSelfInfo();
@@ -211,16 +225,9 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private KeyEvent mKeyEvent;
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStickyMessageEvent(MessageEvent messageEvent) {
-        if ("view_key_event".equals(messageEvent.getMessage())) {
-            LogUtils.i(TAG, "view_key_event: getActionList");
-            mKeyEvent = GsonUtils.fromJson(messageEvent.getValue(), KeyEvent.class);
-            showEventInfoInUI(mKeyEvent);
-            getActionList(mKeyEvent.getEventId());
-        }
-        else if ("selected_user".equals(messageEvent.getMessage())) {
+        if ("selected_user".equals(messageEvent.getMessage())) {
             String userId = messageEvent.getValue();
             GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser(userId);
             if (groupUserInfo == null) {
@@ -230,7 +237,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             KeyEventTrace keyEventTrace = new KeyEventTrace();
             keyEventTrace.setEventId(mKeyEvent.getEventId());
             keyEventTrace.setTimeStamp(System.currentTimeMillis());
-            keyEventTrace.setGroupId(SPStaticUtils.getString("working_group_id"));
+            keyEventTrace.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
             keyEventTrace.setDeskId(mKeyEvent.getDeskId());
             keyEventTrace.setMatchLevel("default");
             keyEventTrace.setUserId(groupUserInfo.getUserId());
@@ -356,7 +363,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
         KeyEventTrace keyEventTrace = keyEventTraceList.get(keyEventTraceList.size() - 1);
         if ("end".equals(keyEventTrace.getStatus())) {

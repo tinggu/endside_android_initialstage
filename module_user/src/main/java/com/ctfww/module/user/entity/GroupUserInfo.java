@@ -44,11 +44,12 @@ public class GroupUserInfo implements EntityInterface {
     public String toString() {
         return "group = " + groupId
                 + ", userId = " + userId
-                + ", role = " + role;
+                + ", role = " + role
+                + ", status = " + status;
     }
 
     public void combineId() {
-        id = GlobeFun.getSHA(groupId + userId);
+        id = groupId + userId;
     }
 
     public String getId() {

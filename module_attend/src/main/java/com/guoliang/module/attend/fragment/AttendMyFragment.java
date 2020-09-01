@@ -120,7 +120,7 @@ public class AttendMyFragment extends Fragment {
         mSigninListTittle.setText("今日巡检记录");
         mAttendSigninListFragment.setMaxCount(3);
 
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             mRole.setText("");
             mMemberCount.setText("");
@@ -160,7 +160,7 @@ public class AttendMyFragment extends Fragment {
         mAssignmentLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -172,7 +172,7 @@ public class AttendMyFragment extends Fragment {
         mGroupMemberLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -184,7 +184,7 @@ public class AttendMyFragment extends Fragment {
         mDeskLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -196,7 +196,7 @@ public class AttendMyFragment extends Fragment {
         mKeyEventLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -208,7 +208,7 @@ public class AttendMyFragment extends Fragment {
         mDayReportLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -220,7 +220,7 @@ public class AttendMyFragment extends Fragment {
         mWeekReportLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }
@@ -232,7 +232,7 @@ public class AttendMyFragment extends Fragment {
         mMonthReportLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(SPStaticUtils.getString("working_group_id"))) {
+                if (TextUtils.isEmpty(SPStaticUtils.getString(UserSPConstant.WORKING_GROUP_ID))) {
                     ToastUtils.showShort("请先选择群组！");
                     return;
                 }

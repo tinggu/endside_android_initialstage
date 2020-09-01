@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CargoToCloud<T extends EntityInterface> {
     private List<T> newList;
-    private List<T> modifyList;
+    private List<T> updateList;
 
     public CargoToCloud() {
 
@@ -17,19 +17,20 @@ public class CargoToCloud<T extends EntityInterface> {
 
     public String toString() {
         return "newList.size() = " + newList.size()
-                + ", modifyList.size() = " + modifyList.size();
+                + ", updateList.size() = " + updateList.size();
+//        return updateList.toString();
     }
 
     public void setList(List<T> list) {
         newList = new ArrayList<>();
-        modifyList = new ArrayList<>();
+        updateList = new ArrayList<>();
         for (int i = 0; i < list.size(); ++i) {
             T t = list.get(i);
             if ("new".equals(t.getSynTag())) {
                 newList.add(t);
             }
             else {
-                modifyList.add(t);
+                updateList.add(t);
             }
         }
     }

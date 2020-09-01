@@ -9,6 +9,7 @@ import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keepwatch.entity.PersonTrends;
 import com.ctfww.module.keepwatch.entity.Ranking;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
@@ -154,7 +155,7 @@ public class NetworkHelper {
     /***********************************new*************************************************/
 
     public void getPersonTrends(int count, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             LogUtils.i(TAG, "getPersonTrends: groupId is empty");
             return;
@@ -184,7 +185,7 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchRanking(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             LogUtils.i(TAG, "getKeepWatchRanking: groupId is empty");
             return;
@@ -212,13 +213,13 @@ public class NetworkHelper {
     }
 
     public void transferKeepWatchAssignment(String toUserId, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             LogUtils.i(TAG, "transferKeepWatchAssignment: groupId is empty");
             return;
         }
 
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return;
         }
@@ -243,13 +244,13 @@ public class NetworkHelper {
     }
 
     public void takeBackKeepWatchAssignment(final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             LogUtils.i(TAG, "takeBackKeepWatchAssignment: groupId is empty");
             return;
         }
 
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return;
         }
@@ -274,7 +275,7 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchGroupSummary(final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
@@ -300,12 +301,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchSigninList(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchSigninList(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -329,12 +330,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchSigninLeak(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchSigninLeak(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -358,12 +359,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchSigninStatistics(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchSigninStatistics(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -387,12 +388,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchStatistics(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchStatistics(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -415,12 +416,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchAssignmentAndSigninStatisticsForDesk(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchAssignmentAndSigninStatisticsForDesk(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -444,12 +445,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchStatisticsByPeriodByDayUnit(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchStatisticsByPeriodByDayUnit(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -473,12 +474,12 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchLeakStatisticsForDesk(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
 
         CloudClient.getInstance().getKeepWatchLeakStatisticsForDesk(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
@@ -502,7 +503,7 @@ public class NetworkHelper {
     }
 
     public void getKeepWatchSigninStatisticsForDesk(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
@@ -529,12 +530,12 @@ public class NetworkHelper {
     }
 
     public void getHistoryEveryDayStatistics(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
 
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString("user_open_id");
+        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
         CloudClient.getInstance().getHistoryEveryDayStatistics(groupId, userId, startTime, endTime, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {

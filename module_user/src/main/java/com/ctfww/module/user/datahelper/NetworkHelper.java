@@ -124,8 +124,8 @@ public class NetworkHelper {
 
     }
 
-    public void synUserInfoToCloud(UserInfo userInfo, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synUserInfoToCloud(userInfo, new ICloudCallback() {
+    public void synUserInfoToCloud(CargoToCloud<UserInfo> cargoToCloud, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synUserInfoToCloud(cargoToCloud, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 callback.onSuccess(data);
@@ -144,8 +144,8 @@ public class NetworkHelper {
 
     }
 
-    public void synUserInfoFromCloud(String userId, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synUserInfoFromCloud(userId, new ICloudCallback() {
+    public void synUserInfoFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synUserInfoFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 Type type = new TypeToken<List<UserInfo>>(){}.getType();

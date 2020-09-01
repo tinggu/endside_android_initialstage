@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.activity.NoticeDescActivity;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.NoticeInfo;
@@ -37,7 +38,7 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public UserNoticeListAdapter(List<NoticeInfo> list, Context context) {
         this.list = list;
         this.context = context;
-        groupId = SPStaticUtils.getString("working_group_id");
+        groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         selfInfo = DBQuickEntry.getSelfInfo();
     }
 

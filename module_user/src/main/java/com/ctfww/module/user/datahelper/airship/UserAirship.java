@@ -1,15 +1,13 @@
 package com.ctfww.module.user.datahelper.airship;
 
-import android.text.TextUtils;
-
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.datahelper.dbhelper.UserDBHelper;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -21,21 +19,21 @@ public class UserAirship {
 
     // 同步用户信息上云
     public static void synToCloud() {
-        String userId = SPStaticUtils.getString("user_open_id");
-        if (TextUtils.isEmpty(userId)) {
+        final List<UserInfo> userList = DBHelper.getInstance().getNoSynUserList();
+        if (userList.isEmpty()) {
             return;
         }
 
-        final UserInfo userInfo = DBHelper.getInstance().getNoSynUser(userId);
-        if (userInfo == null) {
-            return;
-        }
+        CargoToCloud<UserInfo> cargoToCloud = new CargoToCloud<>(userList);
 
-        NetworkHelper.getInstance().synUserInfoToCloud(userInfo, new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().synUserInfoToCloud(cargoToCloud, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                userInfo.setSynTag("cloud");
-                DBHelper.getInstance().updateUser(userInfo);
+                for (int i = 0; i < userList.size(); ++i) {
+                    UserInfo userInfo = userList.get(i);
+                    userInfo.setSynTag("cloud");
+                    DBHelper.getInstance().updateUser(userInfo);
+                }
             }
 
             @Override
@@ -47,20 +45,23 @@ public class UserAirship {
 
     // 从云上同步用户信息
     public static void synFromCloud() {
-        String userId = SPStaticUtils.getString("user_open_id");
-        if (TextUtils.isEmpty(userId)) {
-            return;
-        }
+        long startTime = SPStaticUtils.getLong(Const.USER_SYN_TIME_STAMP_CLOUD, 0);
+        long endTime = System.currentTimeMillis();
+        final QueryCondition condition = new QueryCondition();
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        condition.setUserId(userId);
+        condition.setStartTime(startTime);
+        condition.setEndTime(endTime);
 
-        NetworkHelper.getInstance().synUserInfoFromCloud(userId, new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().synUserInfoFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 List<UserInfo> infoList = (List<UserInfo>)obj;
-
-                UserInfo userInfo = (UserInfo)obj;
                 if (updateByCloud(infoList)) {
-                    EventBus.getDefault().post("finish_user_info_syn");
+                    EventBus.getDefault().post(Const.FINISH_USER_INFO_SYN);
                 };
+
+                SPStaticUtils.put(Const.USER_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override

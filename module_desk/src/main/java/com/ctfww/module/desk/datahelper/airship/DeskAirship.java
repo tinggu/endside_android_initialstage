@@ -9,6 +9,7 @@ import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.desk.datahelper.NetworkHelper;
 import com.ctfww.module.desk.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.desk.datahelper.sp.Const;
 import com.ctfww.module.desk.entity.DeskInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,7 +47,7 @@ public class DeskAirship {
 
     // 从云上同步签到点
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }

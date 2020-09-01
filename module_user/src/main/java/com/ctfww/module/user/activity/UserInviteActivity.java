@@ -11,11 +11,17 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.datahelper.airship.Airship;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.google.android.material.tabs.TabLayout;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.fragment.UserReceiveInviteListFragment;
 import com.ctfww.module.user.fragment.UserSendInviteListFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,8 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
 
     private ImageView mBack;
     private TextView mTittle;
+    private UserReceiveInviteListFragment mUserReceiveInviteListFragment;
+    private UserSendInviteListFragment mUserSendInviteListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,8 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
         setOnClickListener();
 
         Airship.getInstance().synInviteInfoFromCloud();
+
+        EventBus.getDefault().register(this);
     }
 
     private void initViews() {
@@ -59,10 +69,10 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
         final String[] tableTitle = {"收到的邀请", "发出的邀请"};
 
         final List<Fragment> fragmentList = new ArrayList<>();
-        UserReceiveInviteListFragment userReceiveInviteListFragment = new UserReceiveInviteListFragment();
-        fragmentList.add(userReceiveInviteListFragment);
-        UserSendInviteListFragment userSendInviteListFragment = new UserSendInviteListFragment();
-        fragmentList.add(userSendInviteListFragment);
+        mUserReceiveInviteListFragment = new UserReceiveInviteListFragment();
+        fragmentList.add(mUserReceiveInviteListFragment);
+        mUserSendInviteListFragment = new UserSendInviteListFragment();
+        fragmentList.add(mUserSendInviteListFragment);
 
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -126,4 +136,18 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
 //            textView.setTextAppearance(this, R.style.TabLayoutNormalTextStyle);
 //        }
 //    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessage(MessageEvent messageEvent) {
+        if (Const.FINISH_INVITE_SYN.equals(messageEvent.getMessage())) {
+            mUserReceiveInviteListFragment.onFinshInviteSyn();
+            mUserSendInviteListFragment.onFinishInviteSyn();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

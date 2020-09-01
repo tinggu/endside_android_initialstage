@@ -19,38 +19,39 @@ public class GroupInviteInfo implements EntityInterface {
     private long timeStamp;
     private String status;
 
-    private String fromMobile;
-    private String fromNickName;
-    private String toMobile;
-    private String toNickName;
-
-    private String groupName;
-
     @Index
     private String synTag;
 
-    @Generated(hash = 1787047989)
+    private String groupName;
+    private String fromNickName;
+    private String fromMobile;
+    private String toNickName;
+    private String toMobile;
+
+
+    @Generated(hash = 195344053)
     public GroupInviteInfo(String inviteId, String fromUserId, String toUserId,
-            String groupId, long timeStamp, String status, String fromMobile,
-            String fromNickName, String toMobile, String toNickName,
-            String groupName, String synTag) {
+            String groupId, long timeStamp, String status, String synTag,
+            String groupName, String fromNickName, String fromMobile,
+            String toNickName, String toMobile) {
         this.inviteId = inviteId;
         this.fromUserId = fromUserId;
         this.toUserId = toUserId;
         this.groupId = groupId;
         this.timeStamp = timeStamp;
         this.status = status;
-        this.fromMobile = fromMobile;
-        this.fromNickName = fromNickName;
-        this.toMobile = toMobile;
-        this.toNickName = toNickName;
-        this.groupName = groupName;
         this.synTag = synTag;
+        this.groupName = groupName;
+        this.fromNickName = fromNickName;
+        this.fromMobile = fromMobile;
+        this.toNickName = toNickName;
+        this.toMobile = toMobile;
     }
 
     @Generated(hash = 1262591850)
     public GroupInviteInfo() {
     }
+
 
     public String toString() {
         return "inviteId = " + inviteId
@@ -59,16 +60,16 @@ public class GroupInviteInfo implements EntityInterface {
                 + ", groupId = " + groupId
                 + ", status = " + status
                 + ", timeStamp = " + timeStamp
+                + ", synTag = " + synTag
                 + ", groupName = " + groupName
-                + ", fromMobile = " + fromMobile
                 + ", fromNickName = " + fromNickName
-                + ", toMobile = " + toMobile
+                + ", fromMobile = " + fromMobile
                 + ", toNickName = " + toNickName
-                + ", synTag = " + synTag;
+                + ", toMobile = " + toMobile;
     }
 
     public void combineInviteId() {
-        inviteId = GlobeFun.getSHA(fromUserId + groupId + timeStamp);
+        inviteId = fromUserId + groupId + timeStamp;
     }
 
     public String getInviteId() {
@@ -119,36 +120,12 @@ public class GroupInviteInfo implements EntityInterface {
         this.status = status;
     }
 
-    public String getFromMobile() {
-        return this.fromMobile;
+    public String getSynTag() {
+        return this.synTag;
     }
 
-    public void setFromMobile(String fromMobile) {
-        this.fromMobile = fromMobile;
-    }
-
-    public String getFromNickName() {
-        return this.fromNickName;
-    }
-
-    public void setFromNickName(String fromNickName) {
-        this.fromNickName = fromNickName;
-    }
-
-    public String getToMobile() {
-        return this.toMobile;
-    }
-
-    public void setToMobile(String toMobile) {
-        this.toMobile = toMobile;
-    }
-
-    public String getToNickName() {
-        return this.toNickName;
-    }
-
-    public void setToNickName(String toNickName) {
-        this.toNickName = toNickName;
+    public void setSynTag(String synTag) {
+        this.synTag = synTag;
     }
 
     public String getGroupName() {
@@ -159,11 +136,35 @@ public class GroupInviteInfo implements EntityInterface {
         this.groupName = groupName;
     }
 
-    public String getSynTag() {
-        return this.synTag;
+    public String getFromNickName() {
+        return this.fromNickName;
     }
 
-    public void setSynTag(String synTag) {
-        this.synTag = synTag;
+    public void setFromNickName(String fromNickName) {
+        this.fromNickName = fromNickName;
+    }
+
+    public String getFromMobile() {
+        return this.fromMobile;
+    }
+
+    public void setFromMobile(String fromMobile) {
+        this.fromMobile = fromMobile;
+    }
+
+    public String getToNickName() {
+        return this.toNickName;
+    }
+
+    public void setToNickName(String toNickName) {
+        this.toNickName = toNickName;
+    }
+
+    public String getToMobile() {
+        return this.toMobile;
+    }
+
+    public void setToMobile(String toMobile) {
+        this.toMobile = toMobile;
     }
 }

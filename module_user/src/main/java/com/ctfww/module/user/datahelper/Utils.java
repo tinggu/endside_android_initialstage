@@ -1,9 +1,10 @@
 package com.ctfww.module.user.datahelper;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.module.user.constant.UserSPConstant;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 
 public class Utils {
@@ -20,7 +21,8 @@ public class Utils {
     }
 
     public static boolean isLogined() {
-        return SPStaticUtils.getBoolean(UserSPConstant.USER_HAD_LOGIN_FLAG);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        return !TextUtils.isEmpty(userId);
     }
 
     public static boolean isValidMobileNum(String str) {

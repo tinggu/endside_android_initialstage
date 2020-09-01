@@ -5,12 +5,12 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.entity.Ranking;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,7 +21,7 @@ public class RankingAirship {
 
     // 从云上同步签到点
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }

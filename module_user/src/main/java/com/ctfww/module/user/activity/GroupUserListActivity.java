@@ -15,14 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
 import com.ctfww.module.user.adapter.GroupUserListAdapter;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.user.datahelper.sp.SPQuickEntry;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
 
@@ -161,32 +164,39 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    private void onlyPrompt(final String prompt) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(prompt);
-        builder.setCancelable(true);
-
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog dialog = builder.create();      //创建AlertDialog对象
-        dialog.show();
-    }
-
     private void withDrawManage() {
+        if (!SPQuickEntry.isAdmin()) {
+            return;
+        }
+
+        if (DBQuickEntry.getAdminCountInWorkingGroup() <= 1) {
+            DialogUtils.onlyPrompt("你是唯一的管理员，不能退出管理！", this);
+            return;
+        }
+
         GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser("");
+        if (groupUserInfo == null) {
+            return;
+        }
+
         groupUserInfo.setRole("member");
-        final String role = "member";
+        groupUserInfo.setTimeStamp(System.currentTimeMillis());
+        String synTag = "new".equals(groupUserInfo.getSynTag()) ? "new" : "modify";
+        groupUserInfo.setSynTag(synTag);
         DBHelper.getInstance().updateGroupUser(groupUserInfo);
+
+        Airship.getInstance().synToCloud();
+
+        SPStaticUtils.put(Const.ROLE, Const.ROLE_MEMBER);
     }
 
     private void deleteGroup() {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
+        if (!SPQuickEntry.isAdmin()) {
+            return;
+        }
+
+        if (DBQuickEntry.getAdminCountInWorkingGroup() != 1) {
+            DialogUtils.onlyPrompt("你不是唯一的管理员，不能解散群组！", this);
             return;
         }
 
@@ -194,32 +204,53 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
         if (groupInfo == null) {
             return;
         }
+
+        LogUtils.i(TAG, "deleteGroup: groupInfo = " + groupInfo.toString());
 
         groupInfo.setStatus("delete");
         groupInfo.setTimeStamp(System.currentTimeMillis());
+        groupInfo.setSynTag("modify");
         DBHelper.getInstance().updateGroup(groupInfo);
 
         Airship.getInstance().synGroupInfoToCloud();
+
+        List<GroupUserInfo> groupUserInfoList = DBHelper.getInstance().getGroupUserList(groupInfo.getGroupId());
+        for (int i = 0; i < groupUserInfoList.size(); ++i) {
+            GroupUserInfo groupUserInfo = groupUserInfoList.get(i);
+            groupUserInfo.setStatus("delete");
+            groupUserInfo.setTimeStamp(System.currentTimeMillis());
+            groupUserInfo.setSynTag("modify");
+            DBHelper.getInstance().updateGroupUser(groupUserInfo);
+        }
+
+        Airship.getInstance().synGroupUserInfoToCloud();
+
+        SPStaticUtils.remove(Const.WORKING_GROUP_ID);
+        SPStaticUtils.remove(Const.ROLE);
+        EventBus.getDefault().post(new MessageEvent("unbind_group"));
+
+        finish();
     }
 
     private void withdrawGroup() {
-        GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser("");
-        groupUserInfo.setStatus("delete");
-        groupUserInfo.setTimeStamp(System.currentTimeMillis());
-        groupUserInfo.setSynTag("modify");
-        DBHelper.getInstance().updateGroupUser(groupUserInfo);
-        Airship.getInstance().synGroupUserInfoToCloud();
-
-        DBHelper.getInstance().deleteGroupUserLeaveUserId(groupUserInfo.getUserId(), groupUserInfo.getUserId());
-
-        GroupInfo groupInfo = DBQuickEntry.getWorkingGroup();
-        if (groupInfo == null) {
+        if (SPQuickEntry.isAdmin() && DBQuickEntry.getAdminCountInWorkingGroup() <= 1) {
+            DialogUtils.onlyPrompt("你是唯一的管理员，不能退出群组！", this);
             return;
         }
 
-        DBHelper.getInstance().deleteGroup(groupInfo.getGroupId());
+        GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser("");
+        groupUserInfo.setStatus("delete");
+        groupUserInfo.setTimeStamp(System.currentTimeMillis());
+        String synTag = "new".equals(groupUserInfo.getSynTag()) ? "new" : "modify";
+        groupUserInfo.setSynTag(synTag);
+        DBHelper.getInstance().updateGroupUser(groupUserInfo);
+        Airship.getInstance().synGroupUserInfoToCloud();
 
-        SPStaticUtils.remove("working_group_id");
+        SPStaticUtils.remove(Const.WORKING_GROUP_ID);
+        SPStaticUtils.remove(Const.ROLE);
+        EventBus.getDefault().post(new MessageEvent("unbind_group"));
+
+        finish();
     }
 
     @Subscribe(threadMode= ThreadMode.MAIN)

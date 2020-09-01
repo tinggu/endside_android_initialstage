@@ -30,6 +30,7 @@ import com.ctfww.module.desk.R;
 import com.ctfww.module.desk.Utils;
 import com.ctfww.module.desk.datahelper.airship.Airship;
 import com.ctfww.module.desk.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.desk.datahelper.sp.Const;
 import com.ctfww.module.desk.entity.DeskInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -126,7 +127,7 @@ public class AddDeskActivity extends AppCompatActivity implements View.OnClickLi
                 return;
             }
 
-            String groupId = SPStaticUtils.getString("working_group_id");
+            String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
             DeskInfo desk = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(groupId, deskId);
             if (desk != null) {
                 DialogUtils.onlyPrompt("在一个群里面不能创建重复编号的签到点！", this);
@@ -184,7 +185,7 @@ public class AddDeskActivity extends AppCompatActivity implements View.OnClickLi
 
     private void addDesk() {
         DeskInfo desk = new DeskInfo();
-        desk.setGroupId(SPStaticUtils.getString("working_group_id"));
+        desk.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
         desk.setDeskId(GlobeFun.parseInt(mDeskId.getText().toString()));
         desk.setDeskName(mDeskName.getText().toString());
         desk.setDeskAddress(mDeskAddress.getText().toString());

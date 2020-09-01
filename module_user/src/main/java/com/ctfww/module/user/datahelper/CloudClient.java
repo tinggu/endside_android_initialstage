@@ -10,6 +10,7 @@ import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.user.bean.PasswordLoginBean;
 import com.ctfww.module.user.bean.SMSLoginBean;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 import com.ctfww.module.user.entity.GroupUserInfo;
@@ -227,19 +228,19 @@ public class CloudClient {
         RequestBody fileRQ = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), fileRQ);
 
-        Call<ResponseBody> responseBodyCall = mCloudMethod.uploadFile(SPStaticUtils.getString("user_open_id"), part);
+        Call<ResponseBody> responseBodyCall = mCloudMethod.uploadFile(SPStaticUtils.getString(Const.USER_OPEN_ID), part);
         processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void synUserInfoToCloud(UserInfo userInfo, final ICloudCallback callback) {
-        LogUtils.i(TAG, "userInfo = " + userInfo.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synUserInfoToCloud(userInfo);
+    public void synUserInfoToCloud(CargoToCloud<UserInfo> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synUserInfoToCloud(cargoToCloud);
         processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void synUserInfoFromCloud(String userId, final ICloudCallback callback) {
-        LogUtils.i(TAG, "userId = " + userId);
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synUserInfoFromCloud(userId);
+    public void synUserInfoFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synUserInfoFromCloud(condition);
         processListRsp(responseBodyCall, callback);
     }
 

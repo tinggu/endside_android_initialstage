@@ -3,6 +3,7 @@ package com.ctfww.module.desk.datahelper.dbhelper;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.ctfww.module.desk.datahelper.sp.Const;
 import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.desk.entity.RouteDesk;
 import com.ctfww.module.desk.entity.RouteSummary;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class DBQuickEntry {
     public static List<DeskInfo> getWorkingDeskList() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return new ArrayList<DeskInfo>();
         }
@@ -21,7 +22,7 @@ public class DBQuickEntry {
     }
 
     public static List<RouteSummary> getWorkingRouteSummaryList() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return new ArrayList<RouteSummary>();
         }

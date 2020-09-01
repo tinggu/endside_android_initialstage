@@ -8,6 +8,7 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.utils.AirshipUtils;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.NoticeReadStatus;
@@ -47,7 +48,7 @@ public class NoticeReadStatusAirship {
 
     // 从云上同步通知信息
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
@@ -56,7 +57,7 @@ public class NoticeReadStatusAirship {
         long startTime = SPStaticUtils.getLong(key, AirshipUtils.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         condition.setGroupId(groupId);
         condition.setUserId(userId);
         condition.setStartTime(startTime);

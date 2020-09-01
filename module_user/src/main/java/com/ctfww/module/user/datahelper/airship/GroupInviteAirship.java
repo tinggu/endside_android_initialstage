@@ -10,6 +10,7 @@ import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.utils.AirshipUtils;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.NetworkHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupInviteInfo;
@@ -55,17 +56,10 @@ public class GroupInviteAirship {
 
     // 从云上同步通知信息
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString("working_group_id");
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        final String key = "group_invite_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, AirshipUtils.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(Const.GROUP_INVITE_SYN_TIME_STAMP_CLOUD, AirshipUtils.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
-        String userId = SPStaticUtils.getString("user_open_id");
-        condition.setGroupId(groupId);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
@@ -77,11 +71,12 @@ public class GroupInviteAirship {
 
                 if (!inviteList.isEmpty()) {
                     if (updateByCloud(inviteList)) {
-                        EventBus.getDefault().post("finish_invite_syn");
+                        EventBus.getDefault().post(Const.FINISH_INVITE_SYN);
+                        LogUtils.i(TAG, "synFromCloud: finish_invite_syn");
                     }
                 }
 
-                SPStaticUtils.put(key, condition.getEndTime());
+                SPStaticUtils.put(Const.GROUP_INVITE_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override

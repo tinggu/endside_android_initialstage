@@ -19,8 +19,12 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
+import com.ctfww.module.keyevents.datahelper.airship.Airship;
+import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,6 +50,8 @@ public class KeyEventSnatchFragment extends Fragment {
     private ImageView mSnatch;
 
     private TextView mDateTime;
+
+    private KeyEvent mKeyEvent;
 
     @Nullable
     @Override
@@ -79,12 +85,11 @@ public class KeyEventSnatchFragment extends Fragment {
         mLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mKeyEventList.isEmpty()) {
+                if (mKeyEvent == null) {
                     return;
                 }
 
-                ARouter.getInstance().build("/keyevents/keyevent").navigation();
-                EventBus.getDefault().postSticky(new MessageEvent("view_key_event", GsonUtils.toJson(mKeyEventList.get(0))));
+                ARouter.getInstance().build("/keyevents/keyevent").withString("key_event", GsonUtils.toJson(mKeyEvent)).navigation();
             }
         });
 
@@ -118,62 +123,38 @@ public class KeyEventSnatchFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void getDoingKeyEvent() {
-        final int count = 1;
-        NetworkHelper.getInstance().getSomeOneDoingKeyEvent(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mKeyEventList = (List<KeyEvent>)obj;
-                updateKeyEventToUI(mKeyEventList, false);
-                if (mKeyEventList.isEmpty()) {
-                    getCanBeSnatchedKeyEvent();
-                }
-                LogUtils.i(TAG, "getDoingKeyEvent success: mKeyEventList.size() = " + mKeyEventList.size());
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getDoingKeyEvent fail: code = " + code);
-            }
-        });
-    }
-
-    private List<KeyEvent> mKeyEventList = new ArrayList<>();
-    public void getCanBeSnatchedKeyEvent() {
-        final int count = 1;
-        NetworkHelper.getInstance().getCanBeSnatchedKeyEvent(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mKeyEventList = (List<KeyEvent>)obj;
-                updateKeyEventToUI(mKeyEventList, true);
-                LogUtils.i(TAG, "getCanBeSnatchedKeyEvent success: mKeyEventList.size() = " + mKeyEventList.size());
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getCanBeSnatchedKeyEvent fail: code = " + code);
-            }
-        });
-    }
-
-    public void snatch() {
-        if (mKeyEventList.isEmpty()) {
+    public void refresh() {
+        List<KeyEvent> keyEventList = DBQuickEntry.getDoingKeyEventList();
+        if (!keyEventList.isEmpty()) {
+            updateKeyEventToUI(keyEventList, false);
             return;
         }
 
-        KeyEvent keyEvent = mKeyEventList.get(0);
-        NetworkHelper.getInstance().snatchKeyEvent(keyEvent.getEventId(), keyEvent.getDeskId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                LogUtils.i(TAG, "snatch success!");
-                getDoingKeyEvent();
-            }
+        keyEventList = DBQuickEntry.getCanSnatchKeyEventList();
+        updateKeyEventToUI(keyEventList, true);
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "snatch fail: code = " + code);
-            }
-        });
+        if (!keyEventList.isEmpty()) {
+            mKeyEvent = keyEventList.get(0);
+        }
+    }
+
+    public void snatch() {
+        if (mKeyEvent == null) {
+            return;
+        }
+
+        KeyEventTrace keyEventTrace = DBHelper.getInstance().getKeyEventTrace(mKeyEvent.getEventId());
+        if (keyEventTrace == null || "end".equals(keyEventTrace.getStatus()) || "snatch".equals(keyEventTrace.getStatus()) || "accepted".equals(keyEventTrace.getStatus())) {
+            refresh();
+            return;
+        }
+
+        keyEventTrace.setStatus("snatch");
+        keyEventTrace.setTimeStamp(System.currentTimeMillis());
+        keyEventTrace.setSynTag("modify");
+
+        DBHelper.getInstance().updateKeyEventTrace(keyEventTrace);
+        Airship.getInstance().synToCloud();
     }
 
     private void updateKeyEventToUI(List<KeyEvent> keyEventList, boolean isSnatch) {

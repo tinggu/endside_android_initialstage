@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.utils.ApkUtils;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.GroupInfo;
@@ -84,7 +84,7 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
                 GroupInfo groupInfo = new GroupInfo();
                 groupInfo.setGroupName(mName.getText().toString());
                 groupInfo.setTimeStamp(System.currentTimeMillis());
-                groupInfo.setUserId(SPStaticUtils.getString("user_open_id"));
+                groupInfo.setUserId(SPStaticUtils.getString(Const.USER_OPEN_ID));
                 groupInfo.setAppName(ApkUtils.getAppName(getApplicationContext()));
                 groupInfo.setStatus("reserve");
                 groupInfo.setSynTag("new");
@@ -96,8 +96,9 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
                 GroupInfo groupInfo = DBHelper.getInstance().getGroup(groupId);
                 groupInfo.setGroupName(mName.getText().toString());
                 groupInfo.setTimeStamp(System.currentTimeMillis());
-                groupInfo.setUserId(SPStaticUtils.getString("user_open_id"));
-                groupInfo.setSynTag("modify");
+                groupInfo.setUserId(SPStaticUtils.getString(Const.USER_OPEN_ID));
+                String synTag = "new".equals(groupInfo.getSynTag()) ? "new" : "modify";
+                groupInfo.setSynTag(synTag);
                 DBHelper.getInstance().updateGroup(groupInfo);
             }
 

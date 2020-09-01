@@ -23,6 +23,7 @@ import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.NetworkHelper;
@@ -187,7 +188,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             Bitmap bitmapSrc = ImageUtils.getBitmap(new File(filePath));
 //            bitmap = ImageUtils.compressByScale(bitmap, 0.1f, 0.1f);
             Bitmap bitmap = ImageUtils.compressByScale(bitmapSrc, 200, 200, false);
-            String userId = SPStaticUtils.getString("user_open_id");
+            String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
             String headPath = getExternalFilesDir("") + "/" + "head" + "/" +userId+".jpg";
             ImageUtils.save(bitmap, new File(headPath), Bitmap.CompressFormat.JPEG);
             uploadHead(headPath);

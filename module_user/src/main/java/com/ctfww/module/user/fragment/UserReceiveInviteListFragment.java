@@ -46,10 +46,6 @@ public class UserReceiveInviteListFragment extends Fragment {
         mV = inflater.inflate(R.layout.user_invite_list_fragment, container, false);
         initViews(mV);
 
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-
         return mV;
     }
 
@@ -73,29 +69,22 @@ public class UserReceiveInviteListFragment extends Fragment {
         }
     }
 
-    //处理事件
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public  void onGetMessage(MessageEvent messageEvent) {
-        if ("finish_invite_syn".equals(messageEvent.getMessage())) {
-            List<GroupInviteInfo> groupInviteInfoList = DBQuickEntry.getSelfReceivedInviteList();
-            mUserReceiveInviteListAdapter.setList(groupInviteInfoList);
-            mUserReceiveInviteListAdapter.notifyDataSetChanged();
-            if (groupInviteInfoList.isEmpty()) {
-                mNoInvitePrompt.setVisibility(View.VISIBLE);
-                mInviteListView.setVisibility(View.GONE);
-            }
-            else {
-                mNoInvitePrompt.setVisibility(View.GONE);
-                mInviteListView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+    }
+
+    public void onFinshInviteSyn() {
+        List<GroupInviteInfo> groupInviteInfoList = DBQuickEntry.getSelfReceivedInviteList();
+        mUserReceiveInviteListAdapter.setList(groupInviteInfoList);
+        mUserReceiveInviteListAdapter.notifyDataSetChanged();
+        if (groupInviteInfoList.isEmpty()) {
+            mNoInvitePrompt.setVisibility(View.VISIBLE);
+            mInviteListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoInvitePrompt.setVisibility(View.GONE);
+            mInviteListView.setVisibility(View.VISIBLE);
         }
     }
 }

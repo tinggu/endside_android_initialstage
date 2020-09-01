@@ -10,6 +10,7 @@ import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.entity.PersonTrends;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,7 +21,7 @@ public class PersonTrendsAirship {
 
     // 从云上同步动态
     public static void synFromCloud() {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return;
         }

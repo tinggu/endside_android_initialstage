@@ -11,19 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.datahelper.NetworkHelper;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
 import com.ctfww.module.user.entity.UserInfo;
-
-import org.greenrobot.eventbus.EventBus;
 
 @Route(path = "/user/createNotice")
 public class UserCreateNoticeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -42,7 +37,7 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.user_create_notice_activity);
-        mGroupId = SPStaticUtils.getString("working_group_id");
+        mGroupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         mSelfInfo = DBQuickEntry.getSelfInfo();
         initViews();
         setOnClickListener();
@@ -76,7 +71,7 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
             }
 
             NoticeInfo noticeInfo = new NoticeInfo();
-            noticeInfo.setGroupId(SPStaticUtils.getString("working_group_id"));
+            noticeInfo.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
             noticeInfo.setUserId(mSelfInfo.getUserId());
             noticeInfo.setTittle(mNoticeTittle.getText().toString());
             noticeInfo.setContent(mNoticeDesc.getText().toString());

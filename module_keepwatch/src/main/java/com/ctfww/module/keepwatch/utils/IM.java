@@ -9,11 +9,10 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.useim.entity.AppMessage;
 import com.ctfww.module.useim.entity.SingleMessage;
-import com.ctfww.module.useim.event.CEventCenter;
-import com.ctfww.module.useim.event.I_CEventListener;
 import com.ctfww.module.useim.im.IMSClientBootstrap;
 import com.ctfww.module.useim.im.IReceiveDataCallback;
 import com.ctfww.module.useim.im.MessageProcessor;
+import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,7 +21,7 @@ import java.util.UUID;
 public class IM {
     private static final String TAG = "IM";
     public static void startIM(Context context) {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         String token = "token_" + userId;
         IMSClientBootstrap bootstrap = IMSClientBootstrap.getInstance();
 //        String hosts = "[{\"host\":\"192.168.0.102\", \"port\":7012}]";
@@ -37,7 +36,7 @@ public class IM {
     }
 
     public static void sendBaseMsg(String toId, int msgType, int msgContentType) {
-        String userId = SPStaticUtils.getString("user_open_id");
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return;
         }
@@ -55,7 +54,7 @@ public class IM {
     }
 
     public static void sendBaseMsgToThisGroup(int msgType, int msgContentType) {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         sendBaseMsg(groupId, msgType, msgContentType);
     }
 

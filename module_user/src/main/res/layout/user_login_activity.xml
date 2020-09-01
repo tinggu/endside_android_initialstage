@@ -29,6 +29,6 @@
     <include layout="@layout/user_element_sms_login" />
     <include android:visibility="gone" layout="@layout/user_element_password_login" />
 
-<!--    <include layout="@layout/user_element_clause_prompt" />-->
+    <include layout="@layout/user_element_clause_prompt" />
 
 </LinearLayout>

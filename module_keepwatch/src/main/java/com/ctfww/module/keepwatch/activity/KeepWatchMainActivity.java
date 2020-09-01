@@ -39,7 +39,6 @@ import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.keepwatch.datahelper.airship.Airship;
-import com.ctfww.module.keepwatch.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.Utils;
 import com.ctfww.module.keepwatch.fragment.KeepWatchMyFragment;
@@ -49,6 +48,7 @@ import com.ctfww.module.keepwatch.utils.IM;
 import com.ctfww.module.keepwatch.utils.PopupWindowUtil;
 import com.ctfww.module.upgrade.entity.ApkVersionInfo;
 import com.ctfww.module.useim.entity.Head;
+import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.entity.GroupInfo;
 import com.ctfww.module.user.entity.GroupInviteInfo;
 
@@ -337,6 +337,9 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
             SPStaticUtils.put("role", role);
         }
+        else if ("unbind_group".equals(msg)) {
+            mGroupName.setText("请选择群组");
+        }
         else if ("send_invite_success".equals(msg)) {
             GroupInviteInfo groupInviteInfo = GsonUtils.fromJson(messageEvent.getValue(), GroupInviteInfo.class);
             if (groupInviteInfo.getToMobile().equals(groupInviteInfo.getToUserId())) {
@@ -490,7 +493,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
     }
 
     private void refreshFingerprint() {
-        String groupId = SPStaticUtils.getString("working_group_id");
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return;
         }
