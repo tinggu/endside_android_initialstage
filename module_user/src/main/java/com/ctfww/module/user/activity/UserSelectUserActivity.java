@@ -52,10 +52,10 @@ public class UserSelectUserActivity extends AppCompatActivity implements View.On
     }
 
     private void initViews() {
-        mBack = findViewById(R.id.user_top_back);
-        mTittle = findViewById(R.id.user_top_tittle);
+        mBack = findViewById(R.id.top_back);
+        mTittle = findViewById(R.id.top_tittle);
         mTittle.setText("选择成员");
-        mConfirm = findViewById(R.id.user_top_addition);
+        mConfirm = findViewById(R.id.top_addition);
         mConfirm.setText("确定");
         mConfirm.setVisibility(View.VISIBLE);
         mUserSelectUserListView = findViewById(R.id.user_group_user_list);

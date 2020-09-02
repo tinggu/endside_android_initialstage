@@ -6,7 +6,7 @@
     style="@style/PageLinearLayout"
     tools:context=".activity.OneValSetActivity">
 
-    <include layout="@layout/user_element_top_bar" />
+    <include layout="@layout/sub_top_bar" />
 
     <include layout="@layout/gray_interval_style" />
 

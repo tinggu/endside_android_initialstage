@@ -86,11 +86,10 @@ public class UserCreateNoticeActivity extends AppCompatActivity implements View.
             readStatus.setGroupId(mGroupId);
             readStatus.setNoticeId(noticeInfo.getNoticeId());
             readStatus.setUserId(mSelfInfo.getUserId());
-            readStatus.setTimeStamp(System.currentTimeMillis());
+            readStatus.setTimeStamp(noticeInfo.getTimeStamp());
             readStatus.setFlag(2);
             readStatus.combieId();
             readStatus.setSynTag("new");
-            readStatus.setNickName(mSelfInfo.getNickName());
             DBHelper.getInstance().addNoticeReadStatus(readStatus);
             Airship.getInstance().synNoticeReadStatusToCloud();
 

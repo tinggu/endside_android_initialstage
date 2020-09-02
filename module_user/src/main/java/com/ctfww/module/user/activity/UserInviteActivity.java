@@ -50,8 +50,8 @@ public class UserInviteActivity extends AppCompatActivity implements View.OnClic
 
     private void initViews() {
 
-        mBack = findViewById(R.id.user_top_back);
-        mTittle = findViewById(R.id.user_top_tittle);
+        mBack = findViewById(R.id.top_back);
+        mTittle = findViewById(R.id.top_tittle);
         mTittle.setText("邀请");
 //        Toolbar toolbar = findViewById(R.id.user_invite_toolbar);
 //        toolbar.setNavigationIcon(R.mipmap.ic_back);

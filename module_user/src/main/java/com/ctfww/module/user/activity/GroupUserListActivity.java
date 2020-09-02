@@ -64,14 +64,14 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initViews() {
-        mBack = findViewById(R.id.user_top_back);
-        mTittle = findViewById(R.id.user_top_tittle);
+        mBack = findViewById(R.id.top_back);
+        mTittle = findViewById(R.id.top_tittle);
         GroupInfo groupInfo = DBQuickEntry.getWorkingGroup();
         if (groupInfo != null) {
             mTittle.setText(groupInfo.getGroupName());
         }
 
-        mAddMember = findViewById(R.id.user_top_addition);
+        mAddMember = findViewById(R.id.top_addition);
         mAddMember.setText("邀请");
         String role = DBQuickEntry.getRoleInWorkingGroup();
         if ("admin".equals(role)) {

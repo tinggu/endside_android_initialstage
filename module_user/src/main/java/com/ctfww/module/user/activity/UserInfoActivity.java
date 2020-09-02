@@ -68,14 +68,11 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initViews() {
-        mBack = findViewById(R.id.user_back);
-        mTittle = findViewById(R.id.user_top_bar_tittle);
+        mBack = findViewById(R.id.top_back);
+        mTittle = findViewById(R.id.top_tittle);
         mTittle.setText("我的信息");
 
-        UserInfo userInfo = DBQuickEntry.getSelfInfo();
-        LogUtils.i(TAG, "initViews = " + userInfo.toString());
         mHead = findViewById(R.id.user_info_head);
-        Glide.with(this).load(userInfo.getHeadUrl()).into(mHead);
         mUpdateHead = findViewById(R.id.user_info_update_head);
         mNickname = findViewById(R.id.user_info_nickname);
         mUpdateNickname = findViewById(R.id.user_info_update_nickname);
@@ -87,34 +84,6 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         mUpdateMobile = findViewById(R.id.user_info_update_mobile);
         mEmail = findViewById(R.id.user_info_email);
         mUpdateEmail = findViewById(R.id.user_info_update_email);
-
-        String nickname = userInfo.getNickName();
-        if (!TextUtils.isEmpty(nickname) && !"null".equals(nickname)) {
-            mNickname.setText(nickname);
-        }
-
-        int gender = userInfo.getGender();
-        if (gender == 1) {
-            mGender.setText("女");
-        }
-        else if (gender == 2) {
-            mGender.setText("男");
-        }
-
-        String birthday = userInfo.getBirthday();
-        if (!TextUtils.isEmpty(birthday) && !"null".equals(birthday)) {
-            mBirthday.setText(birthday);
-        }
-
-        String mobile = userInfo.getMobile();
-        if (!TextUtils.isEmpty(mobile) && !"null".equals(mobile)) {
-            mMobile.setText(mobile);
-        }
-
-        String email = userInfo.getEmail();
-        if (!TextUtils.isEmpty(email) && !"null".equals(email)) {
-            mEmail.setText(email);
-        }
     }
 
     private void setOnClickListener() {
@@ -268,5 +237,39 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     public void onResume() {
         super.onResume();
         PermissionUtils.requestStoragePermission(this);
+        updateUI();
+    }
+
+    public void updateUI() {
+        UserInfo userInfo = DBQuickEntry.getSelfInfo();
+        Glide.with(this).load(userInfo.getHeadUrl()).into(mHead);
+
+        String nickname = userInfo.getNickName();
+        if (!TextUtils.isEmpty(nickname) && !"null".equals(nickname)) {
+            mNickname.setText(nickname);
+        }
+
+        int gender = userInfo.getGender();
+        if (gender == 1) {
+            mGender.setText("女");
+        }
+        else if (gender == 2) {
+            mGender.setText("男");
+        }
+
+        String birthday = userInfo.getBirthday();
+        if (!TextUtils.isEmpty(birthday) && !"null".equals(birthday)) {
+            mBirthday.setText(birthday);
+        }
+
+        String mobile = userInfo.getMobile();
+        if (!TextUtils.isEmpty(mobile) && !"null".equals(mobile)) {
+            mMobile.setText(mobile);
+        }
+
+        String email = userInfo.getEmail();
+        if (!TextUtils.isEmpty(email) && !"null".equals(email)) {
+            mEmail.setText(email);
+        }
     }
 }

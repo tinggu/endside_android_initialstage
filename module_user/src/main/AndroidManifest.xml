@@ -67,11 +67,11 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.ctfww.module.user.activity.NoticeActivity"
+        <activity android:name="com.ctfww.module.user.activity.NoticeListActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.ctfww.module.user.activity.NoticeDescActivity"
+        <activity android:name="com.ctfww.module.user.activity.NoticeActivity"
             android:screenOrientation="portrait">
         </activity>
 

@@ -2,6 +2,7 @@ package com.ctfww.module.user.datahelper.dbhelper;
 
 import android.database.sqlite.SQLiteConstraintException;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeInfoDao;
 
@@ -46,7 +47,7 @@ public class NoticeDBHelper {
     }
 
     public static List<NoticeInfo> getList(NoticeInfoDao dao, String groupId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(NoticeInfoDao.Properties.Flag.eq(-1), NoticeInfoDao.Properties.GroupId.eq(groupId))).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(NoticeInfoDao.Properties.Status.notEq("delete"), NoticeInfoDao.Properties.GroupId.eq(groupId))).list();
     }
 
     public static List<NoticeInfo> getNoSynList(NoticeInfoDao dao) {

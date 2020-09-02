@@ -48,33 +48,29 @@ public class NoticeReadStatusAirship {
 
     // 从云上同步通知信息
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        final String key = "notice_read_status_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, AirshipUtils.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(Const.NOTICE_READ_STATUS_SYN_TIME_STAMP_CLOUD, AirshipUtils.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
         String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
-        condition.setGroupId(groupId);
         condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
+
+        LogUtils.i(TAG, "synFromCloud: condition = " + condition.toString());
 
         NetworkHelper.getInstance().synNoticeReadStatusFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 List<NoticeReadStatus> noticeReadStatusList = (List<NoticeReadStatus>)obj;
+                LogUtils.i(TAG, "synFromCloud: noticeReadStatusList.size() = " + noticeReadStatusList.size());
 
                 if (!noticeReadStatusList.isEmpty()) {
                     if (updateByCloud(noticeReadStatusList)) {
-                        EventBus.getDefault().post("finish_notice_read_status_syn");
+                        EventBus.getDefault().post(Const.FINISH_NOTICE_READ_STATUS_SYN);
                     }
                 }
 
-                SPStaticUtils.put(key, condition.getEndTime());
+                SPStaticUtils.put(Const.NOTICE_READ_STATUS_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override
@@ -89,6 +85,7 @@ public class NoticeReadStatusAirship {
         for (int i = 0; i < noticeReadStatusList.size(); ++i) {
             NoticeReadStatus noticeReadStatus = noticeReadStatusList.get(i);
             noticeReadStatus.setSynTag("cloud");
+            noticeReadStatus.combieId();
             if (DBHelper.getInstance().addNoticeReadStatus(noticeReadStatus)) {
                 ret = true;
                 continue;

@@ -48,8 +48,8 @@ public class GroupCreateOrUpdateActivity extends AppCompatActivity implements Vi
         }
     }
     private void initViews() {
-        mBack = findViewById(R.id.user_top_back);
-        mTittle = findViewById(R.id.user_top_tittle);
+        mBack = findViewById(R.id.top_back);
+        mTittle = findViewById(R.id.top_tittle);
         if (mIsCreate) {
             mTittle.setText("创建群组");
         }

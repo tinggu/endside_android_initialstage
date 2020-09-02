@@ -15,7 +15,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.activity.NoticeDescActivity;
+import com.ctfww.module.user.activity.NoticeActivity;
 import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
@@ -86,7 +86,6 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             readStatus.setFlag(1);
             readStatus.combieId();
             readStatus.setSynTag("new");
-            readStatus.setNickName(selfInfo.getNickName());
             DBHelper.getInstance().addNoticeReadStatus(readStatus);
         }
         else if (readStatus.getFlag() == 0) {
@@ -137,7 +136,6 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     readStatus.setFlag(2);
                     readStatus.combieId();
                     readStatus.setSynTag("new");
-                    readStatus.setNickName(selfInfo.getNickName());
                     DBHelper.getInstance().addNoticeReadStatus(readStatus);
                 }
                 else if (readStatus.getFlag() != 2) {
@@ -153,7 +151,7 @@ public class UserNoticeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     ARouter.getInstance().build("/user/invite").navigation();
                 }
                 else {
-                    Intent intent = new Intent(context, NoticeDescActivity.class);
+                    Intent intent = new Intent(context, NoticeActivity.class);
                     intent.putExtra("notice_info", GsonUtils.toJson(noticeInfo));
                     context.startActivity(intent);
                 }

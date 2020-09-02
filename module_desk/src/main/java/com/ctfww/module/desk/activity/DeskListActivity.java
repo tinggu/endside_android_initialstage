@@ -28,7 +28,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(path = "/keepwatch/deskList")
+@Route(path = "/desk/deskList")
 public class DeskListActivity extends AppCompatActivity implements View.OnClickListener{
     private final static String TAG = "DeskListActivity";
 

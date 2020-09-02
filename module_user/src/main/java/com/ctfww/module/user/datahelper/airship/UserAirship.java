@@ -12,6 +12,7 @@ import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.List;
 
 public class UserAirship {
@@ -31,7 +32,12 @@ public class UserAirship {
             public void onSuccess(Object obj) {
                 for (int i = 0; i < userList.size(); ++i) {
                     UserInfo userInfo = userList.get(i);
-                    userInfo.setSynTag("cloud");
+                    if (userInfo.isHeadSyned()) {
+                        userInfo.setSynTag("cloud");
+                    }
+                    else {
+                        userInfo.setSynTag("addition");
+                    }
                     DBHelper.getInstance().updateUser(userInfo);
                 }
             }
@@ -90,5 +96,54 @@ public class UserAirship {
         }
 
         return ret;
+    }
+
+    public static void synAdditionToCloud() {
+        List<UserInfo> userInfoList = DBHelper.getInstance().getNoSynAdditionUserList();
+        if (userInfoList == null || userInfoList.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < userInfoList.size(); ++i) {
+            UserInfo userInfo = userInfoList.get(i);
+            if (userInfo.isHeadSyned()) {
+                userInfo.setSynTag("cloud");
+                DBHelper.getInstance().updateUser(userInfo);
+            }
+            else {
+                uploadHeadUrl(userInfo);
+            }
+        }
+    }
+
+    private static void uploadHeadUrl(final UserInfo userInfo) {
+        File file = new File(userInfo.getHeadUrl());
+        if (!file.exists()) {
+            userInfo.setHeadUrl("");
+            if ("addition".equals(userInfo.getSynTag())) {
+                userInfo.setSynTag("cloud");
+            }
+
+            DBHelper.getInstance().updateUser(userInfo);
+            return;
+        }
+
+        NetworkHelper.getInstance().uploadFile(userInfo.getHeadUrl(), new IUIDataHelperCallback() {
+            @Override
+            public void onSuccess(Object obj) {
+                String url = (String)obj;
+                userInfo.setHeadUrl(url);
+                if ("addition".equals(userInfo.getSynTag())) {
+                    userInfo.setSynTag("cloud");
+                }
+
+                DBHelper.getInstance().updateUser(userInfo);
+            }
+
+            @Override
+            public void onError(int code) {
+                LogUtils.i(TAG, "uploadHeadUrl fail: code = " + code);
+            }
+        });
     }
 }

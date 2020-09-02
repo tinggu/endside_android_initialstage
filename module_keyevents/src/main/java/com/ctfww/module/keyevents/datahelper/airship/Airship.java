@@ -63,6 +63,7 @@ public class Airship {
 
     public void synKeyEventToCloud() {
         KeyEventAirship.synToCloud();
+        KeyEventAirship.synAdditionToCloud();
     }
 
     public void synKeyEventFromCloud() {

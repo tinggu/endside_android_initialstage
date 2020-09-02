@@ -54,33 +54,28 @@ public class NoticeAirship {
 
     // 从云上同步通知信息
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        final String key = "notice_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, AirshipUtils.getDefaultStartTime());
+        long startTime = SPStaticUtils.getLong(Const.NOTICE_SYN_TIME_STAMP_CLOUD, AirshipUtils.getDefaultStartTime());
         long endTime = System.currentTimeMillis();
         final QueryCondition condition = new QueryCondition();
         String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
-        condition.setGroupId(groupId);
         condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
+        LogUtils.i(TAG, "synFromCloud: condition = " + condition.toString());
 
         NetworkHelper.getInstance().synNoticeInfoFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 List<NoticeInfo> noticeList = (List<NoticeInfo>)obj;
+                LogUtils.i(TAG, "synFromCloud: noticeList.size() = " + noticeList.size());
 
                 if (!noticeList.isEmpty()) {
                     if (updateByCloud(noticeList)) {
-                        EventBus.getDefault().post("finish_notice_syn");
+                        EventBus.getDefault().post(Const.FINISH_NOTICE_SYN);
                     }
                 }
 
-                SPStaticUtils.put(key, condition.getEndTime());
+                SPStaticUtils.put(Const.NOTICE_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override

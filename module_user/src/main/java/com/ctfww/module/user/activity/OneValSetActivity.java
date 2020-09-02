@@ -35,9 +35,11 @@ public class OneValSetActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initViews() {
-        mBack = findViewById(R.id.user_back);
-        TextView tittle = findViewById(R.id.user_top_bar_tittle);
-        mFinish = findViewById(R.id.user_top_bar_right_btn);
+        mBack = findViewById(R.id.top_back);
+        TextView tittle = findViewById(R.id.top_tittle);
+        mFinish = findViewById(R.id.top_addition);
+        mFinish.setVisibility(View.VISIBLE);
+        mFinish.setText("完成");
         mVal = findViewById(R.id.user_line_edit);
         TextView grayElseDesc = findViewById(R.id.gray_else_desc);
 

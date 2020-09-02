@@ -1,6 +1,9 @@
 package com.ctfww.module.user.entity;
 
+import android.text.TextUtils;
+
 import com.ctfww.commonlib.entity.EntityInterface;
+import com.ctfww.commonlib.utils.FileUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -74,6 +77,14 @@ public class UserInfo implements EntityInterface {
                 + ", blog = " + blogNum
                 + ", qq = " + qqNum
                 + ", timeStamp = " + timeStamp;
+    }
+
+    private boolean isSyned(String path) {
+        return TextUtils.isEmpty(path) || FileUtils.isNetworkUrl(path);
+    }
+
+    public boolean isHeadSyned() {
+        return isSyned(headUrl);
     }
 
     public String getUserId() {

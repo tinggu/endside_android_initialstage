@@ -52,4 +52,8 @@ public class UserDBHelper {
     public static void delete(UserInfoDao dao, String userId) {
         dao.deleteByKey(userId);
     }
+
+    public static List<UserInfo> getNoSynAdditionList(UserInfoDao dao) {
+        return dao.queryBuilder().where(dao.queryBuilder().or(UserInfoDao.Properties.SynTag.eq("new"), UserInfoDao.Properties.SynTag.eq("addition"))).list();
+    }
 }

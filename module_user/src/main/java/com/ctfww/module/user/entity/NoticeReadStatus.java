@@ -22,20 +22,17 @@ public class NoticeReadStatus implements EntityInterface {
     private int flag;
     private long timeStamp;
 
-    private String nickName;
-
     @Index
     private String synTag;
 
-    @Generated(hash = 1782173143)
-    public NoticeReadStatus(String id, String noticeId, String groupId, String userId, int flag, long timeStamp, String nickName, String synTag) {
+    @Generated(hash = 284380590)
+    public NoticeReadStatus(String id, String noticeId, String groupId, String userId, int flag, long timeStamp, String synTag) {
         this.id = id;
         this.noticeId = noticeId;
         this.groupId = groupId;
         this.userId = userId;
         this.flag = flag;
         this.timeStamp = timeStamp;
-        this.nickName = nickName;
         this.synTag = synTag;
     }
 
@@ -47,7 +44,6 @@ public class NoticeReadStatus implements EntityInterface {
         return "noticeId = " + noticeId
                 + ", groupId = " + groupId
                 + ", userId = " + userId
-                + ", nickName = " + nickName
                 + ", timeStamp = " + timeStamp
                 + ", flag = " + flag;
     }
@@ -139,14 +135,6 @@ public class NoticeReadStatus implements EntityInterface {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-    }
-
-    public String getNickName() {
-        return this.nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     public String getSynTag() {

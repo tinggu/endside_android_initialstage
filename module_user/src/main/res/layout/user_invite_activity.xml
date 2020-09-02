@@ -22,7 +22,7 @@
 <!--            app:layout_scrollFlags="scroll|enterAlways">-->
 
 <!--        </androidx.appcompat.widget.Toolbar>-->
-        <include layout="@layout/user_sub_top_bar"/>
+        <include layout="@layout/sub_top_bar"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/user_invite_tab_layout"

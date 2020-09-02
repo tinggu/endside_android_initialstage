@@ -62,6 +62,7 @@ public class Airship {
 
     public void synUserInfoToCloud() {
         UserAirship.synToCloud();
+        UserAirship.synAdditionToCloud();
     }
 
     public void synUserInfoFromCloud() {

@@ -2,6 +2,9 @@
     package="com.ctfww.module.desk" >
     <application android:theme="@style/AppTheme">
         <activity
+            android:name="com.ctfww.module.desk.activity.DeskListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name="com.ctfww.module.desk.activity.AddDeskActivity"
             android:screenOrientation="portrait"/>
     </application>

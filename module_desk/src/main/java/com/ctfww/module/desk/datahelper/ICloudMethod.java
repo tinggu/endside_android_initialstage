@@ -17,7 +17,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synDeskInfoToCloud")
+    @POST("/microcloudkeyevents/desk/synDeskInfoToCloud")
     Call<ResponseBody> synDeskInfoToCloud(@Body CargoToCloud<DeskInfo> info);
 
     /**
@@ -25,7 +25,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synDeskInfoFromCloud")
+    @POST("/microcloudkeyevents/desk/synDeskInfoFromCloud")
     Call<ResponseBody> synDeskInfoFromCloud(@Body QueryCondition condition);
 
     /**
@@ -33,7 +33,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synRouteSummaryToCloud")
+    @POST("/microcloudkeyevents/desk/synRouteSummaryToCloud")
     Call<ResponseBody> synRouteSummaryToCloud(@Body CargoToCloud<RouteSummary> info);
 
     /**
@@ -41,7 +41,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synRouteSummaryFromCloud")
+    @POST("/microcloudkeyevents/desk/synRouteSummaryFromCloud")
     Call<ResponseBody> synRouteSummaryFromCloud(@Body QueryCondition condition);
 
     /**
@@ -49,7 +49,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synRouteDeskToCloud")
+    @POST("/microcloudkeyevents/desk/synRouteDeskToCloud")
     Call<ResponseBody> synRouteDeskToCloud(@Body CargoToCloud<RouteDesk> info);
 
     /**
@@ -57,6 +57,6 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synRouteDeskFromCloud")
+    @POST("/microcloudkeyevents/desk/synRouteDeskFromCloud")
     Call<ResponseBody> synRouteDeskFromCloud(@Body QueryCondition condition);
 }

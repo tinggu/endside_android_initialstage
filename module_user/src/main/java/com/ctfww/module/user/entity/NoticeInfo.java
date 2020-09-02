@@ -28,14 +28,13 @@ public class NoticeInfo implements EntityInterface {
     private long timeStamp;
 
     @Index
-    private int flag;
+    private String status;
 
     @Index
     private String synTag;
 
-
-    @Generated(hash = 1795827328)
-    public NoticeInfo(String noticeId, String groupId, String userId, String toUserId, String tittle, String content, int type, long timeStamp, int flag, String synTag) {
+    @Generated(hash = 103116940)
+    public NoticeInfo(String noticeId, String groupId, String userId, String toUserId, String tittle, String content, int type, long timeStamp, String status, String synTag) {
         this.noticeId = noticeId;
         this.groupId = groupId;
         this.userId = userId;
@@ -44,17 +43,16 @@ public class NoticeInfo implements EntityInterface {
         this.content = content;
         this.type = type;
         this.timeStamp = timeStamp;
-        this.flag = flag;
+        this.status = status;
         this.synTag = synTag;
     }
 
     @Generated(hash = 426617346)
     public NoticeInfo() {
-
     }
 
     public void combineNoticeId() {
-        noticeId = GlobeFun.getSHA(userId + timeStamp);
+        noticeId = userId + timeStamp;
     }
 
     public String toString() {
@@ -64,7 +62,8 @@ public class NoticeInfo implements EntityInterface {
                 + ", tittle = " + tittle
                 + ", content = " + content
                 + ", type = " + type
-                + ", timeStamp = " + timeStamp;
+                + ", timeStamp = " + timeStamp
+                + ", status = " + status;
     }
 
     public String getDateTime() {
@@ -73,36 +72,6 @@ public class NoticeInfo implements EntityInterface {
 
         return String.format("%04d-%02d-%02d %02d:%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
-
-//    public String getReadStatusText() {
-//        String ret = "未读";
-//        if (flag == 0) {
-//            ret = "未读";
-//        }
-//        else if (flag == 1) {
-//            ret = "未读";
-//        }
-//        else if (flag == 2) {
-//            ret = "已读";
-//        }
-//
-//        return ret;
-//    }
-//
-//    public int getReadStatusTextColor() {
-//        int ret = 0xFF4A4A4A;
-//        if (flag == 0) {
-//            ret = 0xFFFF0000;
-//        }
-//        else if (flag == 1) {
-//            ret = 0xFFFF0000;
-//        }
-//        else if (flag == 2) {
-//            ret = 0xFF4A4A4A;
-//        }
-//
-//        return ret;
-//    }
 
     public String getNoticeId() {
         return this.noticeId;
@@ -168,6 +137,14 @@ public class NoticeInfo implements EntityInterface {
         this.timeStamp = timeStamp;
     }
 
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getSynTag() {
         return this.synTag;
     }
@@ -176,13 +153,35 @@ public class NoticeInfo implements EntityInterface {
         this.synTag = synTag;
     }
 
-    public int getFlag() {
-        return this.flag;
-    }
+//    public String getReadStatusText() {
+//        String ret = "未读";
+//        if (flag == 0) {
+//            ret = "未读";
+//        }
+//        else if (flag == 1) {
+//            ret = "未读";
+//        }
+//        else if (flag == 2) {
+//            ret = "已读";
+//        }
+//
+//        return ret;
+//    }
+//
+//    public int getReadStatusTextColor() {
+//        int ret = 0xFF4A4A4A;
+//        if (flag == 0) {
+//            ret = 0xFFFF0000;
+//        }
+//        else if (flag == 1) {
+//            ret = 0xFFFF0000;
+//        }
+//        else if (flag == 2) {
+//            ret = 0xFF4A4A4A;
+//        }
+//
+//        return ret;
+//    }
 
-    public void setFlag(int flag) {
-        this.flag = flag;
-    }
-
-    
+     
 }

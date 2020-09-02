@@ -49,7 +49,7 @@ public class NoticeReadStatusDBHelper {
     }
 
     public static List<NoticeReadStatus> getList(NoticeReadStatusDao dao, String noticeId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(NoticeReadStatusDao.Properties.Flag.eq(-1), NoticeReadStatusDao.Properties.NoticeId.eq(noticeId))).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(NoticeReadStatusDao.Properties.Flag.notEq(-1), NoticeReadStatusDao.Properties.NoticeId.eq(noticeId))).list();
     }
 
     public static List<NoticeReadStatus> getNoSynList(NoticeReadStatusDao dao) {

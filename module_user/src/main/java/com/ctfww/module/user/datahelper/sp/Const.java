@@ -21,4 +21,10 @@ public class Const {
 
     public static final String GROUP_INVITE_SYN_TIME_STAMP_CLOUD = "group_invite_syn_time_stamp_cloud";
     public static final String FINISH_INVITE_SYN = "finish_invite_syn";
+
+    public static final String NOTICE_SYN_TIME_STAMP_CLOUD = "notice_syn_time_stamp_cloud";
+    public static final String FINISH_NOTICE_SYN = "finish_notice_syn";
+
+    public static final String NOTICE_READ_STATUS_SYN_TIME_STAMP_CLOUD = "notice_read_status_syn_time_stamp_cloud";
+    public static final String FINISH_NOTICE_READ_STATUS_SYN = "finish_notice_read_status_syn";
 }

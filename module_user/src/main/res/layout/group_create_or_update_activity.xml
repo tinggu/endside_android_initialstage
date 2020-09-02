@@ -7,7 +7,7 @@
     android:background="#F2F3F5"
     tools:context=".activity.GroupCreateOrUpdateActivity">
 
-    <include layout="@layout/user_sub_top_bar" />
+    <include layout="@layout/sub_top_bar" />
 
     <EditText
         android:layout_width="match_parent"

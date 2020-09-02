@@ -9,8 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ctfww.module.user.R;
+import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
+import com.ctfww.module.user.entity.UserInfo;
 
 import java.util.Calendar;
 import java.util.List;
@@ -40,7 +42,11 @@ public class UserNoticeReadStatusListAdapter extends RecyclerView.Adapter<Recycl
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NoticeReadStatus noticeReadStatus = list.get(position);
-        ((UserNoticeReadStatusViewHolder)holder).nickName.setText(noticeReadStatus.getNickName());
+        UserInfo userInfo = DBHelper.getInstance().getUser(noticeReadStatus.getUserId());
+        if (userInfo != null) {
+            ((UserNoticeReadStatusViewHolder)holder).nickName.setText(userInfo.getNickName());
+        }
+
         if (noticeReadStatus.getFlag() != 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(noticeReadStatus.getTimeStamp());

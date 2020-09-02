@@ -97,6 +97,10 @@ public class DBHelper {
         return UserDBHelper.getNoSynList(userInfoDao);
     }
 
+    public List<UserInfo> getNoSynAdditionUserList() {
+        return UserDBHelper.getNoSynAdditionList(userInfoDao);
+    }
+
     public void deleteUser(String userId) {
         UserDBHelper.delete(userInfoDao, userId);
     }

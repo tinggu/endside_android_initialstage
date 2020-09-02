@@ -135,7 +135,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synNoticeInfoToCloud")
+    @POST("/microusermanagement/noticeMgt/synNoticeInfoToCloud")
     Call<ResponseBody> synNoticeInfoToCloud(@Body CargoToCloud<NoticeInfo> info);
 
     /**
@@ -143,7 +143,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synNoticeInfoFromCloud")
+    @POST("/microusermanagement/noticeMgt/synNoticeInfoFromCloud")
     Call<ResponseBody> synNoticeInfoFromCloud(@Body QueryCondition condition);
 
     /**
@@ -151,7 +151,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synNoticeReadStatusToCloud")
+    @POST("/microusermanagement/noticeMgt/synNoticeReadStatusToCloud")
     Call<ResponseBody> synNoticeReadStatusToCloud(@Body CargoToCloud<NoticeReadStatus> info);
 
     /**
@@ -159,6 +159,6 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microusermanagement/userMgt/synNoticeReadStatusFromCloud")
+    @POST("/microusermanagement/noticeMgt/synNoticeReadStatusFromCloud")
     Call<ResponseBody> synNoticeReadStatusFromCloud(@Body QueryCondition condition);
 }

@@ -1,7 +1,6 @@
 package com.ctfww.module.user.activity;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,64 +9,82 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
-import com.blankj.utilcode.util.SPStaticUtils;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.user.R;
-import com.ctfww.module.user.adapter.UserNoticeListAdapter;
+import com.ctfww.module.user.adapter.UserNoticeReadStatusListAdapter;
 import com.ctfww.module.user.datahelper.airship.Airship;
 import com.ctfww.module.user.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.user.entity.NoticeInfo;
 import com.ctfww.module.user.entity.NoticeReadStatus;
+import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Calendar;
 import java.util.List;
 
-@Route(path = "/user/notice")
 public class NoticeActivity extends AppCompatActivity implements View.OnClickListener{
     private final static String TAG = "NoticeActivity";
 
-    private final static int REQUEST_CODE_ADD_MEMBER = 1;
-
     private ImageView mBack;
     private TextView mTittle;
+    private TextView mNoticeTittle;
+    private TextView mNoticeContent;
+    private TextView mReleaseNickName;
+    private TextView mReleaseDateTime;
 
-    private RecyclerView mNoticeListView;
-    private UserNoticeListAdapter mNoticeListAdapter;
+    private RecyclerView mNoticeReadStatusListView;
+    private UserNoticeReadStatusListAdapter mNoticeReadStatusListAdapter;
 
-    private TextView mNoNoticePrompt;
+    private NoticeInfo mNoticeInfo;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.user_notice_activity);
+        processIntent();
         initViews();
         setOnClickListener();
 
         EventBus.getDefault().register(this);
-        Airship.getInstance().synNoticeInfoFromCloud();
+        Airship.getInstance().synNoticeReadStatusFromCloud();
+    }
+
+    private void processIntent() {
+        String noticeInfoStr = getIntent().getStringExtra("notice_info");
+        mNoticeInfo = GsonUtils.fromJson(noticeInfoStr, NoticeInfo.class);
     }
 
     private void initViews() {
         mBack = findViewById(R.id.top_back);
         mTittle = findViewById(R.id.top_tittle);
-        mTittle.setText("消息管理");
+        mTittle.setText("消息详情");
 
-        mNoNoticePrompt = findViewById(R.id.user_prompt_no_notice);
+        mNoticeTittle = findViewById(R.id.user_notice_tittle);
+        mNoticeTittle.setText(mNoticeInfo.getTittle());
+        mNoticeContent = findViewById(R.id.user_notice_desc);
+        mNoticeContent.setText(mNoticeInfo.getContent());
+        mReleaseNickName = findViewById(R.id.user_release_nick_name);
+        UserInfo userInfo = DBHelper.getInstance().getUser(mNoticeInfo.getUserId());
+        String nickName = userInfo == null ? "" : userInfo.getNickName();
+        mReleaseNickName.setText(nickName);
+        mReleaseDateTime = findViewById(R.id.user_release_date_time);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mNoticeInfo.getTimeStamp());
+        String dateTime = String.format("%04d-%02d-%02d %02d:%02d:%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        mReleaseDateTime.setText(dateTime);
 
-        mNoticeListView = findViewById(R.id.user_notice_list);
+        mNoticeReadStatusListView = findViewById(R.id.user_notice_read_status_list);
         LinearLayoutManager layoutManager= new LinearLayoutManager(this);
-        mNoticeListView.setLayoutManager(layoutManager);
+        mNoticeReadStatusListView.setLayoutManager(layoutManager);
 
-        List<NoticeInfo> noticeInfoList = DBQuickEntry.getWorkingNoticeList();
-        mNoticeListAdapter = new UserNoticeListAdapter(noticeInfoList, this);
-        mNoticeListView.setAdapter(mNoticeListAdapter);
-
-        mNoticeListView.setVisibility(View.GONE);
+        List<NoticeReadStatus> noticeReadStatusList = DBHelper.getInstance().getNoticeReadStatusList(mNoticeInfo.getNoticeId());
+        mNoticeReadStatusListAdapter = new UserNoticeReadStatusListAdapter(noticeReadStatusList);
+        mNoticeReadStatusListView.setAdapter(mNoticeReadStatusListAdapter);
     }
 
     private void setOnClickListener() {
@@ -78,22 +95,21 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         int id = v.getId();
         if (id == mBack.getId()) {
-            Airship.getInstance().synNoticeInfoToCloud();
             finish();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessage(MessageEvent messageEvent) {
-        if ("finish_notice_syn".equals(messageEvent.getMessage())) {
-            List<NoticeInfo> noticeInfoList = DBQuickEntry.getWorkingNoticeList();
-            mNoticeListAdapter.setList(noticeInfoList);
-            mNoticeListAdapter.notifyDataSetChanged();
+    public void onGetMessage(MessageEvent messageEvent) {
+        if ("finish_notice_read_status_syn".equals(messageEvent.getMessage())) {
+            List<NoticeReadStatus> noticeReadStatusList = DBHelper.getInstance().getNoticeReadStatusList(mNoticeInfo.getNoticeId());
+            mNoticeReadStatusListAdapter.setList(noticeReadStatusList);
+            mNoticeReadStatusListAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
