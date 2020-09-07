@@ -48,68 +48,7 @@ public class DeskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .inflate(R.layout.desk_one_item, parent, false);
         final DeskViewHolder holder = new DeskViewHolder(view);
 
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-
-                if (holder.delete.getVisibility() == View.VISIBLE) {
-                    holder.delete.setVisibility(View.GONE);
-                    return;
-                }
-
-                DeskInfo deskInfo = list.get(position);
-                ARouter.getInstance().build("/common/viewMap")
-                        .withString("type", "center")
-                        .withDouble("lat", deskInfo.getLat())
-                        .withDouble("lng", deskInfo.getLng())
-                        .withString("name", deskInfo.getDeskName())
-                        .withString("address", deskInfo.getDeskAddress())
-                        .navigation();
-            }
-        });
-
-        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (!"admin".equals(SPStaticUtils.getString("role"))) {
-                    return true;
-                }
-
-                holder.delete.setVisibility(View.VISIBLE);
-
-                return true;
-            }
-        });
-
-        holder.qr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                DeskInfo deskInfo = list.get(position);
-                String url = Utils.getDeskQrUrl(deskInfo.getDeskId());
-                Qr qr = new Qr(url, "" + deskInfo.getDeskId(), deskInfo.getDeskName());
-                ARouter.getInstance().build("/common/qr").withString("qr", GsonUtils.toJson(qr)).navigation();
-            }
-        });
-
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.delete.setVisibility(View.GONE);
-
-                int position = holder.getAdapterPosition();
-                DeskInfo desk = list.get(position);
-                desk.setStatus("delete");
-                desk.setTimeStamp(System.currentTimeMillis());
-                desk.setSynTag("modify");
-                DBHelper.getInstance().updateDesk(desk);
-                list.remove(position);
-
-                notifyDataSetChanged();
-                Airship.getInstance().synDeskToCloud();
-            }
-        });
+        setOnClickListener(holder);
 
         return holder;
     }
@@ -132,6 +71,86 @@ public class DeskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemCount() {
         return list.size();
     }
+
+    public void setOnClickListener(DeskViewHolder holder) {
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+
+                if (holder.delete.getVisibility() == View.VISIBLE) {
+                    holder.delete.setVisibility(View.GONE);
+                    holder.modify.setVisibility(View.GONE);
+                    return;
+                }
+
+                DeskInfo deskInfo = list.get(position);
+                ARouter.getInstance().build("/baidumap/viewMap")
+                        .withString("type", "center")
+                        .withDouble("lat", deskInfo.getLat())
+                        .withDouble("lng", deskInfo.getLng())
+                        .withString("name", deskInfo.getDeskName())
+                        .withString("address", deskInfo.getDeskAddress())
+                        .navigation();
+            }
+        });
+
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (!"admin".equals(SPStaticUtils.getString("role"))) {
+                    return true;
+                }
+
+                holder.delete.setVisibility(View.VISIBLE);
+                holder.modify.setVisibility(View.VISIBLE);
+
+                return true;
+            }
+        });
+
+        holder.qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                DeskInfo deskInfo = list.get(position);
+                String url = Utils.getDeskQrUrl(deskInfo.getDeskId());
+                Qr qr = new Qr(url, "" + deskInfo.getDeskId(), deskInfo.getDeskName());
+                ARouter.getInstance().build("/commonlib/qr").withString("qr", GsonUtils.toJson(qr)).navigation();
+            }
+        });
+
+        holder.modify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.modify.setVisibility(View.GONE);
+                holder.delete.setVisibility(View.GONE);
+
+                int position = holder.getAdapterPosition();
+                DeskInfo desk = list.get(position);
+                ARouter.getInstance().build("/desk/modifyDesk").withString("desk_info", GsonUtils.toJson(desk)).navigation();
+            }
+        });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.modify.setVisibility(View.GONE);
+                holder.delete.setVisibility(View.GONE);
+
+                int position = holder.getAdapterPosition();
+                DeskInfo desk = list.get(position);
+                desk.setStatus("delete");
+                desk.setTimeStamp(System.currentTimeMillis());
+                desk.setSynTag("modify");
+                DBHelper.getInstance().updateDesk(desk);
+                list.remove(position);
+
+                notifyDataSetChanged();
+                Airship.getInstance().synDeskToCloud();
+            }
+        });
+    }
 }
 
 class DeskViewHolder extends RecyclerView.ViewHolder {
@@ -140,7 +159,7 @@ class DeskViewHolder extends RecyclerView.ViewHolder {
     public TextView deskName;
     public ImageView qr;
     public TextView address;
-    public Button delete;
+    public Button modify, delete;
     public View view;
 
     public DeskViewHolder(View itemView) {
@@ -152,6 +171,7 @@ class DeskViewHolder extends RecyclerView.ViewHolder {
         deskName = itemView.findViewById(R.id.desk_name);
         qr = itemView.findViewById(R.id.qr);
         address = itemView.findViewById(R.id.desk_address);
+        modify = itemView.findViewById(R.id.desk_modify);
         delete = itemView.findViewById(R.id.desk_delete);
     }
 }

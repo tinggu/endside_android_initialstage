@@ -5,7 +5,8 @@ import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.network.CloudClientRsp;
 import com.ctfww.commonlib.network.ICloudCallback;
-import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.assignment.entity.DeskAssignment;
+import com.ctfww.module.assignment.entity.RouteAssignment;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -30,15 +31,27 @@ public class CloudClient {
         mCloudMethod = method;
     }
 
-    public void synAssignmentInfoToCloud(CargoToCloud<AssignmentInfo> info, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synAssignmentInfoToCloud: info = " + info.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synAssignmentInfoToCloud(info);
+    public void synDeskAssignmentToCloud(CargoToCloud<DeskAssignment> info, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synDeskAssignmentToCloud: info = " + info.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synDeskAssignmentToCloud(info);
         CloudClientRsp.processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void synAssignmentInfoFromCloud(QueryCondition condition, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synAssignmentInfoFromCloud: condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synAssignmentInfoFromCloud(condition);
+    public void synDeskAssignmentFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synDeskAssignmentFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synDeskAssignmentFromCloud(condition);
+        CloudClientRsp.processListRsp(responseBodyCall, callback);
+    }
+
+    public void synRouteAssignmentToCloud(CargoToCloud<RouteAssignment> info, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synRouteAssignmentToCloud: info = " + info.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synRouteAssignmentToCloud(info);
+        CloudClientRsp.processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synRouteAssignmentFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synRouteAssignmentFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synRouteAssignmentFromCloud(condition);
         CloudClientRsp.processListRsp(responseBodyCall, callback);
     }
 }

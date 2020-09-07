@@ -7,7 +7,8 @@ import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.network.NetworkConst;
-import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.assignment.entity.DeskAssignment;
+import com.ctfww.module.assignment.entity.RouteAssignment;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -28,8 +29,8 @@ public class NetworkHelper {
         return NetworkHelper.Inner.INSTANCE;
     }
 
-    public void synAssignmentInfoToCloud(CargoToCloud<AssignmentInfo> info, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synAssignmentInfoToCloud(info, new ICloudCallback() {
+    public void synDeskAssignmentToCloud(CargoToCloud<DeskAssignment> info, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synDeskAssignmentToCloud(info, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 callback.onSuccess(data);
@@ -37,7 +38,7 @@ public class NetworkHelper {
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synAssignmentInfoToCloud fail: code = " + code);
+                LogUtils.i(TAG, "synDeskAssignmentToCloud fail: code = " + code);
                 callback.onError(code);
             }
 
@@ -48,19 +49,62 @@ public class NetworkHelper {
         });
     }
 
-    public void synAssignmentInfoFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synAssignmentInfoFromCloud(condition, new ICloudCallback() {
+    public void synDeskAssignmentFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synDeskAssignmentFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
-                Type type = new TypeToken<List<AssignmentInfo>>() {}.getType();
-                List<AssignmentInfo> assignmentList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synAssignmentInfoFromCloud: assignmentList.size() = " + assignmentList.size());
+                Type type = new TypeToken<List<DeskAssignment>>() {}.getType();
+                List<DeskAssignment> assignmentList = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synDeskAssignmentFromCloud: assignmentList.size() = " + assignmentList.size());
                 callback.onSuccess(assignmentList);
             }
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synDeskInfoFromCloud fail: code = " + code);
+                LogUtils.i(TAG, "synDeskAssignmentFromCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synRouteAssignmentToCloud(CargoToCloud<RouteAssignment> info, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synRouteAssignmentToCloud(info, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synRouteAssignmentToCloud fail: code = " + code);
+                callback.onError(code);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
+            }
+        });
+    }
+
+    public void synRouteAssignmentFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synRouteAssignmentFromCloud(condition, new ICloudCallback() {
+            @Override
+            public void onSuccess(String data) {
+                Type type = new TypeToken<List<RouteAssignment>>() {}.getType();
+                List<RouteAssignment> assignmentList = GsonUtils.fromJson(data, type);
+                LogUtils.i(TAG, "synRouteAssignmentFromCloud: assignmentList.size() = " + assignmentList.size());
+                callback.onSuccess(assignmentList);
+            }
+
+            @Override
+            public void onError(int code, String errorMsg) {
+                LogUtils.i(TAG, "synRouteAssignmentFromCloud fail: code = " + code);
                 callback.onError(code);
             }
 

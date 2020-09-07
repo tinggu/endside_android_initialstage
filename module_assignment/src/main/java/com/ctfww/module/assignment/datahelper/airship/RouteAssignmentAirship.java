@@ -9,32 +9,32 @@ import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.assignment.datahelper.NetworkHelper;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.assignment.entity.AssignmentInfo;
-import com.ctfww.module.user.datahelper.sp.Const;
+import com.ctfww.module.assignment.datahelper.sp.Const;
+import com.ctfww.module.assignment.entity.RouteAssignment;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-public class AssignmentAirship {
-    private final static String TAG = "AssignmentAirship";
+public class RouteAssignmentAirship {
+    private final static String TAG = "RouteAssignmentAirship";
 
     // 同步任务上云
     public static void synToCloud() {
-        List<AssignmentInfo> assignmentList = DBHelper.getInstance().getNoSynAssignmentList();
+        List<RouteAssignment> assignmentList = DBHelper.getInstance().getNoSynRouteAssignmentList();
         if (assignmentList.isEmpty()) {
             return;
         }
 
-        CargoToCloud<AssignmentInfo> cargoToCloud = new CargoToCloud<>(assignmentList);
+        CargoToCloud<RouteAssignment> cargoToCloud = new CargoToCloud<>(assignmentList);
 
-        NetworkHelper.getInstance().synAssignmentInfoToCloud(cargoToCloud, new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().synRouteAssignmentToCloud(cargoToCloud, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 for (int i = 0; i < assignmentList.size(); ++i) {
-                    AssignmentInfo assignment = assignmentList.get(i);
+                    RouteAssignment assignment = assignmentList.get(i);
                     assignment.setSynTag("cloud");
-                    DBHelper.getInstance().updateAssignment(assignment);
+                    DBHelper.getInstance().updateRouteAssignment(assignment);
                 }
             }
 
@@ -47,30 +47,30 @@ public class AssignmentAirship {
 
     // 从云上同步任务
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        if (TextUtils.isEmpty(userId)) {
             return;
         }
 
-        long startTime = SPStaticUtils.getLong(AirshipConst.ASSIGNMENT_SYN_TIME_STAMP_CLOUD, 0);
+        long startTime = SPStaticUtils.getLong(Const.ROUTE_ASSIGNMENT_SYN_TIME_STAMP_CLOUD, 0);
         long endTime = System.currentTimeMillis();
         QueryCondition condition = new QueryCondition();
-        condition.setGroupId(groupId);
+        condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
 
-        NetworkHelper.getInstance().synAssignmentInfoFromCloud(condition, new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().synRouteAssignmentFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
-                List<AssignmentInfo> assignmentList = (List<AssignmentInfo>)obj;
+                List<RouteAssignment> assignmentList = (List<RouteAssignment>)obj;
 
                 if (!assignmentList.isEmpty()) {
                     if (updateByCloud(assignmentList)) {
-                        EventBus.getDefault().post(AirshipConst.FINISH_ASSIGNMENT_SYN);
+                        EventBus.getDefault().post(Const.FINISH_ROUTE_ASSIGNMENT_SYN);
                     }
                 }
 
-                SPStaticUtils.put(AirshipConst.ASSIGNMENT_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
+                SPStaticUtils.put(Const.ROUTE_ASSIGNMENT_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override
@@ -80,19 +80,19 @@ public class AssignmentAirship {
         });
     }
 
-    private static boolean updateByCloud(List<AssignmentInfo> assignmentList) {
+    private static boolean updateByCloud(List<RouteAssignment> assignmentList) {
         boolean ret = false;
         for (int i = 0; i < assignmentList.size(); ++i) {
-            AssignmentInfo assignment = assignmentList.get(i);
+            RouteAssignment assignment = assignmentList.get(i);
             assignment.setSynTag("cloud");
-            AssignmentInfo localAssignment = DBHelper.getInstance().getAssignment(assignment.getGroupId(), assignment.getDeskId(), assignment.getRouteId(), assignment.getUserId());
+            RouteAssignment localAssignment = DBHelper.getInstance().getRouteAssignment(assignment.getGroupId(), assignment.getRouteId(), assignment.getUserId());
             if (localAssignment == null) {
-                DBHelper.getInstance().addAssignment(assignment);
+                DBHelper.getInstance().addRouteAssignment(assignment);
                 ret = true;
             }
             else {
                 if (localAssignment.getTimeStamp() < assignment.getTimeStamp()) {
-                    DBHelper.getInstance().updateAssignment(assignment);
+                    DBHelper.getInstance().updateRouteAssignment(assignment);
                     ret = true;
                 }
             }

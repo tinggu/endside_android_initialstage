@@ -19,23 +19,24 @@ import java.util.List;
 
 
 public class SelectDeskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final static String TAG = "UserSelectUserListAdapter";
+    private final static String TAG = "SelectDeskListAdapter";
 
     private List<DeskInfo> list;
-    private HashMap<String, String> selectedMapOld = new HashMap<>();
-    private HashMap<String, String> selectedMapNew = new HashMap<>();
+    private HashMap<Integer, Integer> selectedMapOld = new HashMap<>();
+    private HashMap<Integer, Integer> selectedMapNew = new HashMap<>();
 
-    public SelectDeskListAdapter(List<DeskInfo> list) {
+    public SelectDeskListAdapter(List<DeskInfo> list, List<Integer> selectedDeskIdList) {
         this.list = list;
+        setSelectedDeskIdList(selectedDeskIdList);
     }
 
     public void setList(List<DeskInfo> list) {
         this.list = list;
     }
 
-    public void setSelectedDeskIdList(List<String> deskIdList) {
+    public void setSelectedDeskIdList(List<Integer> deskIdList) {
         for (int i = 0; i < deskIdList.size(); ++i) {
-            String deskId = deskIdList.get(i);
+            Integer deskId = deskIdList.get(i);
             selectedMapOld.put(deskId, deskId);
         }
     }
@@ -57,8 +58,8 @@ public class SelectDeskListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         final DeskInfo desk = list.get(position);
         ((SelectDeskViewHolder) holder).deskId.setText("" + desk.getDeskId());
         ((SelectDeskViewHolder) holder).deskName.setText(desk.getDeskName());
-        String deskIdStr = selectedMapOld.get("" + desk.getDeskId());
-        if (TextUtils.isEmpty(deskIdStr)) {
+        Integer deskId = selectedMapOld.get(desk.getDeskId());
+        if (deskId == null) {
             ((SelectDeskViewHolder) holder).deskSelect.setVisibility(View.VISIBLE);
             ((SelectDeskViewHolder) holder).prompt.setVisibility(View.GONE);
         }
@@ -80,16 +81,16 @@ public class SelectDeskListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 int position = holder.getAdapterPosition();
                 DeskInfo desk = list.get(position);
                 if (holder.deskSelect.isChecked()) {
-                    selectedMapNew.put("" + desk.getDeskId(), "" + desk.getDeskId());
+                    selectedMapNew.put(desk.getDeskId(), desk.getDeskId());
                 }
                 else {
-                    selectedMapNew.remove("" + desk.getDeskId());
+                    selectedMapNew.remove(desk.getDeskId());
                 }
             }
         });
     }
 
-    public HashMap<String, String> getSelectedMap() {
+    public HashMap<Integer, Integer> getSelectedMap() {
         return selectedMapNew;
     }
 }

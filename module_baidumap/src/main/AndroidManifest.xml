@@ -7,6 +7,10 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".activity.ViewMapActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
 <!--        <meta-data-->
 <!--            android:name="com.baidu.lbsapi.API_KEY"-->
 <!--            android:value="46zOUbhuSLvdy2SkIPvhdvVcfG9szzzL" />-->

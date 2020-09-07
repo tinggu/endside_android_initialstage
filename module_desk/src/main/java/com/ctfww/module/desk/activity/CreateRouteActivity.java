@@ -6,13 +6,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.LocationGson;
@@ -21,9 +21,9 @@ import com.ctfww.commonlib.location.GPSLocationManager;
 import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.desk.R;
-import com.ctfww.module.desk.adapter.RouteDeskListAdapter;
 import com.ctfww.module.desk.datahelper.airship.Airship;
 import com.ctfww.module.desk.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.desk.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.desk.datahelper.sp.Const;
 import com.ctfww.module.desk.entity.RouteDesk;
 import com.ctfww.module.desk.entity.RouteSummary;
@@ -35,7 +35,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(path = "/keepwatch/addRoute")
+@Route(path = "/dest/createRoute")
 public class CreateRouteActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "CreateRouteActivity";
 
@@ -43,14 +43,12 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
     private TextView mTittle;
     private TextView mStartEnd;
     private EditText mRouteName;
-    private EditText mTag;
-    private TextView mAdd;
+    private LinearLayout mDistLL;
+    private TextView mDist;
 
     private int mWorkStatus;
     private LocationGson mLastLocation;
     private String mRouteId;
-    private RecyclerView mRouteDeskListView;
-    private RouteDeskListAdapter mRouteDeskListAdapter;
 
     private List<RouteDesk> mDeskList;
     private String mType;
@@ -75,8 +73,8 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
         mStartEnd.setText("开始");
         mStartEnd.setVisibility(View.VISIBLE);
         mRouteName = findViewById(R.id.route_name);
-        mTag = findViewById(R.id.tag);
-        mAdd = findViewById(R.id.add);
+        mDistLL = findViewById(R.id.dist_ll);
+        mDist = findViewById(R.id.dist);
 
         mWorkStatus = 0;
 
@@ -84,51 +82,31 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
         if (TextUtils.isEmpty(mRouteId)) {
             mRouteId = GlobeFun.getSHA(SPStaticUtils.getString("user_open_id") + System.currentTimeMillis());
             mType = "new";
+            mDeskList = new ArrayList<>();
         }
         else {
             RouteSummary routeSummary = DBHelper.getInstance().getRouteSummary(mRouteId);
             if (routeSummary != null) {
                 mRouteName.setText(routeSummary.getRouteName());
                 mType = "continue";
+                mDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mRouteId);
             }
         }
 
-        mRouteDeskListView = findViewById(R.id.route_desk_list);
-        LinearLayoutManager layoutManager= new LinearLayoutManager(this);
-        mRouteDeskListView.setLayoutManager(layoutManager);
-
-        mDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mRouteId);
-        mRouteDeskListAdapter = new RouteDeskListAdapter(mDeskList);
-        mRouteDeskListView.setAdapter(mRouteDeskListAdapter);
+        updateUI();
     }
 
     private void setOnClickListener() {
         mBack.setOnClickListener(this);
         mStartEnd.setOnClickListener(this);
-        mAdd.setOnClickListener(this);
+        mDistLL.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == mBack.getId()) {
-            if (mWorkStatus == 0 || mWorkStatus == 2) {
-                finish();
-            }
-            else if (mWorkStatus == 1) {
-                DialogUtils.selectDialog("如果退出，则该路线的数据会全部丢失！", this, new DialogUtils.Callback() {
-                    @Override
-                    public void onConfirm(int radioSelectItem) {
-                        DBHelper.getInstance().deleteKeepWatchRoute(mRouteId);
-                        finish();
-                    }
-
-                    @Override
-                    public void onCancel() {
-
-                    }
-                });
-            }
+            finish();
         }
         else if (id == mStartEnd.getId()) {
             if (mWorkStatus == 0) {
@@ -141,11 +119,19 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
                 mWorkStatus = 1;
                 mStartEnd.setText("结束");
                 addRoute();
-                Location location = GPSLocationManager.getInstances(this).getCurrLocation();
-                if (location != null) {
-                    LocationGson locationGson = new LocationGson(location);
-                    mLastLocation = locationGson;
-                    addDesk(locationGson, "起点");
+                if (mDeskList.isEmpty()) {
+                    Location location = GPSLocationManager.getInstances(this).getCurrLocation();
+                    if (location != null) {
+                        LocationGson locationGson = new LocationGson(location);
+                        mLastLocation = locationGson;
+                    }
+                }
+                else {
+                    mLastLocation = new LocationGson();
+                    RouteDesk routeDesk = mDeskList.get(mDeskList.size() - 1);
+                    mLastLocation.setLat(routeDesk.getLat());
+                    mLastLocation.setLat(routeDesk.getLng());
+                    mLastLocation.setTimeStamp(routeDesk.getTimeStamp());
                 }
             }
             else if (mWorkStatus == 1) {
@@ -170,10 +156,10 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
                     if (location != null) {
                         LocationGson locationGson = new LocationGson(location);
                         mLastLocation = locationGson;
-                        addDesk(locationGson, "终点");
+                        addDesk(locationGson);
                     }
                     else {
-                        addDesk(mLastLocation, "终点");
+                        addDesk(mLastLocation);
                     }
 
                     DBHelper.getInstance().newRoute(mRouteId);
@@ -184,15 +170,8 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
 
             }
         }
-        else if (id == mAdd.getId()) {
-            if (TextUtils.isEmpty(mTag.getText().toString())) {
-                DialogUtils.onlyPrompt("请填写标签", this);
-                return;
-            }
-
-            Location location = GPSLocationManager.getInstances(this).getCurrLocation();
-            LocationGson locationGson = new LocationGson(location);
-            addDesk(locationGson, mTag.getText().toString());
+        else if (id == mDistLL.getId()) {
+            viewRoute();
         }
     }
 
@@ -205,10 +184,10 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
 
             LocationGson location = GsonUtils.fromJson(messageEvent.getValue(), LocationGson.class);
             if (mDeskList.isEmpty()) {
-                addDesk(location, "起点");
+                addDesk(location);
             }
             else {
-                addDesk(location, "");
+                addDesk(location);
             }
         }
 
@@ -227,37 +206,67 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
         route.setGroupId(groupId);
         route.setRouteId(mRouteId);
         route.setRouteName(routeName);
+        route.setStartTimeStamp(System.currentTimeMillis());
         route.setTimeStamp(System.currentTimeMillis());
+        route.setStatus("reserve");
 
         route.setSynTag("0");
 
         DBHelper.getInstance().addRouteSummary(route);
     }
 
-    private void addDesk(LocationGson location, String tag) {
+    private void addDesk(LocationGson location) {
+        if (mLastLocation != null && GlobeFun.calcLocationDist(mLastLocation, location) < 10.0) {
+            return;
+        }
+
         RouteDesk routeDesk = new RouteDesk();
-        if (mDeskList.isEmpty()) {
-            routeDesk.setDeskId(1);
-        }
-        else {
-            if (TextUtils.isEmpty(tag) && GlobeFun.calcLocationDist(mLastLocation, location) < 30.0) {
-                return;
-            }
-
-            routeDesk.setDeskId(mDeskList.get(mDeskList.size() - 1).getDeskId() + 1);
-        }
-
         mLastLocation = location;
         routeDesk.setRouteId(mRouteId);
         routeDesk.setLat(location.getLat());
         routeDesk.setLng(location.getLng());
-        routeDesk.setTag(tag);
         routeDesk.setTimeStamp(System.currentTimeMillis());
+        routeDesk.setDeskId(mDeskList.size() + 1);
         mDeskList.add(routeDesk);
-        mRouteDeskListAdapter.setList(mDeskList);
-        mRouteDeskListAdapter.notifyDataSetChanged();
 
         routeDesk.setSynTag("0");
         DBHelper.getInstance().addRouteDesk(routeDesk);
+    }
+
+    private void viewRoute() {
+        if (mDeskList.size() <= 1) {
+            return;
+        }
+
+        float[] array = new float[mDeskList.size() * 2];
+        for (int i = 0; i < mDeskList.size(); ++i) {
+            RouteDesk routeDesk = mDeskList.get(i);
+            array[2 * i] = (float) routeDesk.getLat();
+            array[2 * i + 1]  = (float)routeDesk.getLng();
+        }
+
+        ARouter.getInstance().build("/baidumap/viewMap")
+                .withString("type", "trace")
+                .withFloatArray("trace_array", array)
+                .navigation();
+    }
+
+    private void updateUI() {
+        double sum = 0.0;
+        for (int i = 0; i < mDeskList.size() - 1; ++i) {
+            RouteDesk routeDesk1 = mDeskList.get(i);
+            RouteDesk routeDesk2 = mDeskList.get(i + 1);
+            sum += GlobeFun.calcLocationDist(routeDesk1.getLat(), routeDesk1.getLng(), routeDesk2.getLat(), routeDesk2.getLng());
+        }
+
+        if (sum < 1000.0) {
+            mDist.setText("" + (int)sum + "米");
+        }
+        else if (sum >= 1000.0 && sum <= 100000.0){
+            mDist.setText(String.format("%.1f", sum) + "公里");
+        }
+        else {
+            mDist.setText("" + (int)(sum / 1000.0) + "公里");
+        }
     }
 }

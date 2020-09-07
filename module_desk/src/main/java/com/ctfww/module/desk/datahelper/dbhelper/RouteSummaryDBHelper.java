@@ -52,6 +52,7 @@ public class RouteSummaryDBHelper {
             return;
         }
 
+        routeSummary.setEndTimeStamp(System.currentTimeMillis());
         routeSummary.setStatus("new");
         dao.update(routeSummary);
     }

@@ -10,18 +10,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.ctfww.commonlib.R;
 import com.ctfww.commonlib.entity.Qr;
 import com.ctfww.commonlib.utils.ImageUtils;
 import com.ctfww.commonlib.utils.QRCodeUtils;
-import com.ctfww.commonlib.utils.QRUtils;
-import com.google.gson.Gson;
 
 import java.util.Calendar;
 
-@Route(path = "/common/qr")
+@Route(path = "/commonlib/qr")
 public class QrActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "QrActivity";
 
@@ -70,7 +67,7 @@ public class QrActivity extends AppCompatActivity implements View.OnClickListene
             public boolean onLongClick(View v) {
                 if (mBitmap != null) {
 //                    String result = QRUtils.getResult(mBitmap);
-                    ARouter.getInstance().build("/keepwatch/reportSignin").withString("qr", GsonUtils.toJson(mQr)).navigation();
+ //                   ARouter.getInstance().build("/keepwatch/reportSignin").withString("qr", GsonUtils.toJson(mQr)).navigation();
                 }
                 return false;
             }

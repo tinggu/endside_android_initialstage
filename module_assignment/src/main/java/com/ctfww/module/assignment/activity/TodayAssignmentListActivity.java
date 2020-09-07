@@ -11,18 +11,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
-import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.module.assignment.R;
-import com.ctfww.module.assignment.datahelper.airship.Airship;
-import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.assignment.entity.AssignmentInfo;
-import com.ctfww.module.assignment.fragment.PeriodAssignmentListFragment;
-import com.ctfww.module.assignment.fragment.TodayAssignmentListFragment;
-import com.google.android.material.tabs.TabLayout;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
+import com.ctfww.module.assignment.R;
+import com.ctfww.module.assignment.datahelper.sp.Const;
+import com.ctfww.module.assignment.fragment.TodayDeskAssignmentListFragment;
+import com.ctfww.module.assignment.fragment.TodayRouteAssignmentListFragment;
+import com.google.android.material.tabs.TabLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,13 +25,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(path = "/assignment/list")
-public class AssignmentListActivity extends AppCompatActivity implements View.OnClickListener {
+@Route(path = "/assignment/todayAssignment")
+public class TodayAssignmentListActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final static String TAG = "AssignmentListActivity";
+    private final static String TAG = "TodayAssignmentListActivity";
 
     private ImageView mBack;
     private TextView mTittle;
+
+    private TodayDeskAssignmentListFragment mDeskFragment;
+    private TodayRouteAssignmentListFragment mRouteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +48,18 @@ public class AssignmentListActivity extends AppCompatActivity implements View.On
     private void initViews() {
         mBack = findViewById(R.id.top_back);
         mTittle = findViewById(R.id.top_tittle);
-        mTittle.setText("任务");
+        mTittle.setText("今日任务");
 
         TabLayout tabLayout = findViewById(R.id.assignment_tab_layout);
         ViewPager viewPager = findViewById(R.id.assignment_view_pager);
 
-        String[] tableTitle = {"当天任务", "周期任务"};
+        String[] tableTitle = {"巡检点", "巡检路线"};
 
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new TodayAssignmentListFragment());
-        fragmentList.add(new PeriodAssignmentListFragment());
+        mDeskFragment = new TodayDeskAssignmentListFragment();
+        fragmentList.add(mDeskFragment);
+        mRouteFragment = new TodayRouteAssignmentListFragment();
+        fragmentList.add(mRouteFragment);
 
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -104,6 +103,17 @@ public class AssignmentListActivity extends AppCompatActivity implements View.On
     // 处理事件
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
-
+        if (Const.FINISH_DESK_ASSIGNMENT_SYN.equals(messageEvent.getMessage())) {
+            mDeskFragment.update();
+        }
+        else if (Const.FINISH_ROUTE_ASSIGNMENT_SYN.equals(messageEvent.getMessage())) {
+            mRouteFragment.update();
+        }
+        else if (Const.ADD_DESK.equals(messageEvent.getMessage()) || Const.MODIFY_DESK.equals(messageEvent.getMessage())) {
+            mDeskFragment.update();
+        }
+        else if (Const.ADD_ROUTE.equals(messageEvent.getMessage()) || Const.MODIFY_ROUTE.equals(messageEvent.getMessage())) {
+            mRouteFragment.update();
+        }
     }
 }

@@ -14,21 +14,19 @@ public class RouteDesk implements EntityInterface {
     private int deskId;
     private double lat;
     private double lng;
-    private String tag;
     private long timeStamp;
     private String status;
 
     @Index
     private String synTag;
 
-    @Generated(hash = 810855902)
-    public RouteDesk(String routeId, int deskId, double lat, double lng, String tag,
+    @Generated(hash = 1110296369)
+    public RouteDesk(String routeId, int deskId, double lat, double lng,
             long timeStamp, String status, String synTag) {
         this.routeId = routeId;
         this.deskId = deskId;
         this.lat = lat;
         this.lng = lng;
-        this.tag = tag;
         this.timeStamp = timeStamp;
         this.status = status;
         this.synTag = synTag;
@@ -42,8 +40,7 @@ public class RouteDesk implements EntityInterface {
         return "routeId = " + routeId
                 + ", deskId = " + deskId
                 + ", lat = " + deskId
-                + ", lng = " + lng
-                + ", tag = " + tag;
+                + ", lng = " + lng;
     }
 
     public String getRouteId() {
@@ -76,14 +73,6 @@ public class RouteDesk implements EntityInterface {
 
     public void setLng(double lng) {
         this.lng = lng;
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 
     public long getTimeStamp() {

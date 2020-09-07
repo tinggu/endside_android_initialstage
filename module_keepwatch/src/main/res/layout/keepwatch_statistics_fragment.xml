@@ -150,6 +150,18 @@
                             android:layout_height="16dp"
                             android:src="@drawable/keepwatch_question_mark"
                             android:id="@+id/keepwatch_completion_definition"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="查看今日任务>>"
+                            android:textSize="13sp"
+                            android:textColor="#4A4A4A"
+                            android:gravity="center_vertical"
+                            android:id="@+id/keepwatch_today_assignment"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"

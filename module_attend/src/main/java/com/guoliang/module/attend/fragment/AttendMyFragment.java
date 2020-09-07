@@ -165,7 +165,7 @@ public class AttendMyFragment extends Fragment {
                     return;
                 }
 
-                ARouter.getInstance().build("/keepwatch/assignmentList").navigation();
+                ARouter.getInstance().build("/assignment/list").navigation();
             }
         });
 

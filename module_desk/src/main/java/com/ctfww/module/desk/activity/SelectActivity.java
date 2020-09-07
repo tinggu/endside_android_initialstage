@@ -60,7 +60,7 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
 
         mBack = findViewById(R.id.top_back);
         mTittle = findViewById(R.id.top_tittle);
-        mTittle.setText("邀请");
+        mTittle.setText("选择签到对象");
         mConfirm = findViewById(R.id.top_addition);
         mConfirm.setText("确定");
         mConfirm.setVisibility(View.VISIBLE);
@@ -82,8 +82,23 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
 
         final List<Fragment> fragmentList = new ArrayList<>();
         mDeskFragment = new SelectDeskFragment();
+
+
+        ArrayList<Integer> deskIdList = getIntent().getIntegerArrayListExtra("selected_desk_id_list");
+        if (deskIdList != null && !deskIdList.isEmpty()) {
+            Bundle bundle = new Bundle();
+            bundle.putIntegerArrayList("selected_desk_id_list", deskIdList);
+            mDeskFragment.setArguments(bundle);
+        }
         fragmentList.add(mDeskFragment);
+
         mRouteFragment = new SelectRouteFragment();
+        ArrayList<String> routeIdList = getIntent().getStringArrayListExtra("selected_route_id_list");
+        if (routeIdList != null && !routeIdList.isEmpty()) {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("selected_route_id_list", routeIdList);
+            mRouteFragment.setArguments(bundle);
+        }
         fragmentList.add(mRouteFragment);
 
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -128,6 +143,7 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setOnClickListener() {
         mBack.setOnClickListener(this);
+        mConfirm.setOnClickListener(this);
     }
 
     @Override
@@ -146,14 +162,14 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
 
             Intent intent = new Intent();
             if (!deskList.isEmpty()) {
-                intent.putExtra("selected_desk", GsonUtils.toJson(deskList));
+                EventBus.getDefault().post(new MessageEvent("selected_desk", GsonUtils.toJson(deskList)));
             }
 
             if (!routeList.isEmpty()) {
-                intent.putExtra("selected_route", GsonUtils.toJson(routeList));
+                EventBus.getDefault().post(new MessageEvent("selected_route", GsonUtils.toJson(routeList)));
             }
 
-            setResult(RESULT_OK, intent);
+            finish();
         }
     }
 
@@ -165,16 +181,6 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
         else if ("finish_desk_syn".equals(messageEvent.getMessage())) {
             mDeskFragment.updateDeskList();
         }
-        else if ("selected_route_id_list".equals(messageEvent.getMessage())) {
-            Type type = new TypeToken<List<String>>(){}.getType();
-            List<String> routeIdList = GsonUtils.fromJson(messageEvent.getValue(), type);
-            mRouteFragment.setSelectedRouteIdList(routeIdList);
-        }
-        else if ("selected_desk_id_list".equals(messageEvent.getMessage())) {
-            Type type = new TypeToken<List<String>>(){}.getType();
-            List<String> deskIdList = GsonUtils.fromJson(messageEvent.getValue(), type);
-            mDeskFragment.setSelectedDeskIdList(deskIdList);
-        }
     }
 
     @Override
@@ -182,9 +188,6 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
-
-
-
 
 //    public void changeTabTextView(TabLayout.Tab tab, boolean isSelected) {
 //        View view = tab.getCustomView();

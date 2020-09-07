@@ -72,7 +72,7 @@ public class PopupWindowUtil {
         mAddDeskLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/addDesk").navigation();
+                ARouter.getInstance().build("/desk/addDesk").navigation();
                 popupWindow.dismiss();
             }
         });
@@ -80,7 +80,7 @@ public class PopupWindowUtil {
         mAddRouteLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/addRoute").navigation();
+                ARouter.getInstance().build("/dest/createRoute").navigation();
                 popupWindow.dismiss();
             }
         });
@@ -88,7 +88,7 @@ public class PopupWindowUtil {
         mCreateAssignmentLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/createAssignment").navigation();
+                ARouter.getInstance().build("/assignment/createAssignment").navigation();
                 popupWindow.dismiss();
             }
         });

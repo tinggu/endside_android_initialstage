@@ -43,7 +43,9 @@ public class SelectRouteFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRouteListView.setLayoutManager(layoutManager);
         List<RouteSummary> routeList = DBQuickEntry.getWorkingRouteSummaryList();
-        mRouteListAdapter = new SelectRouteListAdapter(routeList);
+        Bundle bundle = getArguments();
+        List<String> selectedRouteId = bundle == null ? new ArrayList<>() : bundle.getStringArrayList("selected_route_id_list");
+        mRouteListAdapter = new SelectRouteListAdapter(routeList, selectedRouteId);
         mRouteListView.setAdapter(mRouteListAdapter);
     }
 

@@ -69,6 +69,21 @@ public class BaiduMapUtils {
         return baiduList;
     }
 
+    public static List<LatLng> gps2Baidu(float[] ptArr) {
+        CoordinateConverter converter  = new CoordinateConverter();
+        converter.from(CoordinateConverter.CoordType.GPS);
+
+        List<LatLng> baiduList = new ArrayList<>();
+        for (int i = 0; i < ptArr.length / 2; ++i) {
+            converter.coord(new LatLng((double)ptArr[2 * i], (double)ptArr[2 * i + 1]));
+            LatLng latLng = converter.convert();
+            baiduList.add(latLng);
+
+        }
+
+        return baiduList;
+    }
+
     public static void showMapByPt(LatLng latLng, BaiduMap baiduMap) {
         float zoom = 20.0f;
 

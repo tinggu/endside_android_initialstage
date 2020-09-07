@@ -83,11 +83,11 @@ public class Airship {
 
     // 将路线签到点数据同步上云
     public void synRouteDeskToCloud() {
-        RouteSummaryAirship.synToCloud();
+        RouteDeskAirship.synToCloud();
     }
 
     // 从云上同步路线签到点
     public void synRouteDeskFromCloud() {
-        RouteSummaryAirship.synFromCloud();
+        RouteDeskAirship.synFromCloud();
     }
 }

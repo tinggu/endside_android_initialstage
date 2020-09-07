@@ -10,11 +10,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="没有任务！"
-        android:id="@+id/keepwatch_prompt_no_assignment"/>
+        android:id="@+id/prompt_no_assignment"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/keepwatch_assignment_list" />
+        android:id="@+id/assignment_list" />
 
 </LinearLayout>

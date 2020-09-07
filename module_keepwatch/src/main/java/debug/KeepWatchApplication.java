@@ -27,6 +27,7 @@ public class KeepWatchApplication extends BaseApplication {
         Utils.start(this);
         com.ctfww.module.keepwatch.Utils.start(this);
         com.ctfww.module.desk.datahelper.Utils.start(this);
+        com.ctfww.module.assignment.datahelper.Utils.start(this);
         com.ctfww.module.keyevents.datahelper.Utils.init(this);
 
         // 初始化tms

@@ -12,30 +12,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.assignment.R;
-import com.ctfww.module.assignment.adapter.AssignmentListAdapter;
-import com.ctfww.module.assignment.datahelper.airship.AirshipConst;
+import com.ctfww.module.assignment.adapter.DeskAssignmentListAdapter;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.assignment.datahelper.sp.Const;
+import com.ctfww.module.assignment.entity.DeskAssignment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodAssignmentListFragment extends Fragment {
-    private final static String TAG = "PeriodAssignmentListFragment";
+public class PeriodDeskAssignmentListFragment extends Fragment {
+    private final static String TAG = "PeriodDeskAssignmentListFragment";
 
     TextView mNoAssignmentPrompt;
     RecyclerView mAssignmentListView;
-    AssignmentListAdapter mAssignmentListAdapter;
-    List<AssignmentInfo> mKeepWatchAssignmentList = new ArrayList<>();
+    DeskAssignmentListAdapter mAssignmentListAdapter;
 
     private View mV;
 
@@ -44,31 +40,25 @@ public class PeriodAssignmentListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mV = inflater.inflate(R.layout.period_assignment_list_fragment, container, false);
         initViews(mV);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
 
         return mV;
     }
 
     private void initViews(View v) {
-        mNoAssignmentPrompt = v.findViewById(R.id.keepwatch_prompt_no_assignment);
-        mNoAssignmentPrompt.setVisibility(View.GONE);
-        mAssignmentListView = v.findViewById(R.id.keepwatch_assignment_list);
-        mAssignmentListView.setVisibility(View.GONE);
+        mNoAssignmentPrompt = v.findViewById(R.id.prompt_no_assignment);
+        mAssignmentListView = v.findViewById(R.id.assignment_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAssignmentListView.setLayoutManager(layoutManager);
-        mAssignmentListAdapter = new AssignmentListAdapter(mKeepWatchAssignmentList, "period");
+        List<DeskAssignment> assignmentList = DBQuickEntry.getWorkingDeskAssignmentList();
+        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList, "period");
         mAssignmentListView.setAdapter(mAssignmentListAdapter);
-    }
-
-    //处理事件
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public  void onGetMessage(MessageEvent messageEvent) {
-        if (AirshipConst.FINISH_ASSIGNMENT_SYN.equals(messageEvent.getMessage())) {
-            List<AssignmentInfo> assignmentList = DBQuickEntry.getWorkingAssignmentList();
-            mAssignmentListAdapter.setList(assignmentList);
-            mAssignmentListAdapter.notifyDataSetChanged();
+        if (assignmentList.isEmpty()) {
+            mNoAssignmentPrompt.setVisibility(View.VISIBLE);
+            mAssignmentListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoAssignmentPrompt.setVisibility(View.GONE);
+            mAssignmentListView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -80,8 +70,20 @@ public class PeriodAssignmentListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+    }
+
+    public void update() {
+        List<DeskAssignment> assignmentList = DBQuickEntry.getWorkingDeskAssignmentList();
+        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList, "period");
+        mAssignmentListAdapter.notifyDataSetChanged();
+
+        if (assignmentList.isEmpty()) {
+            mNoAssignmentPrompt.setVisibility(View.VISIBLE);
+            mAssignmentListView.setVisibility(View.GONE);
+        }
+        else {
+            mNoAssignmentPrompt.setVisibility(View.GONE);
+            mAssignmentListView.setVisibility(View.VISIBLE);
         }
     }
 }

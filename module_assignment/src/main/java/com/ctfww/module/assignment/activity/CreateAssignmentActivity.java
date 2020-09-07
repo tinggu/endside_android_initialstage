@@ -20,7 +20,9 @@ import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.assignment.R;
 import com.ctfww.module.assignment.datahelper.airship.Airship;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
-import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.assignment.entity.DeskAssignment;
+import com.ctfww.module.assignment.entity.RouteAssignment;
 import com.ctfww.module.datapicker.data.DataPicker;
 import com.ctfww.module.datapicker.time.HourAndMinutePicker;
 import com.ctfww.module.user.datahelper.sp.Const;
@@ -36,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Route(path = "/keepwatch/createAssignment")
+@Route(path = "/assignment/createAssignment")
 public class CreateAssignmentActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "CreateAssignmentActivity";
 
@@ -65,7 +67,7 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
 
     private UserInfo mUserInfo;
 
-    private List<String> mDeskIdList = new ArrayList<>();
+    private List<Integer> mDeskIdList = new ArrayList<>();
     private List<String> mRouteIdList = new ArrayList<>();
 
     @Override
@@ -146,7 +148,22 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             createAssignment();
         }
         else if (id == mSelectObjectLL.getId()) {
-            ARouter.getInstance().build("/desk/selectSignObject").navigation();
+            List<DeskAssignment> deskAssignmentList = DBQuickEntry.getWorkingDeskAssignmentList();
+            ArrayList<Integer> deskIdList = new ArrayList<>();
+            for (int i = 0; i < deskAssignmentList.size(); ++i) {
+                deskIdList.add(deskAssignmentList.get(i).getDeskId());
+            }
+
+            List<RouteAssignment> routeAssignmentList = DBQuickEntry.getWorkingRouteAssignmentList();
+            ArrayList<String> routeIdList = new ArrayList<>();
+            for (int i = 0; i < routeAssignmentList.size(); ++i) {
+                routeIdList.add(routeAssignmentList.get(i).getRouteId());
+            }
+
+            ARouter.getInstance().build("/desk/selectSignObject")
+                    .withIntegerArrayList("selected_desk_id_list", deskIdList)
+                    .withStringArrayList("selected_route_id_list", routeIdList)
+                    .navigation();
         }
 
         else if (id == mSelectMemberLL.getId()) {
@@ -166,7 +183,7 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             mNickName.setText(mUserInfo.getNickName());
         }
         else if ("selected_desk".equals(messageEvent.getMessage())) {
-            Type type = new TypeToken<List<String>>(){}.getType();
+            Type type = new TypeToken<List<Integer>>(){}.getType();
             mDeskIdList = GsonUtils.fromJson(messageEvent.getValue(), type);
             mSelectObjectSummary.setText("签到点：" + mDeskIdList.size() + "个" + ", 签到线路：" + mRouteIdList.size() + "条");
         }
@@ -206,35 +223,52 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             return;
         }
 
-        AssignmentInfo assignment = new AssignmentInfo();
 
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        assignment.setGroupId(groupId);
-        assignment.setUserId(mUserInfo.getUserId());
-        assignment.setCircleType(circleType);
-        assignment.setStartTime(startTime);
-        assignment.setEndTime(endTime);
-        assignment.setFrequency(frequency);
-        assignment.setTimeStamp(System.currentTimeMillis());
-        assignment.setStatus("reserve");
-        assignment.setSynTag("new");
         for (int i = 0; i < mDeskIdList.size(); ++i) {
-            int deskId = GlobeFun.parseInt(mDeskIdList.get(i));
+            DeskAssignment assignment = new DeskAssignment();
+            String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+            assignment.setGroupId(groupId);
+            assignment.setUserId(mUserInfo.getUserId());
+            assignment.setCircleType(circleType);
+            assignment.setStartTime(startTime);
+            assignment.setEndTime(endTime);
+            assignment.setFrequency(frequency);
+            assignment.setTimeStamp(System.currentTimeMillis());
+            assignment.setStatus("reserve");
+            assignment.setSynTag("new");
+            int deskId = mDeskIdList.get(i);
             assignment.setDeskId(deskId);
-            assignment.setRouteId("");
-            assignment.combineAssignmentId();
-            DBHelper.getInstance().addAssignment(assignment);
+            assignment.combineId();
+            DBHelper.getInstance().addDeskAssignment(assignment);
+        }
+
+        if (!mDeskIdList.isEmpty()) {
+            Airship.getInstance().synDeskAssignmentToCloud();
         }
 
         for (int i = 0; i < mRouteIdList.size(); ++i) {
-            assignment.setDeskId(0);
+            RouteAssignment assignment = new RouteAssignment();
+            String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+            assignment.setGroupId(groupId);
+            assignment.setUserId(mUserInfo.getUserId());
+            assignment.setCircleType(circleType);
+            assignment.setStartTime(startTime);
+            assignment.setEndTime(endTime);
+            assignment.setFrequency(frequency);
+            assignment.setTimeStamp(System.currentTimeMillis());
+            assignment.setStatus("reserve");
+            assignment.setSynTag("new");
             String routeId = mRouteIdList.get(i);
             assignment.setRouteId(routeId);
-            assignment.combineAssignmentId();
-            DBHelper.getInstance().addAssignment(assignment);
+            assignment.combineId();
+            DBHelper.getInstance().addRouteAssignment(assignment);
         }
 
-        Airship.getInstance().synAssignmentToCloud();
+        if (!mRouteIdList.isEmpty()) {
+            Airship.getInstance().synRouteAssignmentToCloud();
+        }
+
+
     }
 
     private String getCircleType() {

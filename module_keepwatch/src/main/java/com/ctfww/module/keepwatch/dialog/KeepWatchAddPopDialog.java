@@ -61,7 +61,7 @@ public class KeepWatchAddPopDialog extends PopupWindow {
         mAddDeskLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/addDesk").navigation();
+                ARouter.getInstance().build("/desk/addDesk").navigation();
                 dismiss();
             }
         });
@@ -70,7 +70,7 @@ public class KeepWatchAddPopDialog extends PopupWindow {
             @Override
             public void onClick(View v) {
                 LogUtils.i(TAG, "mCreateAssignmentLL.onClick...");
-                ARouter.getInstance().build("/keepwatch/createAssignment").navigation();
+                ARouter.getInstance().build("/assignment/createAssignment").navigation();
                 dismiss();
             }
         });

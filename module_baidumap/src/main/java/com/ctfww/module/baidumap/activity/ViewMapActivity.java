@@ -71,23 +71,25 @@ public class ViewMapActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
         else if ("trace".equals(type)) {
-            double[] tracePtArr = getIntent().getDoubleArrayExtra("tracePtArr");
-            double[] wayPtArr = getIntent().getDoubleArrayExtra("wayPtArr");
-            List<LatLng> traceLatLngList = BaiduMapUtils.gps2Baidu(tracePtArr);
-            LogUtils.i(TAG, traceLatLngList.toString());
-            BaiduMapUtils.showMapByPtList(traceLatLngList, mMapView, mBaiduMap);
-            BaiduMapUtils.drawTrace(traceLatLngList, mBaiduMap);
-            BaiduMapUtils.drawPt(traceLatLngList.get(0), BaiduMapUtils.PT_TYPE_START, mBaiduMap);
-            BaiduMapUtils.drawPt(traceLatLngList.get(traceLatLngList.size() - 1), BaiduMapUtils.PT_TYPE_END, mBaiduMap);
-
-            List<LatLng> wayPtLatLngList = BaiduMapUtils.gps2Baidu(wayPtArr);
-            if (wayPtLatLngList == null || wayPtLatLngList.isEmpty()) {
-                return;
+            float[] tracePtArr = getIntent().getFloatArrayExtra("trace_array");
+            if (tracePtArr != null && tracePtArr.length >= 4) {
+                List<LatLng> traceLatLngList = BaiduMapUtils.gps2Baidu(tracePtArr);
+                LogUtils.i(TAG, traceLatLngList.toString());
+                BaiduMapUtils.showMapByPtList(traceLatLngList, mMapView, mBaiduMap);
+                BaiduMapUtils.drawTrace(traceLatLngList, mBaiduMap);
+                BaiduMapUtils.drawPt(traceLatLngList.get(0), BaiduMapUtils.PT_TYPE_START, mBaiduMap);
+                BaiduMapUtils.drawPt(traceLatLngList.get(traceLatLngList.size() - 1), BaiduMapUtils.PT_TYPE_END, mBaiduMap);
             }
 
-            for (int i = 0; i < wayPtLatLngList.size(); ++i) {
-                BaiduMapUtils.drawPt(wayPtLatLngList.get(i), BaiduMapUtils.PT_TYPE_WAY, mBaiduMap);
-            }
+//            double[] wayPtArr = getIntent().getDoubleArrayExtra("way_point_array");
+//            List<LatLng> wayPtLatLngList = BaiduMapUtils.gps2Baidu(wayPtArr);
+//            if (wayPtLatLngList == null || wayPtLatLngList.isEmpty()) {
+//                return;
+//            }
+//
+//            for (int i = 0; i < wayPtLatLngList.size(); ++i) {
+//                BaiduMapUtils.drawPt(wayPtLatLngList.get(i), BaiduMapUtils.PT_TYPE_WAY, mBaiduMap);
+//            }
         }
     }
 

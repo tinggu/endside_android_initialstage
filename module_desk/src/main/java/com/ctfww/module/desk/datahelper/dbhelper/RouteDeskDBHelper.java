@@ -32,7 +32,7 @@ public class RouteDeskDBHelper {
 
     // 获得某线路的签到点
     public static List<RouteDesk> getInOneRoute(RouteDeskDao dao, String routeId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(RouteDeskDao.Properties.RouteId.eq(routeId), dao.queryBuilder().or(RouteDeskDao.Properties.SynTag.eq("new"), RouteDeskDao.Properties.SynTag.eq("modify"), RouteDeskDao.Properties.SynTag.eq("cloud")))).orderAsc(RouteDeskDao.Properties.DeskId).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(RouteDeskDao.Properties.RouteId.eq(routeId), dao.queryBuilder().or(RouteDeskDao.Properties.SynTag.eq("new"), RouteDeskDao.Properties.SynTag.eq("modify"), RouteDeskDao.Properties.SynTag.eq("cloud")))).orderAsc(RouteDeskDao.Properties.DeskId).orderAsc(RouteDeskDao.Properties.DeskId).list();
     }
 
     // 获得未同步的路线签到点

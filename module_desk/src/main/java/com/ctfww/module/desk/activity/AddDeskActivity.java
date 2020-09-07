@@ -37,7 +37,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-@Route(path = "/keepwatch/addDesk")
+@Route(path = "/desk/addDesk")
 public class AddDeskActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "AddDeskActivity";
 
@@ -76,13 +76,13 @@ public class AddDeskActivity extends AppCompatActivity implements View.OnClickLi
         mBack = findViewById(R.id.top_back);
         mTittle = findViewById(R.id.top_tittle);
         mTittle.setText("添加签到点");
-//        mDeskId = findViewById(R.id.desk_id);
-//        mDeskName = findViewById(R.id.desk_name);
-//        mDeskAddress = findViewById(R.id.desk_address);
-//        mLocationLL = findViewById(R.id.location_ll);
-//        mLatLng = findViewById(R.id.lat_lng);
-//        mConfirm = findViewById(R.id.confirm);
-//        mQr = findViewById(R.id.qr);
+        mDeskId = findViewById(R.id.desk_id);
+        mDeskName = findViewById(R.id.desk_name);
+        mDeskAddress = findViewById(R.id.desk_address);
+        mLocationLL = findViewById(R.id.location_ll);
+        mLatLng = findViewById(R.id.lat_lng);
+        mConfirm = findViewById(R.id.confirm);
+        mQr = findViewById(R.id.qr);
     }
 
     private void setOnClickListener() {
@@ -146,7 +146,7 @@ public class AddDeskActivity extends AppCompatActivity implements View.OnClickLi
 
             String url = Utils.getDeskQrUrl(GlobeFun.parseInt(deskIdStr));
             Qr qr = new Qr(url, deskIdStr, mDeskName.getText().toString());
-            ARouter.getInstance().build("/common/qr").withString("qr", GsonUtils.toJson(qr)).navigation();
+            ARouter.getInstance().build("/commonlib/qr").withString("qr", GsonUtils.toJson(qr)).navigation();
         }
 
     }
@@ -196,13 +196,16 @@ public class AddDeskActivity extends AppCompatActivity implements View.OnClickLi
         String fingerPrintStr = com.ctfww.module.fingerprint.Utils.appendOtherFingerPrint(mWifiFingerPrintStr, gpsFingerPrintStr);
         desk.setFingerPrint(fingerPrintStr);
         desk.setSynTag("new");
+        desk.setStatus("reserve");
+        desk.setTimeStamp(System.currentTimeMillis());
 
         if (!DBHelper.getInstance().addDesk(desk)) {
             DialogUtils.onlyPrompt("该群组中该点号已经存在，请填写新的点号！", this);
             return;
         }
-
         Airship.getInstance().synDeskToCloud();
+
+        EventBus.getDefault().post(new MessageEvent("add_desk"));
 
         finish();
     }

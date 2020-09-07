@@ -50,6 +50,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
     private TextView mDeskCount;
 
     private ImageView mCompletionDefinition;
+    private TextView mTodayAssignment;
     private LinearLayout mTodayCompletionLL;
     private TextView mTodayCompletion;
     private LinearLayout mTodayLeakCountLL;
@@ -89,6 +90,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mDeskCount = v.findViewById(R.id.keepwatch_signin_desk_count);
 
         mCompletionDefinition = v.findViewById(R.id.keepwatch_completion_definition);
+        mTodayAssignment = v.findViewById(R.id.keepwatch_today_assignment);
         mTodayCompletionLL = v.findViewById(R.id.keepwatch_today_completion_ll);
         mTodayCompletion = v.findViewById(R.id.keepwatch_today_completion);
         mTodayLeakCountLL = v.findViewById(R.id.keepwatch_today_leak_count_ll);
@@ -143,6 +145,13 @@ public class KeepWatchStatisticsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DialogUtils.onlyPrompt("今日已签到次数/今日需要见到的次数", v.getContext());
+            }
+        });
+
+        mTodayAssignment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ARouter.getInstance().build("/assignment/todayAssignment").navigation();
             }
         });
 

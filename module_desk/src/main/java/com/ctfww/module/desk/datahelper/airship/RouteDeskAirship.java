@@ -47,16 +47,15 @@ public class RouteDeskAirship {
 
     // 从云上同步签到点
     public static void synFromCloud() {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        if (TextUtils.isEmpty(userId)) {
             return;
         }
 
-        String key = "route_desk_syn_time_stamp_cloud" + "_" + groupId;
-        long startTime = SPStaticUtils.getLong(key, 0);
+        long startTime = SPStaticUtils.getLong(Const.ROUTE_DESK_SYN_TIME_STAMP_CLOUD, 0);
         long endTime = System.currentTimeMillis();
         QueryCondition condition = new QueryCondition();
-        condition.setGroupId(groupId);
+        condition.setUserId(userId);
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
 
@@ -67,11 +66,11 @@ public class RouteDeskAirship {
 
                 if (!routeDeskList.isEmpty()) {
                     if (updateTabByCloud(routeDeskList)) {
-                        EventBus.getDefault().post("finish_desk_syn");
+                        EventBus.getDefault().post(Const.FINISH_ROUTE_DESK_SYN);
                     }
                 }
 
-                SPStaticUtils.put(key, condition.getEndTime());
+                SPStaticUtils.put(Const.ROUTE_DESK_SYN_TIME_STAMP_CLOUD, condition.getEndTime());
             }
 
             @Override

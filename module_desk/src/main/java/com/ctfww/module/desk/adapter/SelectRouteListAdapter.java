@@ -25,8 +25,9 @@ public class SelectRouteListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private HashMap<String, String> selectedMapOld = new HashMap<>();
     private HashMap<String, String> selectedMapNew = new HashMap<>();
 
-    public SelectRouteListAdapter(List<RouteSummary> list) {
+    public SelectRouteListAdapter(List<RouteSummary> list, List<String> selectedRouteIdList) {
         this.list = list;
+        setSelectedRouteIdList(selectedRouteIdList);
     }
 
     public void setList(List<RouteSummary> list) {

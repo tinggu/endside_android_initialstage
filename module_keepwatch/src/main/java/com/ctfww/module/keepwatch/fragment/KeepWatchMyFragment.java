@@ -127,7 +127,7 @@ public class KeepWatchMyFragment extends Fragment {
                     return;
                 }
 
-                ARouter.getInstance().build("/keepwatch/assignmentList").navigation();
+                ARouter.getInstance().build("/assignment/list").navigation();
             }
         });
 
@@ -151,7 +151,7 @@ public class KeepWatchMyFragment extends Fragment {
                     return;
                 }
 
-                ARouter.getInstance().build("/desk/deskList").navigation();
+                ARouter.getInstance().build("/desk/list").navigation();
             }
         });
 

@@ -4,23 +4,20 @@ import com.ctfww.commonlib.entity.EntityInterface;
 import com.ctfww.commonlib.utils.GlobeFun;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class AssignmentInfo implements EntityInterface {
+public class DeskAssignment implements EntityInterface {
     @Id
-    private String assignmentId;
+    private String id;
 
     @Index
     private String groupId;
 
     @Index
     private int deskId;
-
-    @Index
-    private String routeId;
 
     @Index
     private String userId;
@@ -39,14 +36,13 @@ public class AssignmentInfo implements EntityInterface {
 
     private String synTag;
 
-    @Generated(hash = 832228156)
-    public AssignmentInfo(String assignmentId, String groupId, int deskId, String routeId,
-            String userId, String circleType, long startTime, long endTime, int frequency,
+    @Generated(hash = 1907950339)
+    public DeskAssignment(String id, String groupId, int deskId, String userId,
+            String circleType, long startTime, long endTime, int frequency,
             long timeStamp, String status, String fromUserId, String synTag) {
-        this.assignmentId = assignmentId;
+        this.id = id;
         this.groupId = groupId;
         this.deskId = deskId;
-        this.routeId = routeId;
         this.userId = userId;
         this.circleType = circleType;
         this.startTime = startTime;
@@ -58,15 +54,14 @@ public class AssignmentInfo implements EntityInterface {
         this.synTag = synTag;
     }
 
-    @Generated(hash = 2097607415)
-    public AssignmentInfo() {
+    @Generated(hash = 528046118)
+    public DeskAssignment() {
     }
 
     public String toString() {
-        return "assignmentId = " + assignmentId
+        return "id = " + id
                 + ", groupId = " + groupId
                 + ", deskId = " + deskId
-                + ", routeId = " + routeId
                 + ", userId = " + userId
                 + ", circleType = " + circleType
                 + ", startTime = " + startTime
@@ -75,16 +70,16 @@ public class AssignmentInfo implements EntityInterface {
                 + ", timeStamp = " + timeStamp;
     }
 
-    public void combineAssignmentId() {
-        assignmentId = GlobeFun.getSHA(groupId + deskId + routeId + userId);
+    public void combineId() {
+        id = groupId + deskId + userId;
     }
 
-    public String getAssignmentId() {
-        return this.assignmentId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setAssignmentId(String assignmentId) {
-        this.assignmentId = assignmentId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getGroupId() {
@@ -101,14 +96,6 @@ public class AssignmentInfo implements EntityInterface {
 
     public void setDeskId(int deskId) {
         this.deskId = deskId;
-    }
-
-    public String getRouteId() {
-        return this.routeId;
-    }
-
-    public void setRouteId(String routeId) {
-        this.routeId = routeId;
     }
 
     public String getUserId() {
@@ -167,6 +154,14 @@ public class AssignmentInfo implements EntityInterface {
         this.status = status;
     }
 
+    public String getFromUserId() {
+        return this.fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
     public String getSynTag() {
         return this.synTag;
     }
@@ -175,11 +170,4 @@ public class AssignmentInfo implements EntityInterface {
         this.synTag = synTag;
     }
 
-    public String getFromUserId() {
-        return this.fromUserId;
-    }
-
-    public void setFromUserId(String fromUserId) {
-        this.fromUserId = fromUserId;
-    }
 }

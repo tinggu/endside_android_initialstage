@@ -15,16 +15,33 @@ public class RouteSummary implements EntityInterface {
     @Index
     private String groupId;
     private long timeStamp;
+    private long startTimeStamp;
+    private long endTimeStamp;
     private String status;
     @Index
     private String synTag;
-    @Generated(hash = 1504580283)
+
+    public String toString() {
+        return "routeId = " + routeId
+                + ", routeName = " + routeName
+                + ", groupId = " + groupId
+                + ", timeStamp = " + timeStamp
+                + ", startTimeStamp = " + startTimeStamp
+                + ", endTimeStamp = " + endTimeStamp
+                + ", status = " + status
+                + ", synTag = " + synTag;
+    }
+
+    @Generated(hash = 1797099356)
     public RouteSummary(String routeId, String routeName, String groupId,
-            long timeStamp, String status, String synTag) {
+            long timeStamp, long startTimeStamp, long endTimeStamp, String status,
+            String synTag) {
         this.routeId = routeId;
         this.routeName = routeName;
         this.groupId = groupId;
         this.timeStamp = timeStamp;
+        this.startTimeStamp = startTimeStamp;
+        this.endTimeStamp = endTimeStamp;
         this.status = status;
         this.synTag = synTag;
     }
@@ -66,5 +83,17 @@ public class RouteSummary implements EntityInterface {
     }
     public void setSynTag(String synTag) {
         this.synTag = synTag;
+    }
+    public long getStartTimeStamp() {
+        return this.startTimeStamp;
+    }
+    public void setStartTimeStamp(long startTimeStamp) {
+        this.startTimeStamp = startTimeStamp;
+    }
+    public long getEndTimeStamp() {
+        return this.endTimeStamp;
+    }
+    public void setEndTimeStamp(long endTimeStamp) {
+        this.endTimeStamp = endTimeStamp;
     }
 }

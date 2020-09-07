@@ -68,7 +68,7 @@
             android:layout_height="24dp"
             android:src="@drawable/qr"
             android:layout_gravity="center_vertical"
-            android:id="@+id/keepwatch_desk_qr"/>
+            android:id="@+id/qr"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -79,6 +79,12 @@
             android:textColor="#4A4A4A"
             android:textStyle="bold"
             android:id="@+id/desk_id"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="修改"
+            android:id="@+id/desk_modify"
+            android:visibility="gone"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

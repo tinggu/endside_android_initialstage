@@ -45,7 +45,9 @@ public class SelectDeskFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mDeskListView.setLayoutManager(layoutManager);
         List<DeskInfo> deskList = DBQuickEntry.getWorkingDeskList();
-        mDeskListAdapter = new SelectDeskListAdapter(deskList);
+        Bundle bundle = getArguments();
+        List<Integer> selectedDeskId = bundle == null ? new ArrayList<>() : bundle.getIntegerArrayList("selected_desk_id_list");
+        mDeskListAdapter = new SelectDeskListAdapter(deskList, selectedDeskId);
         mDeskListView.setAdapter(mDeskListAdapter);
     }
 
@@ -53,7 +55,7 @@ public class SelectDeskFragment extends Fragment {
 
     }
 
-    public void setSelectedDeskIdList(List<String> deskIdList) {
+    public void setSelectedDeskIdList(List<Integer> deskIdList) {
         mDeskListAdapter.setSelectedDeskIdList(deskIdList);
         mDeskListAdapter.notifyDataSetChanged();
     }
