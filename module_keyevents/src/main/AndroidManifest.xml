@@ -21,9 +21,6 @@
         <activity
             android:name="com.ctfww.module.keyevents.activity.KeyEventEndListActivity"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name="com.ctfww.module.keyevents.activity.KeyEventEndStatisticsByUserUnitActivity"
-            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

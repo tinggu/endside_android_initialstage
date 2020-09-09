@@ -37,6 +37,7 @@ public class Airship {
                     synKeepWatchSigninToCloud();
                     com.ctfww.module.user.datahelper.airship.Airship.getInstance().synToCloud();
                     com.ctfww.module.desk.datahelper.airship.Airship.getInstance().synToCloud();
+                    com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synToCloud();
                     com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synToCloud();
                 }
                 catch (Exception e) {

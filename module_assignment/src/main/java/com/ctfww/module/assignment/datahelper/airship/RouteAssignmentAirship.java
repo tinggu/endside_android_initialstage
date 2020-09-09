@@ -88,11 +88,13 @@ public class RouteAssignmentAirship {
             RouteAssignment localAssignment = DBHelper.getInstance().getRouteAssignment(assignment.getGroupId(), assignment.getRouteId(), assignment.getUserId());
             if (localAssignment == null) {
                 DBHelper.getInstance().addRouteAssignment(assignment);
+                DBHelper.getInstance().updateRouteTodayAssignment(assignment);
                 ret = true;
             }
             else {
                 if (localAssignment.getTimeStamp() < assignment.getTimeStamp()) {
                     DBHelper.getInstance().updateRouteAssignment(assignment);
+                    DBHelper.getInstance().updateRouteTodayAssignment(assignment);
                     ret = true;
                 }
             }

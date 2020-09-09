@@ -9,8 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.keyevents.R;
+import com.ctfww.module.keyevents.datahelper.airship.Airship;
+import com.ctfww.module.keyevents.datahelper.sp.Const;
 import com.ctfww.module.keyevents.fragment.KeyEventListFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 @Route(path = "/keyevents/noEndList")
 public class KeyEventNoEndListActivity extends AppCompatActivity implements View.OnClickListener{
@@ -29,7 +36,12 @@ public class KeyEventNoEndListActivity extends AppCompatActivity implements View
         initViews();
         setOnClickListener();
 
-        mKeyEventListFragment.getNoEndList();
+        mKeyEventListFragment.showNoEndList();
+
+        EventBus.getDefault().register(this);
+
+        Airship.getInstance().synKeyEventFromCloud();
+        Airship.getInstance().synKeyEventPersonFromCloud();
     }
 
     private void initViews() {
@@ -41,6 +53,7 @@ public class KeyEventNoEndListActivity extends AppCompatActivity implements View
         mProcessed.setVisibility(View.VISIBLE);
 
         mKeyEventListFragment = (KeyEventListFragment)getSupportFragmentManager().findFragmentById(R.id.keepevent_list_fragment);
+        mKeyEventListFragment.showNoEndList();
     }
 
     private void setOnClickListener() {
@@ -61,5 +74,19 @@ public class KeyEventNoEndListActivity extends AppCompatActivity implements View
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(MessageEvent messageEvent) {
+        if (Const.FINISH_KEY_EVNET_PERSON_SYN.equals(messageEvent.getMessage())) {
+            mKeyEventListFragment.showNoEndList();
+        }
+        else if (Const.FINISH_KEY_EVENT_SYN.equals(messageEvent.getMessage())) {
+            mKeyEventListFragment.showNoEndList();
+        }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

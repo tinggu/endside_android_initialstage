@@ -1,21 +1,8 @@
 package com.ctfww.module.keyevents.datahelper.airship;
 
-import android.text.TextUtils;
-
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.commonlib.utils.FileUtils;
-import com.ctfww.module.keyevents.Entity.KeyEvent;
-import com.ctfww.module.keyevents.datahelper.NetworkHelper;
-import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.File;
-import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -54,11 +41,13 @@ public class Airship {
     public void synToCloud() {
         synKeyEventToCloud();
         synKeyEventTraceToCloud();
+        synKeyEventPersonToCloud();
     }
 
     public void synFromCloud() {
         synKeyEventFromCloud();
         synKeyEventTraceFromCloud();
+        synKeyEventPersonFromCloud();
     }
 
     public void synKeyEventToCloud() {
@@ -76,5 +65,13 @@ public class Airship {
 
     public void synKeyEventTraceFromCloud() {
         KeyEventTraceAirship.synFromCloud();
+    }
+
+    public void synKeyEventPersonToCloud() {
+        KeyEventPersonAirship.synToCloud();
+    }
+
+    public void synKeyEventPersonFromCloud() {
+        KeyEventPersonAirship.synFromCloud();
     }
 }

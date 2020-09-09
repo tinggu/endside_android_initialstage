@@ -68,7 +68,7 @@ public class WeekRangeView extends MonthView {
         int cx = x + mItemWidth / 2;
 
         java.util.Calendar todayCalendar = java.util.Calendar.getInstance();
-        String day = todayCalendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar.getDay() ? "今天" : String.valueOf(calendar.getDay());
+        String day = todayCalendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar.getDay() && todayCalendar.get(java.util.Calendar.MONTH) + 1 == calendar.getMonth() ? "今天" : String.valueOf(calendar.getDay());
         mSupportDataList.add(new SupportData((float)cx, baselineY, day, calendar));
         if (isSelected) {
             mSelectStartTime = MyDateTimeUtils.getWeekStartTime(calendar.getTimeInMillis());

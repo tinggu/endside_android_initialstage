@@ -27,11 +27,9 @@ public class DeskAssignmentListAdapter extends RecyclerView.Adapter<RecyclerView
     private final static String TAG = "DeskAssignmentListAdapter";
 
     private List<DeskAssignment> list;
-    private String  mType;
 
-    public DeskAssignmentListAdapter(List<DeskAssignment> list, String type) {
+    public DeskAssignmentListAdapter(List<DeskAssignment> list) {
         this.list = list;
-        mType = type;
     }
 
     public void setList(List<DeskAssignment> list) {
@@ -60,9 +58,6 @@ public class DeskAssignmentListAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         ((DeskAssignmentViewHolder)holder).circleType.setText(toChineseCircleType(deskAssignment.getCircleType()));
-        if (!"period".equals(mType)) {
-            ((DeskAssignmentViewHolder)holder).circleTypeLL.setVisibility(View.GONE);
-        }
         ((DeskAssignmentViewHolder)holder).frequency.setText("" + deskAssignment.getFrequency() + "次");
 
         UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(deskAssignment.getUserId());
@@ -125,6 +120,7 @@ public class DeskAssignmentListAdapter extends RecyclerView.Adapter<RecyclerView
                 deskAssignment.setTimeStamp(System.currentTimeMillis());
                 deskAssignment.setSynTag("modify");
                 DBHelper.getInstance().updateDeskAssignment(deskAssignment);
+                DBHelper.getInstance().updateDeskTodayAssignment(deskAssignment);
                 Airship.getInstance().synDeskAssignmentToCloud();
 
                 list.remove(position);

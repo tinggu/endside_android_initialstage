@@ -15,9 +15,11 @@ import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.adapter.KeyEventListAdapter;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
+import com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,61 +65,28 @@ public class KeyEventListFragment extends Fragment{
         mKeyEventListView.setAdapter(mKeyEventListAdapter);
     }
 
-    public void getEndList(long timeStamp) {
-        long startTime = MyDateTimeUtils.getDayStartTime(timeStamp);
-        long endTime = MyDateTimeUtils.getDayEndTime(timeStamp);
-        NetworkHelper.getInstance().getEndKeyEventList(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mKeyEventList = (List<KeyEvent>)obj;
-                showList("");
-                LogUtils.i(TAG, "getEndList success!");
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getEndList fail: code = " + code);
-            }
-        });
-    }
-
-    public void getNoEndList() {
-        NetworkHelper.getInstance().getNoEndKeyEventList(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mKeyEventList = (List<KeyEvent>)obj;
-                showList("");
-                LogUtils.i(TAG, "getNoEndList success!");
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getNoEndList fail: code = " + code);
-            }
-        });
-    }
-
-    public void showList(String userId) {
-        List<KeyEvent> keyEventListThis;
-        if (TextUtils.isEmpty(userId)) {
-            keyEventListThis = mKeyEventList;
-        }
-        else {
-            keyEventListThis = new ArrayList<>();
-            for (int i = 0; i < mKeyEventList.size(); ++i) {
-                KeyEvent keyEvent = mKeyEventList.get(i);
-                if (userId.equals(keyEvent.getUserId())) {
-                    keyEventListThis.add(keyEvent);
-                }
-            }
-        }
-
-        if (keyEventListThis.isEmpty()) {
+    public void showNoEndList() {
+        List<KeyEvent> keyEventList = DBQuickEntry.getNoEndKeyEventList();
+        if (keyEventList.isEmpty()) {
             mNoData.setVisibility(View.VISIBLE);
             mKeyEventListView.setVisibility(View.GONE);
         }
         else {
-            mKeyEventListAdapter.setList(keyEventListThis);
+            mKeyEventListAdapter.setList(keyEventList);
+            mKeyEventListAdapter.notifyDataSetChanged();
+            mNoData.setVisibility(View.GONE);
+            mKeyEventListView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void showEndList(long startTime, long endTime) {
+        List<KeyEvent> keyEventList = DBQuickEntry.getEndKeyEventList(startTime, endTime);
+        if (keyEventList.isEmpty()) {
+            mNoData.setVisibility(View.VISIBLE);
+            mKeyEventListView.setVisibility(View.GONE);
+        }
+        else {
+            mKeyEventListAdapter.setList(keyEventList);
             mKeyEventListAdapter.notifyDataSetChanged();
             mNoData.setVisibility(View.GONE);
             mKeyEventListView.setVisibility(View.VISIBLE);

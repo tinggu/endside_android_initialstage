@@ -89,11 +89,13 @@ public class DeskAssignmentAirship {
             DeskAssignment localAssignment = DBHelper.getInstance().getDeskAssignment(assignment.getGroupId(), assignment.getDeskId(), assignment.getUserId());
             if (localAssignment == null) {
                 DBHelper.getInstance().addDeskAssignment(assignment);
+                DBHelper.getInstance().updateDeskTodayAssignment(assignment);
                 ret = true;
             }
             else {
                 if (localAssignment.getTimeStamp() < assignment.getTimeStamp()) {
                     DBHelper.getInstance().updateDeskAssignment(assignment);
+                    DBHelper.getInstance().updateDeskTodayAssignment(assignment);
                     ret = true;
                 }
             }

@@ -97,6 +97,8 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mTodayLeakCount = v.findViewById(R.id.keepwatch_today_leak_count);
         mAbnormalReportCountLL = v.findViewById(R.id.keepwatch_abnormal_report_count_ll);
         mAbnormalReportCount = v.findViewById(R.id.keepwatch_abnormal_report_count);
+        long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNoEndKeyEventCount();
+        mAbnormalReportCount.setText("" + noEndKeyEventCount);
 
         mKeyEventSnatchFragment = (KeyEventSnatchFragment) getChildFragmentManager().findFragmentById(R.id.keepwatch_snatch_key_event_fragment);
 
@@ -191,11 +193,12 @@ public class KeepWatchStatisticsFragment extends Fragment {
         }
         else if ("bind_group".equals(msg)) {
             LogUtils.i(TAG, "bind_group refresh!");
-            getTodayKeepWatchStatistics();
-            getNoEndKeyEventCount();
             mKeyEventSnatchFragment.refresh();
             mKeepWatchPersonTrendsFragment.getPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
+
+            long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNoEndKeyEventCount();
+            mAbnormalReportCount.setText("" + noEndKeyEventCount);
         }
         else if ("im_received_data".equals(msg)) {
             Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
@@ -234,6 +237,10 @@ public class KeepWatchStatisticsFragment extends Fragment {
                     }
                 }
             }
+        }
+        else if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVNET_PERSON_SYN.equals(messageEvent.getMessage())) {
+            long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNoEndKeyEventCount();
+            mAbnormalReportCount.setText("" + noEndKeyEventCount);
         }
     }
 

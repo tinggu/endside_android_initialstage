@@ -51,7 +51,7 @@ public class SimpleMonthView extends MonthView {
         int cx = x + mItemWidth / 2;
 
         java.util.Calendar todayCalendar = java.util.Calendar.getInstance();
-        String day = todayCalendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar.getDay() ? "今天" : String.valueOf(calendar.getDay());
+        String day = todayCalendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar.getDay() && todayCalendar.get(java.util.Calendar.MONTH) + 1 == calendar.getMonth() ? "今天" : String.valueOf(calendar.getDay());
         if (isSelected) {
             canvas.drawText(day,
                     cx,

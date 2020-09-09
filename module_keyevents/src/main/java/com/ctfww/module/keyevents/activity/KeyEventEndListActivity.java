@@ -9,14 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.Consts;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.fragment.DayCalendarFragment;
 import com.ctfww.commonlib.utils.CalendarUtils;
 import com.ctfww.module.keyevents.R;
-import com.ctfww.module.keyevents.bean.KeyEventStatisticsByUser;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
+import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
+import com.ctfww.module.keyevents.datahelper.sp.Const;
 import com.ctfww.module.keyevents.fragment.KeyEventListFragment;
 import com.haibin.calendarview.Calendar;
 
@@ -86,11 +88,14 @@ public class KeyEventEndListActivity extends AppCompatActivity implements View.O
     private long mLastMonthStartTime = 0;
     @Override
     public void onDayCalendarSelect(Calendar calendar) {
-        mKeyEventListFragment.getEndList(calendar.getTimeInMillis());
+        long startTime = MyDateTimeUtils.getDayStartTime(calendar.getTimeInMillis());
+        long endTime = MyDateTimeUtils.getDayEndTime(calendar.getTimeInMillis());
+        mKeyEventListFragment.showEndList(startTime, endTime);
+
         long timeStamp = calendar.getTimeInMillis();
         long monthStartTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
         if (monthStartTime != mLastMonthStartTime) {
-            getHistoryEveryDayKeyEventStatistics(calendar.getTimeInMillis());
+            getEveryDayCount(calendar.getTimeInMillis());
             mLastMonthStartTime = monthStartTime;
         }
     }
@@ -100,32 +105,22 @@ public class KeyEventEndListActivity extends AppCompatActivity implements View.O
 
     }
 
-    private void getHistoryEveryDayKeyEventStatistics(long timeStamp) {
+    private void getEveryDayCount(long timeStamp) {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        String role = SPStaticUtils.getString(Const.ROLE);
         long startTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
         long endTime = MyDateTimeUtils.getMonthEndTime(timeStamp);
-        NetworkHelper.getInstance().getHistoryEveryDayKeyEventStatistics(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                List<KeyEventStatisticsByUser> keyEventStatisticsByUserList = (List<KeyEventStatisticsByUser>)obj;
-                LogUtils.i(TAG, "getHistoryEveryDayKeyEventStatistics: keyEventStatisticsByUserList.size() = " + keyEventStatisticsByUserList.size());
-
-                HashMap<String, Calendar> hashMap = new HashMap<>();
-                for (int i = 0; i < keyEventStatisticsByUserList.size(); ++i) {
-                    KeyEventStatisticsByUser keyEventStatisticsByUser = keyEventStatisticsByUserList.get(i);
-                    if (keyEventStatisticsByUser.getEndCount() > 0){
-                        Calendar key = CalendarUtils.produceCalendar(keyEventStatisticsByUser.getTimeStamp());
-                        Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_END_ABNORMAL, "结");
-                        hashMap.put(key.toString(), value);
-                    }
-                }
-
-                mDayCalendarFragment.setSchemeData(hashMap);
+        HashMap<String, Calendar> hashMap = new HashMap<>();
+        for (long time = startTime; time < endTime; time += 24l * 3600l * 1000l) {
+            long count = "admin".equals(role) ? DBHelper.getInstance().getEndKeyEventPersonCount(groupId, time, time + 24l * 3600l * 1000l) : DBHelper.getInstance().getEndKeyEventPersonCount(groupId, userId, time, time + 24l * 3600l * 1000l);
+            if (count > 0) {
+                Calendar key = CalendarUtils.produceCalendar(time);
+                Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_END_ABNORMAL, "结");
+                hashMap.put(key.toString(), value);
             }
+        }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getHistoryEveryDayKeyEventStatistics: code = " + code);
-            }
-        });
+        mDayCalendarFragment.setSchemeData(hashMap);
     }
 }

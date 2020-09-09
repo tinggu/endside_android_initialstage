@@ -375,7 +375,6 @@ public class KeyEventReportFragment extends Fragment{
         KeyEventTrace keyEventTrace = new KeyEventTrace();
         keyEventTrace.setEventId(keyEvent.getEventId());
         keyEventTrace.setTimeStamp(keyEvent.getTimeStamp());
-        keyEventTrace.setGroupId(keyEvent.getGroupId());
         keyEventTrace.setDeskId(keyEvent.getDeskId());
         keyEventTrace.setMatchLevel("default");
         keyEventTrace.setUserId(userId);

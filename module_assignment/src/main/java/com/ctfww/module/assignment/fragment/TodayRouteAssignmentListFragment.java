@@ -13,11 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ctfww.module.assignment.R;
-import com.ctfww.module.assignment.adapter.DeskAssignmentListAdapter;
-import com.ctfww.module.assignment.adapter.RouteAssignmentListAdapter;
+import com.ctfww.module.assignment.adapter.RouteTodayAssignmentListAdapter;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.assignment.entity.DeskAssignment;
 import com.ctfww.module.assignment.entity.RouteAssignment;
+import com.ctfww.module.assignment.entity.RouteTodayAssignment;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class TodayRouteAssignmentListFragment extends Fragment {
 
     TextView mNoAssignmentPrompt;
     RecyclerView mAssignmentListView;
-    RouteAssignmentListAdapter mAssignmentListAdapter;
+    RouteTodayAssignmentListAdapter mAssignmentListAdapter;
 
     private View mV;
 
@@ -44,8 +43,8 @@ public class TodayRouteAssignmentListFragment extends Fragment {
         mAssignmentListView = v.findViewById(R.id.assignment_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAssignmentListView.setLayoutManager(layoutManager);
-        List<RouteAssignment> assignmentList = DBQuickEntry.getTodayWorkingRouteAssignmentList();
-        mAssignmentListAdapter = new RouteAssignmentListAdapter(assignmentList, "today");
+        List<RouteTodayAssignment> assignmentList = DBQuickEntry.getTodayWorkingRouteAssignmentList();
+        mAssignmentListAdapter = new RouteTodayAssignmentListAdapter(assignmentList);
         mAssignmentListView.setAdapter(mAssignmentListAdapter);
 
         if (assignmentList.isEmpty()) {
@@ -69,8 +68,8 @@ public class TodayRouteAssignmentListFragment extends Fragment {
     }
 
     public void update() {
-        List<RouteAssignment> assignmentList = DBQuickEntry.getTodayWorkingRouteAssignmentList();
-        mAssignmentListAdapter = new RouteAssignmentListAdapter(assignmentList, "today");
+        List<RouteTodayAssignment> assignmentList = DBQuickEntry.getTodayWorkingRouteAssignmentList();
+        mAssignmentListAdapter = new RouteTodayAssignmentListAdapter(assignmentList);
         mAssignmentListAdapter.notifyDataSetChanged();
     }
 }

@@ -9,8 +9,8 @@ import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
-import com.ctfww.module.keyevents.bean.KeyEventTraceBean;
 import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.json.JSONArray;
@@ -213,6 +213,18 @@ public class CloudClient {
         processListRsp(responseBodyCall, callback);
     }
 
+    public void synKeyEventPersonToCloud(CargoToCloud<KeyEventPerson> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeyEventPersonToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventPersonToCloud(cargoToCloud);
+        processGeneralRsp(responseBodyCall, callback);
+    }
+
+    public void synKeyEventPersonFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synKeyEventPersonFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventPersonFromCloud(condition);
+        processListRsp(responseBodyCall, callback);
+    }
+
     public void uploadFile(final String filePath, final ICloudCallback callback) {
         File file = new File(filePath);
 
@@ -261,13 +273,6 @@ public class CloudClient {
         processListRsp(responseBodyCall, callback);
     }
 
-    public void getHistoryEveryDayKeyEventStatistics(String group_id, String user_id, long startTime, long endTime, final ICloudCallback callback) {
-        QueryCondition condition = new QueryCondition(group_id, user_id, startTime, endTime);
-        LogUtils.i(TAG, "getHistoryEveryDayKeyEventStatistics: condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getHistoryEveryDayKeyEventStatistics(condition);
-        processListRsp(responseBodyCall, callback);
-    }
-
     public void getEveryOneEndKeyEventStatistics(String group_id, String user_id, long startTime, long endTime, final ICloudCallback callback) {
         QueryCondition condition = new QueryCondition(group_id, user_id, startTime, endTime);
         LogUtils.i(TAG, "getEveryOneEndKeyEventStatistics: condition = " + condition.toString());
@@ -286,29 +291,5 @@ public class CloudClient {
         LogUtils.i(TAG, "getCanBeSnatchedKeyEvent: groupId = " + groupId);
         Call<ResponseBody> responseBodyCall = mCloudMethod.getCanBeSnatchedKeyEvent(groupId);
         processListRsp(responseBodyCall, callback);
-    }
-
-    public void snatchKeyEvent(String groupId, String userId, String eventId, int deskId, long timeStamp, final ICloudCallback callback) {
-        KeyEventTraceBean keyEventTraceBean = new KeyEventTraceBean();
-        keyEventTraceBean.setGroupId(groupId);
-        keyEventTraceBean.setUserId(userId);
-        keyEventTraceBean.setEventId(eventId);
-        keyEventTraceBean.setDeskId(deskId);
-        keyEventTraceBean.setTimeStamp(timeStamp);
-        LogUtils.i(TAG, "snatchKeyEvent: info = " + keyEventTraceBean.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.snatchKeyEvent(keyEventTraceBean);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void freeKeyEvent(String groupId, String userId, String eventId, int deskId, long timeStamp, final ICloudCallback callback) {
-        KeyEventTraceBean keyEventTraceBean = new KeyEventTraceBean();
-        keyEventTraceBean.setGroupId(groupId);
-        keyEventTraceBean.setUserId(userId);
-        keyEventTraceBean.setEventId(eventId);
-        keyEventTraceBean.setDeskId(deskId);
-        keyEventTraceBean.setTimeStamp(timeStamp);
-        LogUtils.i(TAG, "freeKeyEvent: info = " + keyEventTraceBean.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.freeKeyEvent(keyEventTraceBean);
-        processGeneralRsp(responseBodyCall, callback);
     }
 }

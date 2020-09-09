@@ -12,17 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.assignment.R;
 import com.ctfww.module.assignment.datahelper.airship.Airship;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.assignment.entity.RouteAssignment;
-import com.ctfww.module.desk.entity.DeskInfo;
 import com.ctfww.module.desk.entity.RouteDesk;
 import com.ctfww.module.desk.entity.RouteSummary;
 import com.ctfww.module.user.entity.UserInfo;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -31,11 +27,9 @@ public class RouteAssignmentListAdapter extends RecyclerView.Adapter<RecyclerVie
     private final static String TAG = "RouteAssignmentListAdapter";
 
     private List<RouteAssignment> list;
-    private String  mType;
 
-    public RouteAssignmentListAdapter(List<RouteAssignment> list, String type) {
+    public RouteAssignmentListAdapter(List<RouteAssignment> list) {
         this.list = list;
-        mType = type;
     }
 
     public void setList(List<RouteAssignment> list) {
@@ -57,21 +51,18 @@ public class RouteAssignmentListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         RouteAssignment routeAssignment = list.get(position);
 
-        ((DeskAssignmentViewHolder)holder).deskType.setImageResource(R.drawable.route);
+        ((RouteAssignmentViewHolder)holder).deskType.setImageResource(R.drawable.route);
         RouteSummary route = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(routeAssignment.getRouteId());
         if (route != null) {
-            ((DeskAssignmentViewHolder)holder).deskName.setText(route.getRouteName());
+            ((RouteAssignmentViewHolder)holder).deskName.setText(route.getRouteName());
         }
 
-        ((DeskAssignmentViewHolder)holder).circleType.setText(toChineseCircleType(routeAssignment.getCircleType()));
-        if (!"period".equals(mType)) {
-            ((DeskAssignmentViewHolder)holder).circleTypeLL.setVisibility(View.GONE);
-        }
-        ((DeskAssignmentViewHolder)holder).frequency.setText("" + routeAssignment.getFrequency() + "次");
+        ((RouteAssignmentViewHolder)holder).circleType.setText(toChineseCircleType(routeAssignment.getCircleType()));
+        ((RouteAssignmentViewHolder)holder).frequency.setText("" + routeAssignment.getFrequency() + "次");
 
         UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(routeAssignment.getUserId());
         if (userInfo != null) {
-            ((DeskAssignmentViewHolder)holder).nickName.setText(userInfo.getNickName());
+            ((RouteAssignmentViewHolder)holder).nickName.setText(userInfo.getNickName());
         }
 
         long startHour = routeAssignment.getStartTime() / 3600l / 1000l;
@@ -79,7 +70,7 @@ public class RouteAssignmentListAdapter extends RecyclerView.Adapter<RecyclerVie
         long endHour = routeAssignment.getEndTime() / 3600l / 1000l;
         long endMinute = (routeAssignment.getEndTime() - endHour * 3600l * 1000l) / 60 / 1000;
         String startEndTime = String.format("%02d:%02d——%02d:%02d", startHour, startMinute, endHour, endMinute);
-        ((DeskAssignmentViewHolder)holder).startEndDateTime.setText(startEndTime);
+        ((RouteAssignmentViewHolder)holder).startEndDateTime.setText(startEndTime);
     }
 
     @Override
@@ -134,6 +125,7 @@ public class RouteAssignmentListAdapter extends RecyclerView.Adapter<RecyclerVie
                 routeAssignment.setTimeStamp(System.currentTimeMillis());
                 routeAssignment.setSynTag("modify");
                 DBHelper.getInstance().updateRouteAssignment(routeAssignment);
+                DBHelper.getInstance().updateRouteTodayAssignment(routeAssignment);
                 Airship.getInstance().synDeskAssignmentToCloud();
 
                 list.remove(position);

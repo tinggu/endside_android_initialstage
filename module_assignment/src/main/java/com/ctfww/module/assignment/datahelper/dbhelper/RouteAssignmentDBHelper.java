@@ -49,6 +49,10 @@ public class RouteAssignmentDBHelper {
         return dao.queryBuilder().where(dao.queryBuilder().and(RouteAssignmentDao.Properties.GroupId.eq(groupId), RouteAssignmentDao.Properties.RouteId.eq(routeId), RouteAssignmentDao.Properties.UserId.eq(userId), RouteAssignmentDao.Properties.CircleType.like("%" + weekDay + "%"))).unique();
     }
 
+    public static List<RouteAssignment> getList(RouteAssignmentDao dao) {
+        return dao.queryBuilder().where(RouteAssignmentDao.Properties.Status.notEq("delete")).list();
+    }
+
     // 获取所有任务（任务列表，但不包括是删除状态的）
     public static List<RouteAssignment> getList(RouteAssignmentDao dao, String groupId) {
         return dao.queryBuilder().where(dao.queryBuilder().and(RouteAssignmentDao.Properties.GroupId.eq(groupId), RouteAssignmentDao.Properties.Status.notEq("delete"))).list();
@@ -56,6 +60,10 @@ public class RouteAssignmentDBHelper {
 
     public static List<RouteAssignment> getList(RouteAssignmentDao dao, String groupId, String userId) {
         return dao.queryBuilder().where(dao.queryBuilder().and(RouteAssignmentDao.Properties.GroupId.eq(groupId), RouteAssignmentDao.Properties.UserId.notEq(userId), RouteAssignmentDao.Properties.Status.notEq("delete"))).list();
+    }
+
+    public static List<RouteAssignment> getWeekDayList(RouteAssignmentDao dao, String weekDay) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(RouteAssignmentDao.Properties.CircleType.like("%" + weekDay + "%"), RouteAssignmentDao.Properties.Status.notEq("delete"))).list();
     }
 
     public static List<RouteAssignment> getWeekDayList(RouteAssignmentDao dao, String groupId, String weekDay) {

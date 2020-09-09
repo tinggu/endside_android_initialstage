@@ -328,6 +328,8 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             com.ctfww.module.desk.datahelper.airship.Airship.getInstance().synFromCloud();
 
             com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synFromCloud();
+
+            com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synFromCloud();
         }
         else if ("update_location".equals(msg)) {
             mMyPos = GsonUtils.fromJson(messageEvent.getValue(), MyPosition.class);

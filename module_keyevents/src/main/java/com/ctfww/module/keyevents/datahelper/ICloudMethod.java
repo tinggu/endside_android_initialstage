@@ -3,11 +3,8 @@ package com.ctfww.module.keyevents.datahelper;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
-import com.ctfww.module.keyevents.bean.KeyEventBean;
-import com.ctfww.module.keyevents.bean.KeyEventTraceBean;
-import com.ctfww.module.keyevents.bean.SomeoneStartEndTimeBean;
-import com.ctfww.module.keyevents.bean.StartEndTimeBean;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -28,7 +25,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/synKeyEventToCloud")
+    @POST("/microcloudkeyevents/keyevent/synKeyEventToCloud")
     Call<ResponseBody> synKeyEventToCloud(@Body CargoToCloud<KeyEvent> info);
 
     /**
@@ -36,7 +33,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/synKeyEventFromCloud")
+    @POST("/microcloudkeyevents/keyevent/synKeyEventFromCloud")
     Call<ResponseBody> synKeyEventFromCloud(@Body QueryCondition condition);
 
     /**
@@ -44,7 +41,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/synKeyEventTraceToCloud")
+    @POST("/microcloudkeyevents/keyevent/synKeyEventTraceToCloud")
     Call<ResponseBody> synKeyEventTraceToCloud(@Body CargoToCloud<KeyEventTrace> info);
 
     /**
@@ -52,9 +49,24 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keyEvents/synKeyEventTraceFromCloud")
+    @POST("/microcloudkeyevents/keyevent/synKeyEventTraceFromCloud")
     Call<ResponseBody> synKeyEventTraceFromCloud(@Body QueryCondition condition);
 
+    /**
+     * 同步关键事件负责状态上云
+     * @param info
+     * @return 返回值
+     */
+    @POST("/microcloudkeyevents/keyevent/synKeyEventPersonToCloud")
+    Call<ResponseBody> synKeyEventPersonToCloud(@Body CargoToCloud<KeyEventPerson> info);
+
+    /**
+     * 从云上同步关键事件负责状态
+     * @param condition
+     * @return 返回值
+     */
+    @POST("/microcloudkeyevents/keyevent/synKeyEventPersonFromCloud")
+    Call<ResponseBody> synKeyEventPersonFromCloud(@Body QueryCondition condition);
 
     /**
      * 上传文件 http://39.98.147.77:8003/fileMgt/uploadFile
@@ -99,14 +111,6 @@ public interface ICloudMethod {
     Call<ResponseBody> getNoEndKeyEventList(@Body QueryCondition condition);
 
     /**
-     * 获得历史每天的异常统计
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyEvents/getHistoryEveryDayKeyEventStatistics")
-    Call<ResponseBody> getHistoryEveryDayKeyEventStatistics(@Body QueryCondition condition);
-
-    /**
      * 获得某段时间内每个人的完成的异常单
      * @param condition
      * @return 返回值
@@ -129,20 +133,4 @@ public interface ICloudMethod {
      */
     @POST("/microcloudkeyevents/keyEvents/getCanBeSnatchedKeyEvent")
     Call<ResponseBody> getCanBeSnatchedKeyEvent(@Body String groupId);
-
-    /**
-     * 抢工单
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyEvents/snatchKeyEvent")
-    Call<ResponseBody> snatchKeyEvent(@Body KeyEventTraceBean info);
-
-    /**
-     * 释放工单
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyEvents/freeKeyEvent")
-    Call<ResponseBody> freeKeyEvent(@Body KeyEventTraceBean info);
 }

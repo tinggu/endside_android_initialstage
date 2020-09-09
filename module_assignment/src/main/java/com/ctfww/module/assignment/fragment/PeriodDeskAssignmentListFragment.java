@@ -12,17 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.assignment.R;
 import com.ctfww.module.assignment.adapter.DeskAssignmentListAdapter;
+import com.ctfww.module.assignment.adapter.DeskTodayAssignmentListAdapter;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.assignment.datahelper.sp.Const;
 import com.ctfww.module.assignment.entity.DeskAssignment;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -50,7 +44,7 @@ public class PeriodDeskAssignmentListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAssignmentListView.setLayoutManager(layoutManager);
         List<DeskAssignment> assignmentList = DBQuickEntry.getWorkingDeskAssignmentList();
-        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList, "period");
+        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList);
         mAssignmentListView.setAdapter(mAssignmentListAdapter);
         if (assignmentList.isEmpty()) {
             mNoAssignmentPrompt.setVisibility(View.VISIBLE);
@@ -74,7 +68,7 @@ public class PeriodDeskAssignmentListFragment extends Fragment {
 
     public void update() {
         List<DeskAssignment> assignmentList = DBQuickEntry.getWorkingDeskAssignmentList();
-        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList, "period");
+        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList);
         mAssignmentListAdapter.notifyDataSetChanged();
 
         if (assignmentList.isEmpty()) {

@@ -4,6 +4,8 @@ public class Const {
     public static final String USER_OPEN_ID = "user_open_id";
     public static final String WORKING_GROUP_ID = "working_group_id";
 
+    public static final String PRODUCE_TODAY_ASSIGNMENT_TIME_STAMP = "produce_today_assignment_time_stamp";
+
     public static final String FINISH_DESK_ASSIGNMENT_SYN = "finish_desk_assignment_syn";
     public static final String DESK_ASSIGNMENT_SYN_TIME_STAMP_CLOUD = "desk_assignment_syn_time_stamp_cloud";
     public static final String ADD_DESK = "add_desk";

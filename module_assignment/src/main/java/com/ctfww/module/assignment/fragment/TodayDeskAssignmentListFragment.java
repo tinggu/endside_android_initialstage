@@ -12,16 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.assignment.R;
-import com.ctfww.module.assignment.adapter.DeskAssignmentListAdapter;
-import com.ctfww.module.assignment.datahelper.sp.Const;
+import com.ctfww.module.assignment.adapter.DeskTodayAssignmentListAdapter;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
 import com.ctfww.module.assignment.entity.DeskAssignment;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.ctfww.module.assignment.entity.DeskTodayAssignment;
 
 import java.util.List;
 
@@ -30,7 +25,7 @@ public class TodayDeskAssignmentListFragment extends Fragment {
 
     TextView mNoAssignmentPrompt;
     RecyclerView mAssignmentListView;
-    DeskAssignmentListAdapter mAssignmentListAdapter;
+    DeskTodayAssignmentListAdapter mAssignmentListAdapter;
 
     private View mV;
 
@@ -48,8 +43,8 @@ public class TodayDeskAssignmentListFragment extends Fragment {
         mAssignmentListView = v.findViewById(R.id.assignment_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAssignmentListView.setLayoutManager(layoutManager);
-        List<DeskAssignment> assignmentList = DBQuickEntry.getTodayWorkingDeskAssignmentList();
-        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList, "today");
+        List<DeskTodayAssignment> assignmentList = DBQuickEntry.getTodayWorkingDeskAssignmentList();
+        mAssignmentListAdapter = new DeskTodayAssignmentListAdapter(assignmentList);
         mAssignmentListView.setAdapter(mAssignmentListAdapter);
 
         if (assignmentList.isEmpty()) {
@@ -73,8 +68,8 @@ public class TodayDeskAssignmentListFragment extends Fragment {
     }
 
     public void update() {
-        List<DeskAssignment> assignmentList = DBQuickEntry.getTodayWorkingDeskAssignmentList();
-        mAssignmentListAdapter = new DeskAssignmentListAdapter(assignmentList, "today");
+        List<DeskTodayAssignment> assignmentList = DBQuickEntry.getTodayWorkingDeskAssignmentList();
+        mAssignmentListAdapter = new DeskTodayAssignmentListAdapter(assignmentList);
         mAssignmentListAdapter.notifyDataSetChanged();
 
         if (assignmentList.isEmpty()) {

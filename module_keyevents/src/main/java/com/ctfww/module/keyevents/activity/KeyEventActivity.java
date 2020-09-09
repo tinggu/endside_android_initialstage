@@ -31,6 +31,7 @@ import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.adapter.KeyEventTraceListAdapter;
 import com.ctfww.module.keyevents.datahelper.NetworkHelper;
+import com.ctfww.module.keyevents.datahelper.airship.Airship;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.user.datahelper.sp.Const;
 import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
@@ -200,7 +201,6 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             KeyEventTrace keyEventTrace = new KeyEventTrace();
             keyEventTrace.setEventId(mKeyEvent.getEventId());
             keyEventTrace.setTimeStamp(System.currentTimeMillis());
-            keyEventTrace.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
             keyEventTrace.setDeskId(mKeyEvent.getDeskId());
             keyEventTrace.setMatchLevel("default");
             UserInfo userInfo = DBQuickEntry.getSelfInfo();
@@ -226,7 +226,7 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onStickyMessageEvent(MessageEvent messageEvent) {
+    public void onMessageEvent(MessageEvent messageEvent) {
         if ("selected_user".equals(messageEvent.getMessage())) {
             String userId = messageEvent.getValue();
             GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser(userId);
@@ -237,7 +237,6 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             KeyEventTrace keyEventTrace = new KeyEventTrace();
             keyEventTrace.setEventId(mKeyEvent.getEventId());
             keyEventTrace.setTimeStamp(System.currentTimeMillis());
-            keyEventTrace.setGroupId(SPStaticUtils.getString(Const.WORKING_GROUP_ID));
             keyEventTrace.setDeskId(mKeyEvent.getDeskId());
             keyEventTrace.setMatchLevel("default");
             keyEventTrace.setUserId(groupUserInfo.getUserId());
@@ -297,33 +296,41 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void snatch() {
-        NetworkHelper.getInstance().snatchKeyEvent(mKeyEvent.getEventId(), mKeyEvent.getDeskId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                LogUtils.i(TAG, "snatch success!");
-                getActionList(mKeyEvent.getEventId());
-            }
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "snatch fail: code = " + code);
-            }
-        });
+        KeyEventTrace keyEventTrace = new KeyEventTrace();
+        keyEventTrace.setUserId(userId);
+        keyEventTrace.setStatus("snatch");
+        keyEventTrace.setDeskId(mKeyEvent.getDeskId());
+        keyEventTrace.setEventId(mKeyEvent.getEventId());
+        keyEventTrace.setTimeStamp(System.currentTimeMillis());
+        keyEventTrace.setSynTag("new");
+
+
+        DBHelper.getInstance().addKeyEventTrace(keyEventTrace);
+        Airship.getInstance().synKeyEventTraceToCloud();
     }
 
     public void free() {
-        NetworkHelper.getInstance().freeKeyEvent(mKeyEvent.getEventId(), mKeyEvent.getDeskId(), new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                LogUtils.i(TAG, "free success!");
-                getActionList(mKeyEvent.getEventId());
-            }
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "free fail: code = " + code);
-            }
-        });
+        KeyEventTrace keyEventTrace = new KeyEventTrace();
+        keyEventTrace.setUserId(userId);
+        keyEventTrace.setStatus("free");
+        keyEventTrace.setDeskId(mKeyEvent.getDeskId());
+        keyEventTrace.setEventId(mKeyEvent.getEventId());
+        keyEventTrace.setTimeStamp(System.currentTimeMillis());
+        keyEventTrace.setSynTag("new");
+
+
+        DBHelper.getInstance().addKeyEventTrace(keyEventTrace);
+        Airship.getInstance().synKeyEventTraceToCloud();
     }
 
     private void setCurrentProcessStatus(List<KeyEventTrace> keyEventTraceList) {

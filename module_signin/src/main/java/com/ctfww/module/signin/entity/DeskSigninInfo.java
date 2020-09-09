@@ -1,4 +1,4 @@
-package com.ctfww.module.keepwatch.entity;
+package com.ctfww.module.signin.entity;
 
 import com.ctfww.commonlib.entity.EntityInterface;
 
@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class SigninInfo implements EntityInterface {
+public class DeskSigninInfo implements EntityInterface {
     @Id
     private String id;
 
@@ -21,8 +21,8 @@ public class SigninInfo implements EntityInterface {
 
     private String fingerPrint;
 
-    @Generated(hash = 82950312)
-    public SigninInfo(String id, String userId, long timeStamp, int deskId,
+    @Generated(hash = 1508573482)
+    public DeskSigninInfo(String id, String userId, long timeStamp, int deskId,
             String groupId, String finishType, String matchLevel, String synTag,
             String fingerPrint) {
         this.id = id;
@@ -36,8 +36,8 @@ public class SigninInfo implements EntityInterface {
         this.fingerPrint = fingerPrint;
     }
 
-    @Generated(hash = 1750719260)
-    public SigninInfo() {
+    @Generated(hash = 1567356083)
+    public DeskSigninInfo() {
     }
 
     public void combineId() {

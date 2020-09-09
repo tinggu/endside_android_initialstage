@@ -175,7 +175,12 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public  void onGetMessage(MessageEvent messageEvent) {
         if ("selected_user".equals(messageEvent.getMessage())) {
-            mUserInfo = GsonUtils.fromJson(messageEvent.getValue(), UserInfo.class);
+            String userId = messageEvent.getValue();
+            if (TextUtils.isEmpty(userId)) {
+                return;
+            }
+
+            mUserInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(userId);
             if (mUserInfo == null) {
                 return;
             }
@@ -240,6 +245,7 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             assignment.setDeskId(deskId);
             assignment.combineId();
             DBHelper.getInstance().addDeskAssignment(assignment);
+            DBHelper.getInstance().updateDeskTodayAssignment(assignment);
         }
 
         if (!mDeskIdList.isEmpty()) {
@@ -262,13 +268,14 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             assignment.setRouteId(routeId);
             assignment.combineId();
             DBHelper.getInstance().addRouteAssignment(assignment);
+            DBHelper.getInstance().updateRouteTodayAssignment(assignment);
         }
 
         if (!mRouteIdList.isEmpty()) {
             Airship.getInstance().synRouteAssignmentToCloud();
         }
 
-
+        finish();
     }
 
     private String getCircleType() {

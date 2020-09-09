@@ -38,12 +38,4 @@ public class KeyEventTraceDBHelper {
     public static List<KeyEventTrace> getNoSynList(KeyEventTraceDao dao) {
         return dao.queryBuilder().where(KeyEventTraceDao.Properties.SynTag.eq("new")).list();
     }
-
-    public static List<KeyEventTrace> getCanSnatchList(KeyEventTraceDao dao, String groupId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(KeyEventTraceDao.Properties.GroupId.eq(groupId), dao.queryBuilder().or(KeyEventTraceDao.Properties.Status.eq("create"), KeyEventTraceDao.Properties.Status.eq("free")))).list();
-    }
-
-    public static List<KeyEventTrace> getDoingList(KeyEventTraceDao dao, String groupId, String userId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(KeyEventTraceDao.Properties.GroupId.eq(groupId), KeyEventTraceDao.Properties.UserId.eq(userId), dao.queryBuilder().or(KeyEventTraceDao.Properties.Status.eq("accepted"), KeyEventTraceDao.Properties.Status.eq("snatch")))).list();
-    }
 }

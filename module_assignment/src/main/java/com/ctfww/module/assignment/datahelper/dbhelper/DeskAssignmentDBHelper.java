@@ -49,17 +49,21 @@ public class DeskAssignmentDBHelper {
         return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.GroupId.eq(groupId), DeskAssignmentDao.Properties.DeskId.eq(deskId), DeskAssignmentDao.Properties.UserId.eq(userId), DeskAssignmentDao.Properties.CircleType.like("%" + weekDay + "%"))).unique();
     }
 
+    public static List<DeskAssignment> getList(DeskAssignmentDao dao) {
+        return dao.queryBuilder().where(DeskAssignmentDao.Properties.Status.notEq("delete")).list();
+    }
+
     // 获取所有任务（任务列表，但不包括是删除状态的）
     public static List<DeskAssignment> getList(DeskAssignmentDao dao, String groupId) {
-        return dao.queryBuilder().list();
-//        return dao.queryBuilder().where(DeskAssignmentDao.Properties.GroupId.eq(groupId)).list();
-//        return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.GroupId.eq(groupId), DeskAssignmentDao.Properties.Status.notEq("delete"))).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.GroupId.eq(groupId), DeskAssignmentDao.Properties.Status.notEq("delete"))).list();
     }
 
     public static List<DeskAssignment> getList(DeskAssignmentDao dao, String groupId, String userId) {
-        return dao.queryBuilder().list();
-//        return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.GroupId.eq(groupId), DeskAssignmentDao.Properties.UserId.eq(userId))).list();
-//        return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.GroupId.eq(groupId), DeskAssignmentDao.Properties.UserId.notEq(userId), DeskAssignmentDao.Properties.Status.notEq("delete"))).list();
+        return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.GroupId.eq(groupId), DeskAssignmentDao.Properties.UserId.notEq(userId), DeskAssignmentDao.Properties.Status.notEq("delete"))).list();
+    }
+
+    public static List<DeskAssignment> getWeekDayList(DeskAssignmentDao dao, String weekDay) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(DeskAssignmentDao.Properties.CircleType.like("%" + weekDay + "%"), DeskAssignmentDao.Properties.Status.notEq("delete"))).list();
     }
 
     public static List<DeskAssignment> getWeekDayList(DeskAssignmentDao dao, String groupId, String weekDay) {

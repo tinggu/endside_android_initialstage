@@ -10,29 +10,27 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class KeyEventTrace implements EntityInterface {
     @Id
+    private String id;
     private String eventId;
     private long timeStamp;
     @Index
     private String userId;
     @Index
     private String status;
-    @Index
-    private String groupId;
     private int deskId;
     private String matchLevel;
 
     @Index
     private String synTag;
 
-    @Generated(hash = 38369210)
-    public KeyEventTrace(String eventId, long timeStamp, String userId,
-            String status, String groupId, int deskId, String matchLevel,
-            String synTag) {
+    @Generated(hash = 1415366502)
+    public KeyEventTrace(String id, String eventId, long timeStamp, String userId,
+            String status, int deskId, String matchLevel, String synTag) {
+        this.id = id;
         this.eventId = eventId;
         this.timeStamp = timeStamp;
         this.userId = userId;
         this.status = status;
-        this.groupId = groupId;
         this.deskId = deskId;
         this.matchLevel = matchLevel;
         this.synTag = synTag;
@@ -47,9 +45,12 @@ public class KeyEventTrace implements EntityInterface {
                 + ", timeStamp = " + timeStamp
                 + ", userId = " + userId
                 + ", status = " + status
-                + ", groupId = " + groupId
                 + ", deskId = " + deskId
                 + ", matchLevel = " + matchLevel;
+    }
+
+    public void combineId() {
+        id = eventId + timeStamp;
     }
 
     public String getEventId() {
@@ -84,14 +85,6 @@ public class KeyEventTrace implements EntityInterface {
         this.status = status;
     }
 
-    public String getGroupId() {
-        return this.groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
     public int getDeskId() {
         return this.deskId;
     }
@@ -114,5 +107,13 @@ public class KeyEventTrace implements EntityInterface {
 
     public void setSynTag(String synTag) {
         this.synTag = synTag;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
