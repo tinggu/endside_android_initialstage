@@ -225,7 +225,7 @@
 
                 <fragment
                     android:id="@+id/keepwatch_signin_list_fragment"
-                    android:name="com.ctfww.module.keepwatch.fragment.KeepWatchSigninListFragment"
+                    android:name="com.ctfww.module.signin.fragment.SigninListFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"

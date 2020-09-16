@@ -83,7 +83,7 @@ public class KeyEventTraceAirship {
         boolean ret = false;
         for (int i = 0; i < keyEventTraceList.size(); ++i) {
             KeyEventTrace keyEventTrace = keyEventTraceList.get(i);
-            KeyEventTrace localKeyEventTrace = DBHelper.getInstance().getKeyEventTrace(keyEventTrace.getEventId());
+            KeyEventTrace localKeyEventTrace = DBHelper.getInstance().getKeyEventTrace(keyEventTrace.getEventId(), keyEventTrace.getTimeStamp());
             keyEventTrace.setSynTag("cloud");
             if (localKeyEventTrace == null) {
                 DBHelper.getInstance().addKeyEventTrace(keyEventTrace);

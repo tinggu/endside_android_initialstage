@@ -84,7 +84,7 @@ public class RouteDeskAirship {
         boolean ret = false;
         for (int i = 0; i < routeDeskList.size(); ++i) {
             RouteDesk routeDesk = routeDeskList.get(i);
-            RouteDesk localRouteDesk = DBHelper.getInstance().getRouteDesk(routeDesk.getRouteId(), routeDesk.getDeskId());
+            RouteDesk localRouteDesk = DBHelper.getInstance().getRouteDesk(routeDesk.getGroupId(), routeDesk.getRouteId(), routeDesk.getDeskId());
             if (localRouteDesk == null) {
                 routeDesk.setSynTag("cloud");
                 DBHelper.getInstance().addRouteDesk(routeDesk);

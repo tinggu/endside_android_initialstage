@@ -7,8 +7,6 @@ import com.ctfww.module.keyevents.Entity.DaoMaster;
 import com.ctfww.module.keyevents.Entity.DaoSession;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventDao;
-import com.ctfww.module.keyevents.Entity.KeyEventPerson;
-import com.ctfww.module.keyevents.Entity.KeyEventPersonDao;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.Entity.KeyEventTraceDao;
 
@@ -17,7 +15,6 @@ import java.util.List;
 public class DBHelper {
     private KeyEventDao keyEventDao;
     private KeyEventTraceDao keyEventTraceDao;
-    private KeyEventPersonDao keyEventPersonDao;
 
     private DBHelper() {
 
@@ -42,7 +39,6 @@ public class DBHelper {
         DaoSession daoSession = daoMaster.newSession();
         keyEventDao = daoSession.getKeyEventDao();
         keyEventTraceDao = daoSession.getKeyEventTraceDao();
-        keyEventPersonDao = daoSession.getKeyEventPersonDao();
     }
 
 
@@ -99,21 +95,47 @@ public class DBHelper {
         return KeyEventDBHelper.getNoSynAdditionList(keyEventDao);
     }
 
+    public List<KeyEvent> getCanSnatchList(String groupId) {
+        return KeyEventDBHelper.getCanSnatchList(keyEventDao, groupId);
+    }
+
+    public List<KeyEvent> getEndList(String groupId, long startTime, long endTime) {
+        return KeyEventDBHelper.getEndList(keyEventDao, groupId, startTime, endTime);
+    }
+
+    public List<KeyEvent> getEndList(String groupId, String userId, long startTime, long endTime) {
+        return KeyEventDBHelper.getEndList(keyEventDao, groupId, userId, startTime, endTime);
+    }
+
+    public long getEndCount(String groupId, long startTime, long endTime) {
+        return KeyEventDBHelper.getEndCount(keyEventDao, groupId, startTime, endTime);
+    }
+
+    public long getEndCount(String groupId, String userId, long startTime, long endTime) {
+        return KeyEventDBHelper.getEndCount(keyEventDao, groupId, userId, startTime, endTime);
+    }
+
+    public List<KeyEvent> getNotEndList(String groupId) {
+        return KeyEventDBHelper.getNotEndList(keyEventDao, groupId);
+    }
+
+    public List<KeyEvent> getNotEndList(String groupId, String userId) {
+        return KeyEventDBHelper.getNotEndList(keyEventDao, groupId, userId);
+    }
+
+    public long getNotEndCount(String groupId) {
+        return KeyEventDBHelper.getNotEndCount(keyEventDao, groupId);
+    }
+
+    public long getNotEndCount(String groupId, String userId) {
+        return KeyEventDBHelper.getNotEndCount(keyEventDao, groupId, userId);
+    }
+
     // 2. 关键事件处理相关
 
     // 增加事件追踪状态
     public boolean addKeyEventTrace(KeyEventTrace keyEventTrace) {
-        KeyEventTrace dbKeyEventTrace = KeyEventTraceDBHelper.get(keyEventTraceDao, keyEventTrace.getEventId());
-        if (dbKeyEventTrace == null) {
-            return KeyEventTraceDBHelper.add(keyEventTraceDao, keyEventTrace);
-        }
-
-        if (dbKeyEventTrace.getTimeStamp() < keyEventTrace.getTimeStamp()) {
-            KeyEventTraceDBHelper.update(keyEventTraceDao, keyEventTrace);
-            return true;
-        }
-
-        return false;
+        return KeyEventTraceDBHelper.addOrReplace(keyEventTraceDao, keyEventTrace);
     }
 
     // 更新事件追踪状态
@@ -121,83 +143,19 @@ public class DBHelper {
         return KeyEventTraceDBHelper.update(keyEventTraceDao, keyEventTrace);
     }
 
-    public KeyEventTrace getKeyEventTrace(String eventId) {
-        return KeyEventTraceDBHelper.get(keyEventTraceDao, eventId);
+    public KeyEventTrace getKeyEventTrace(String eventId, long timeStamp) {
+        return KeyEventTraceDBHelper.get(keyEventTraceDao, eventId, timeStamp);
+    }
+
+    public List<KeyEventTrace> getKeyEventTraceListForKeyEvent(String eventId) {
+        return KeyEventTraceDBHelper.getListForKeyEvent(keyEventTraceDao, eventId);
+    }
+
+    public List<KeyEventTrace> getKeyEventTraceListForGroup(String groupId) {
+        return KeyEventTraceDBHelper.getListForGroup(keyEventTraceDao, groupId);
     }
 
     public List<KeyEventTrace> getNoSynKeyEventTraceList() {
         return KeyEventTraceDBHelper.getNoSynList(keyEventTraceDao);
-    }
-
-    public boolean addKeyEventPerson(KeyEventPerson keyEventPerson) {
-        return KeyEventPersonDBHelper.insert(keyEventPersonDao, keyEventPerson);
-    }
-
-    public boolean updateKeyEventPerson(KeyEventPerson keyEventPerson) {
-        return KeyEventPersonDBHelper.update(keyEventPersonDao, keyEventPerson);
-    }
-
-    public KeyEventPerson getKeyEventPerson(String eventId) {
-        return KeyEventPersonDBHelper.get(keyEventPersonDao, eventId);
-    }
-
-    public List<KeyEventPerson> getKeyEventPersonList(String groupId) {
-        return KeyEventPersonDBHelper.getList(keyEventPersonDao, groupId);
-    }
-
-    public List<KeyEventPerson> getKeyEventPersonList(String groupId, String userId) {
-        return KeyEventPersonDBHelper.getList(keyEventPersonDao, groupId, userId);
-    }
-
-    public List<KeyEventPerson> getNoSynKeyEventPersonList() {
-        return KeyEventPersonDBHelper.getNoSynList(keyEventPersonDao);
-    }
-
-    public List<KeyEventPerson> getCanSnatchKeyEventPersonList(String groupId) {
-        return KeyEventPersonDBHelper.getCanSnatchList(keyEventPersonDao, groupId);
-    }
-
-    public List<KeyEventPerson> getDoingKeyEventPersonList(String groupId, String userId) {
-        return KeyEventPersonDBHelper.getDoingList(keyEventPersonDao, groupId, userId);
-    }
-
-    public List<KeyEventPerson> getNoEndKeyEventPersonList(String groupId) {
-        return KeyEventPersonDBHelper.getNoEndList(keyEventPersonDao, groupId);
-    }
-
-    public long getDoingKeyEventPersonCount(String groupId) {
-        return KeyEventPersonDBHelper.getDoingCount(keyEventPersonDao, groupId);
-    }
-
-    public long getNoEndKeyEventPersonCount(String groupId) {
-        return KeyEventPersonDBHelper.getNoEndCount(keyEventPersonDao, groupId);
-    }
-
-    public long getDoingKeyEventPersonCount(String groupId, String userId) {
-        return KeyEventPersonDBHelper.getDoingCount(keyEventPersonDao, groupId, userId);
-    }
-
-    public long getEndKeyEventPersonCount(String groupId) {
-        return KeyEventPersonDBHelper.getEndCount(keyEventPersonDao, groupId);
-    }
-
-    public long getEndKeyEventPersonCount(String groupId, String userId) {
-        return KeyEventPersonDBHelper.getEndCount(keyEventPersonDao, groupId, userId);
-    }
-
-    public long getEndKeyEventPersonCount(String groupId, long startTime, long endTime) {
-        return KeyEventPersonDBHelper.getEndCount(keyEventPersonDao, groupId, startTime, endTime);
-    }
-
-    public long getEndKeyEventPersonCount(String groupId, String userId, long startTime, long endTime) {
-        return KeyEventPersonDBHelper.getEndCount(keyEventPersonDao, groupId, userId, startTime, endTime);
-    }
-
-    public List<KeyEventPerson> getEndKeyEventPersonList(String groupId, long startTime, long endTime) {
-        return KeyEventPersonDBHelper.getEndList(keyEventPersonDao, groupId, startTime, endTime);
-    }
-
-    public List<KeyEventPerson> getEndKeyEventPersonList(String groupId, String userId, long startTime, long endTime) {
-        return KeyEventPersonDBHelper.getEndList(keyEventPersonDao, groupId, userId, startTime, endTime);
     }
 }

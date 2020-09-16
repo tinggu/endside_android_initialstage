@@ -44,36 +44,30 @@ public class Airship {
     }
 
     public void synToCloud() {
-        synDeskAssignmentToCloud();
-        synRouteAssignmentToCloud();
+        synAssignmentToCloud();
     }
 
     public void synFromCloud() {
-        synDeskAssignmentFromCloud();
-        synRouteAssignmentFromCloud();
+        synAssignmentFromCloud();
+        synTodayAssignmentFromCloud();
     }
 
     // 1. 任务的同步
 
     // 同步任务上云
-    public void synDeskAssignmentToCloud() {
-        DeskAssignmentAirship.synToCloud();
+    public void synAssignmentToCloud() {
+        AssignmentInfoAirship.synToCloud();
     }
 
     // 从云上同步任务
-    public void synDeskAssignmentFromCloud() {
-        DeskAssignmentAirship.synFromCloud();
+    public void synAssignmentFromCloud() {
+        AssignmentInfoAirship.synFromCloud();
     }
 
     // 2. 任务的同步
 
-    // 同步任务上云
-    public void synRouteAssignmentToCloud() {
-        RouteAssignmentAirship.synToCloud();
-    }
-
     // 从云上同步任务
-    public void synRouteAssignmentFromCloud() {
-        RouteAssignmentAirship.synFromCloud();
+    public void synTodayAssignmentFromCloud() {
+        TodayAssignmentAirship.synFromCloud();
     }
 }

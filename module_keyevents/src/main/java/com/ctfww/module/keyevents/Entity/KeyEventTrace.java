@@ -14,6 +14,8 @@ public class KeyEventTrace implements EntityInterface {
     private String eventId;
     private long timeStamp;
     @Index
+    private String groupId;
+    @Index
     private String userId;
     @Index
     private String status;
@@ -23,12 +25,14 @@ public class KeyEventTrace implements EntityInterface {
     @Index
     private String synTag;
 
-    @Generated(hash = 1415366502)
-    public KeyEventTrace(String id, String eventId, long timeStamp, String userId,
-            String status, int deskId, String matchLevel, String synTag) {
+    @Generated(hash = 1600781397)
+    public KeyEventTrace(String id, String eventId, long timeStamp, String groupId,
+            String userId, String status, int deskId, String matchLevel,
+            String synTag) {
         this.id = id;
         this.eventId = eventId;
         this.timeStamp = timeStamp;
+        this.groupId = groupId;
         this.userId = userId;
         this.status = status;
         this.deskId = deskId;
@@ -115,5 +119,13 @@ public class KeyEventTrace implements EntityInterface {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getGroupId() {
+        return this.groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

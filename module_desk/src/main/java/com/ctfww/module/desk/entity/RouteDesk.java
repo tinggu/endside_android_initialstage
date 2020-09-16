@@ -9,7 +9,9 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class RouteDesk implements EntityInterface {
     @Index
-    private String routeId;
+    private String groupId;
+    @Index
+    private int routeId;
     @Index
     private int deskId;
     private double lat;
@@ -20,9 +22,10 @@ public class RouteDesk implements EntityInterface {
     @Index
     private String synTag;
 
-    @Generated(hash = 1110296369)
-    public RouteDesk(String routeId, int deskId, double lat, double lng,
-            long timeStamp, String status, String synTag) {
+    @Generated(hash = 1498760864)
+    public RouteDesk(String groupId, int routeId, int deskId, double lat,
+            double lng, long timeStamp, String status, String synTag) {
+        this.groupId = groupId;
         this.routeId = routeId;
         this.deskId = deskId;
         this.lat = lat;
@@ -37,17 +40,26 @@ public class RouteDesk implements EntityInterface {
     }
 
     public String toString() {
-        return "routeId = " + routeId
+        return "groupId = " + groupId
+                + "routeId = " + routeId
                 + ", deskId = " + deskId
                 + ", lat = " + deskId
                 + ", lng = " + lng;
     }
 
-    public String getRouteId() {
+    public String getGroupId() {
+        return this.groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getRouteId() {
         return this.routeId;
     }
 
-    public void setRouteId(String routeId) {
+    public void setRouteId(int routeId) {
         this.routeId = routeId;
     }
 

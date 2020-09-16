@@ -45,7 +45,8 @@ public class ModifyRouteActivity extends AppCompatActivity implements View.OnCli
     private LinearLayout mDistLL;
     private TextView mDist;
 
-    private String mRouteId;
+    private String mGroupId;
+    private int mRouteId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +99,12 @@ public class ModifyRouteActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void modifyRouteSummary() {
-        if (TextUtils.isEmpty(mRouteId)) {
+        if (TextUtils.isEmpty(mGroupId) || mRouteId == 0) {
             finish();
             return;
         }
 
-        RouteSummary routeSummary  = DBHelper.getInstance().getRouteSummary(mRouteId);
+        RouteSummary routeSummary  = DBHelper.getInstance().getRouteSummary(mGroupId, mRouteId);
         if (routeSummary == null) {
             finish();
             return;
@@ -131,11 +132,11 @@ public class ModifyRouteActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void viewRoute() {
-        if (TextUtils.isEmpty(mRouteId)) {
+        if (TextUtils.isEmpty(mGroupId) || mRouteId == 0) {
             return;
         }
 
-        List<RouteDesk> routeDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mRouteId);
+        List<RouteDesk> routeDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mGroupId, mRouteId);
         if (routeDeskList.size() <= 1) {
             return;
         }
@@ -154,14 +155,15 @@ public class ModifyRouteActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void updateUI() {
-        mRouteId = getIntent().getStringExtra("route_id");
-        if (!TextUtils.isEmpty(mRouteId)) {
-            RouteSummary routeSummary = DBHelper.getInstance().getRouteSummary(mRouteId);
+        mGroupId = getIntent().getStringExtra("group_id");
+        mRouteId = getIntent().getIntExtra("route_id", 0);
+        if (!TextUtils.isEmpty(mGroupId) && mRouteId != 0) {
+            RouteSummary routeSummary = DBHelper.getInstance().getRouteSummary(mGroupId, mRouteId);
             if (routeSummary != null) {
                 mRouteName.setText(routeSummary.getRouteName());
             }
 
-            List<RouteDesk> routeDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mRouteId);
+            List<RouteDesk> routeDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mGroupId, mRouteId);
             double sum = 0.0;
             for (int i = 0; i < routeDeskList.size() - 1; ++i) {
                 RouteDesk routeDesk1 = routeDeskList.get(i);

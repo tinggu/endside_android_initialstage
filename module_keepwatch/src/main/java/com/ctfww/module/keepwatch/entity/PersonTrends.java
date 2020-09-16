@@ -1,149 +1,132 @@
 package com.ctfww.module.keepwatch.entity;
 
-import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.keyevents.Entity.KeyEventTrace;
+import com.ctfww.module.signin.entity.SigninInfo;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Index;
-import org.greenrobot.greendao.annotation.Generated;
-
-@Entity
 public class PersonTrends {
-    @Id
-    private String id;
-    @Index
-    private String groupId;
-    @Index
     private String userId;
-    private String objectId;
+    private int objectId;
     private long timeStamp;
-    private String status;
 
-    private double lat;
-    private double lng;
-
-    private String objectType;
-
-    @Generated(hash = 149809315)
-    public PersonTrends(String id, String groupId, String userId, String objectId,
-            long timeStamp, String status, double lat, double lng,
-            String objectType) {
-        this.id = id;
-        this.groupId = groupId;
-        this.userId = userId;
-        this.objectId = objectId;
-        this.timeStamp = timeStamp;
-        this.status = status;
-        this.lat = lat;
-        this.lng = lng;
-        this.objectType = objectType;
-    }
-
-    @Generated(hash = 1003366603)
-    public PersonTrends() {
-    }
-
-    public void combineId() {
-        id = GlobeFun.getSHA(groupId + userId);
-    }
+    private String type; // 动态类型，如"desk", "route", "key_event"
+    private String status; // 进展状态，如"create", "signin"
+    private String addition; // 附加信息，如事件Id
 
     public String toString() {
         return "userId = " + userId
+                + ", userId = " + userId
                 + ", objectId = " + objectId
                 + ", timeStamp = " + timeStamp
-                + ", status = " + status;
+                + ", type = " + type
+                + ", status = " + status
+                + ", addition = " + addition;
     }
 
     public String getStatusChinese() {
         String ret = "签到";
-        if ("signin".equals(status)) {
-            ret = "签到";
+        if ("desk".equals(type)) {
+            if ("signin".equals(status)) {
+                ret = "完成某点位签到";
+            }
+            else if ("snatch".equals(status)) {
+                ret = "抢到任务";
+            }
         }
-        else if ("create".equals(status)) {
-            ret = "上报事件";
+        else if ("route".equals(type)) {
+            if ("signin".equals(status)) {
+                ret = "完成某线路签到";
+            }
+            else if ("snatch".equals(status)) {
+                ret = "抢到任务";
+            }
         }
-        else if ("assignment".equals(status)) {
-            ret = "分派事件";
-        }
-        else if ("accepted".equals(status)) {
-            ret = "接受事件";
-        }
-        else if ("end".equals(status)) {
-            ret = "结束事件";
+        else if ("key_event".equals(type)) {
+            if ("create".equals(status)) {
+                ret = "上报事件";
+            }
+            else if ("received".equals(status)) {
+                ret = "收到事件分配";
+            }
+            else if ("snatch".equals(status)) {
+                ret = "抢到工单";
+            }
+            else if ("accepted".equals(status)) {
+                ret = "接受事件";
+            }
+            else if ("end".equals(status)) {
+                ret = "结束事件";
+            }
         }
 
         return ret;
     }
 
-    public String getId() {
-        return this.id;
+    public PersonTrends() {
+
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set(SigninInfo signin) {
+        userId = signin.getUserId();
+        objectId = signin.getObjectId();
+        timeStamp = signin.getTimeStamp();
+        type = signin.getType();
+        status = "signin";
     }
 
-    public String getGroupId() {
-        return this.groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getUserId() {
-        return this.userId;
+    public void set(KeyEventTrace keyEventTrace) {
+        userId = keyEventTrace.getUserId();
+        objectId = keyEventTrace.getDeskId();
+        timeStamp = keyEventTrace.getTimeStamp();
+        type = "key_event";
+        status = keyEventTrace.getStatus();
+        addition = keyEventTrace.getEventId();
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getObjectId() {
-        return this.objectId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setObjectId(String objectId) {
+    public void setObjectId(int objectId) {
         this.objectId = objectId;
     }
 
-    public long getTimeStamp() {
-        return this.timeStamp;
+    public int getObjectId() {
+        return objectId;
     }
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
 
-    public String getStatus() {
-        return this.status;
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public double getLat() {
-        return this.lat;
+    public String getStatus() {
+        return status;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setAddition(String addition) {
+        this.addition = addition;
     }
 
-    public double getLng() {
-        return this.lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
-    public String getObjectType() {
-        return this.objectType;
-    }
-
-    public void setObjectType(String objectType) {
-        this.objectType = objectType;
+    public String getAddition() {
+        return addition;
     }
 }

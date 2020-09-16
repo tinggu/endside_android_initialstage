@@ -33,13 +33,15 @@ public class KeyEvent implements EntityInterface {
     private String groupId;
     private int level;
 
+    private int score;
+
     @Index
     private String synTag;
 
-    @Generated(hash = 2055128624)
+    @Generated(hash = 1252255374)
     public KeyEvent(String eventId, long timeStamp, String userId, int type, String eventName, double lat,
             double lng, String address, int deskId, String description, String voicePath, String picPath,
-            String videoPath, String status, String groupId, int level, String synTag) {
+            String videoPath, String status, String groupId, int level, int score, String synTag) {
         this.eventId = eventId;
         this.timeStamp = timeStamp;
         this.userId = userId;
@@ -56,6 +58,7 @@ public class KeyEvent implements EntityInterface {
         this.status = status;
         this.groupId = groupId;
         this.level = level;
+        this.score = score;
         this.synTag = synTag;
     }
 
@@ -238,5 +241,13 @@ public class KeyEvent implements EntityInterface {
 
     public void setSynTag(String synTag) {
         this.synTag = synTag;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

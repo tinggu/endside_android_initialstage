@@ -26,27 +26,24 @@
 
         <activity android:name=".activity.KeepWatchSettingActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.KeepWatchAboutAppActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.KeepWatchLeakListActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ctfww.module.signin.activity.LeakListActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.KeepWatchStatisticsDetailActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.KeepWatchPersonTrendsListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PersonTrendsListActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.KeepWatchRankingListActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.KeepWatchSigninListActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ctfww.module.signin.activity.SigninListActivity" android:screenOrientation="portrait"/>
 
 
         <!--NFC页面-->
 
 
         <!--扫码页面-->
-        <activity
-            android:name=".activity.ScanActivity"
-            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".activity.KeepWatchImageAndVideoPreviewActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activity.KeepWatchReportSigninActivity"
+            android:name=".activity.ReportSigninActivity"
             android:screenOrientation="portrait"/>
 
         <activity

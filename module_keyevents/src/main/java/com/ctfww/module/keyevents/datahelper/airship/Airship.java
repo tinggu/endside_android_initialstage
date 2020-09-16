@@ -41,13 +41,11 @@ public class Airship {
     public void synToCloud() {
         synKeyEventToCloud();
         synKeyEventTraceToCloud();
-        synKeyEventPersonToCloud();
     }
 
     public void synFromCloud() {
         synKeyEventFromCloud();
         synKeyEventTraceFromCloud();
-        synKeyEventPersonFromCloud();
     }
 
     public void synKeyEventToCloud() {
@@ -65,13 +63,5 @@ public class Airship {
 
     public void synKeyEventTraceFromCloud() {
         KeyEventTraceAirship.synFromCloud();
-    }
-
-    public void synKeyEventPersonToCloud() {
-        KeyEventPersonAirship.synToCloud();
-    }
-
-    public void synKeyEventPersonFromCloud() {
-        KeyEventPersonAirship.synFromCloud();
     }
 }

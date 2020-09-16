@@ -72,6 +72,10 @@ public class DBHelper {
         return DeskDBHelper.getList(deskInfoDao, groupId);
     }
 
+    public long getDeskCount(String groupId) {
+        return DeskDBHelper.getCount(deskInfoDao, groupId);
+    }
+
     // 删除签到点
     public void deleteDesk(DeskInfo desk) {
         DeskDBHelper.delete(deskInfoDao, desk);
@@ -91,8 +95,8 @@ public class DBHelper {
     }
 
     // 获取路线概要信息
-    public RouteSummary getRouteSummary(String routeId) {
-        return RouteSummaryDBHelper.get(routeSummaryDao, routeId);
+    public RouteSummary getRouteSummary(String groupId, int routeId) {
+        return RouteSummaryDBHelper.get(routeSummaryDao, groupId, routeId);
     }
 
     // 获取路线概要信息列表
@@ -118,13 +122,13 @@ public class DBHelper {
     }
 
     // 获得某线路的签到点
-    public RouteDesk getRouteDesk(String routeId, int deskId) {
-        return RouteDeskDBHelper.get(routeDeskDao, routeId, deskId);
+    public RouteDesk getRouteDesk(String groupId, int routeId, int deskId) {
+        return RouteDeskDBHelper.get(routeDeskDao, groupId, routeId, deskId);
     }
 
     // 获得某线路的签到点
-    public List<RouteDesk> getRouteDeskInOneRoute(String routeId) {
-        return RouteDeskDBHelper.getInOneRoute(routeDeskDao, routeId);
+    public List<RouteDesk> getRouteDeskInOneRoute(String groupId, int routeId) {
+        return RouteDeskDBHelper.getInOneRoute(routeDeskDao, groupId, routeId);
     }
 
     // 获得未同步的路线签到点
@@ -133,25 +137,25 @@ public class DBHelper {
     }
 
     // 确认新建路线
-    public void newRoute(String routeId) {
-        RouteSummary routeSummary = RouteSummaryDBHelper.get(routeSummaryDao, routeId);
+    public void newRoute(String groupId, int routeId) {
+        RouteSummary routeSummary = RouteSummaryDBHelper.get(routeSummaryDao, groupId, routeId);
         if (routeSummary == null) {
             return;
         }
 
-        RouteSummaryDBHelper.newRoute(routeSummaryDao, routeId);
-        RouteDeskDBHelper.newRoute(routeDeskDao, routeId);
+        RouteSummaryDBHelper.newRoute(routeSummaryDao, groupId, routeId);
+        RouteDeskDBHelper.newRoute(routeDeskDao, groupId, routeId);
     }
 
     // 删除路线
-    public void deleteKeepWatchRoute(String routeId) {
-        RouteSummary routeSummary = RouteSummaryDBHelper.get(routeSummaryDao, routeId);
+    public void deleteKeepWatchRoute(String groupId, int routeId) {
+        RouteSummary routeSummary = RouteSummaryDBHelper.get(routeSummaryDao, groupId, routeId);
         if (routeSummary == null) {
             return;
         }
 
         boolean isDirect = "0".equals(routeSummary.getSynTag()) ? true : false;
-        RouteSummaryDBHelper.deleteRoute(routeSummaryDao, routeId, isDirect);
-        RouteDeskDBHelper.deleteRoute(routeDeskDao, routeId, isDirect);
+        RouteSummaryDBHelper.deleteRoute(routeSummaryDao, groupId, routeId, isDirect);
+        RouteDeskDBHelper.deleteRoute(routeDeskDao, groupId, routeId, isDirect);
     }
 }

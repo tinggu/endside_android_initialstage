@@ -21,13 +21,14 @@ public class KeepWatchApplication extends BaseApplication {
         SPUtil.setSPFileName("monitor");
 
         // 初始化cloud
-        CloudClient.getInstance().init("http://www.littlepine.cn"); // http://39.98.147.77:8888
+        CloudClient.getInstance().init("http://pro.littlepine.cn"); // http://39.98.147.77:8888
 
         // 初始化各个业务模块的网络模块和数据库模块
         Utils.start(this);
-        com.ctfww.module.keepwatch.Utils.start(this);
+        com.ctfww.module.user.datahelper.Utils.start(this);
         com.ctfww.module.desk.datahelper.Utils.start(this);
         com.ctfww.module.assignment.datahelper.Utils.start(this);
+        com.ctfww.module.signin.datahelper.Utils.start(this);
         com.ctfww.module.keyevents.datahelper.Utils.init(this);
 
         // 初始化tms
@@ -36,8 +37,6 @@ public class KeepWatchApplication extends BaseApplication {
 
         // 初始化百度地圖
         BaiduMapUtils.init(this);
-
-        com.ctfww.module.keepwatch.Utils.synData();
 
         // 开启IM
         connectionStateMonitor = new ConnectionStateMonitor();

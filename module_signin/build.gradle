@@ -52,5 +52,6 @@ dependencies {
     api config_dependencies["recyclerview"]
     api project(':commonlib')
     api project(':module_fingerprint')
+    api project(':module_assignment')
     annotationProcessor config_dependencies["arouter_compiler"]
 }

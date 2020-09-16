@@ -35,7 +35,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(path = "/dest/createRoute")
+@Route(path = "/desk/createRoute")
 public class CreateRouteActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = "CreateRouteActivity";
 
@@ -43,15 +43,14 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
     private TextView mTittle;
     private TextView mStartEnd;
     private EditText mRouteName;
+    private EditText mRouteId;
     private LinearLayout mDistLL;
     private TextView mDist;
 
     private int mWorkStatus;
     private LocationGson mLastLocation;
-    private String mRouteId;
 
     private List<RouteDesk> mDeskList;
-    private String mType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,25 +71,30 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
         mStartEnd = findViewById(R.id.top_addition);
         mStartEnd.setText("开始");
         mStartEnd.setVisibility(View.VISIBLE);
+        mRouteId.setVisibility(R.id.route_id);
         mRouteName = findViewById(R.id.route_name);
         mDistLL = findViewById(R.id.dist_ll);
         mDist = findViewById(R.id.dist);
 
         mWorkStatus = 0;
 
-        mRouteId = getIntent().getStringExtra("route_id");
-        if (TextUtils.isEmpty(mRouteId)) {
-            mRouteId = GlobeFun.getSHA(SPStaticUtils.getString("user_open_id") + System.currentTimeMillis());
-            mType = "new";
-            mDeskList = new ArrayList<>();
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return;
         }
-        else {
-            RouteSummary routeSummary = DBHelper.getInstance().getRouteSummary(mRouteId);
+
+        int routeId = getIntent().getIntExtra("route_id", 0);
+        if (routeId != 0) {
+            mRouteId.setText("" + routeId);
+            RouteSummary routeSummary = DBHelper.getInstance().getRouteSummary(groupId, routeId);
             if (routeSummary != null) {
                 mRouteName.setText(routeSummary.getRouteName());
-                mType = "continue";
-                mDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(mRouteId);
+                mDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(groupId, routeId);
             }
+
+            mStartEnd.setText("继续");
+            GlobeFun.setEditTextReadOnly(mRouteId);
+            GlobeFun.setEditTextReadOnly(mRouteName);
         }
 
         updateUI();
@@ -110,68 +114,99 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
         }
         else if (id == mStartEnd.getId()) {
             if (mWorkStatus == 0) {
-                if (TextUtils.isEmpty(mRouteName.getText().toString())) {
-                    DialogUtils.onlyPrompt("请输入路线名称！", this);
-                    return;
-                }
-
-                GlobeFun.setEditTextReadOnly(mRouteName);
-                mWorkStatus = 1;
-                mStartEnd.setText("结束");
-                addRoute();
-                if (mDeskList.isEmpty()) {
-                    Location location = GPSLocationManager.getInstances(this).getCurrLocation();
-                    if (location != null) {
-                        LocationGson locationGson = new LocationGson(location);
-                        mLastLocation = locationGson;
-                    }
-                }
-                else {
-                    mLastLocation = new LocationGson();
-                    RouteDesk routeDesk = mDeskList.get(mDeskList.size() - 1);
-                    mLastLocation.setLat(routeDesk.getLat());
-                    mLastLocation.setLat(routeDesk.getLng());
-                    mLastLocation.setTimeStamp(routeDesk.getTimeStamp());
-                }
+                createRouteSummary();
             }
             else if (mWorkStatus == 1) {
-                mWorkStatus = 2;
-                mStartEnd.setText("已完成");
-                if (mDeskList.isEmpty()) {
-                    DialogUtils.selectDialog("还没有采集任何控制点，确实不继续采集？", this, new DialogUtils.Callback() {
-                        @Override
-                        public void onConfirm(int radioSelectItem) {
-                            DBHelper.getInstance().deleteKeepWatchRoute(mRouteId);
-                            finish();
-                        }
-
-                        @Override
-                        public void onCancel() {
-
-                        }
-                    });
-                }
-                else {
-                    Location location = GPSLocationManager.getInstances(this).getCurrLocation();
-                    if (location != null) {
-                        LocationGson locationGson = new LocationGson(location);
-                        mLastLocation = locationGson;
-                        addDesk(locationGson);
-                    }
-                    else {
-                        addDesk(mLastLocation);
-                    }
-
-                    DBHelper.getInstance().newRoute(mRouteId);
-                    Airship.getInstance().synRouteSummaryToCloud();
-                    Airship.getInstance().synRouteDeskToCloud();
-                }
-
-
+                finishCreateRoute();
             }
         }
         else if (id == mDistLL.getId()) {
             viewRoute();
+        }
+    }
+
+    private void createRouteSummary() {
+        if (TextUtils.isEmpty(mRouteName.getText().toString())) {
+            DialogUtils.onlyPrompt("请输入路线名称！", this);
+            return;
+        }
+
+        int routeId = GlobeFun.parseInt(mRouteId.getText().toString());
+        if (routeId == 0) {
+            DialogUtils.onlyPrompt("请输入路线编号！", this);
+            return;
+        }
+
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
+
+        mWorkStatus = 1;
+        mStartEnd.setText("结束");
+
+        RouteSummary routeSummary = DBHelper.getInstance().getRouteSummary(groupId, routeId);
+        if (routeSummary == null) {
+            addRoute();
+            GlobeFun.setEditTextReadOnly(mRouteId);
+            GlobeFun.setEditTextReadOnly(mRouteName);
+        }
+
+        if (mDeskList.isEmpty()) {
+            Location location = GPSLocationManager.getInstances(this).getCurrLocation();
+            if (location != null) {
+                LocationGson locationGson = new LocationGson(location);
+                addDesk(locationGson);
+            }
+        }
+        else {
+            mLastLocation = new LocationGson();
+            RouteDesk routeDesk = mDeskList.get(mDeskList.size() - 1);
+            mLastLocation.setLat(routeDesk.getLat());
+            mLastLocation.setLat(routeDesk.getLng());
+            mLastLocation.setTimeStamp(routeDesk.getTimeStamp());
+        }
+    }
+
+    private void finishCreateRoute() {
+        mWorkStatus = 2;
+        mStartEnd.setText("已完成");
+
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
+
+        int routeId = GlobeFun.parseInt(mRouteId.getText().toString());
+
+        if (mDeskList.isEmpty()) {
+            DialogUtils.selectDialog("还没有采集任何控制点，确实不继续采集？", this, new DialogUtils.Callback() {
+                @Override
+                public void onConfirm(int radioSelectItem) {
+                    DBHelper.getInstance().deleteKeepWatchRoute(groupId, routeId);
+                    finish();
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+            });
+        }
+        else {
+            Location location = GPSLocationManager.getInstances(this).getCurrLocation();
+            if (location != null) {
+                LocationGson locationGson = new LocationGson(location);
+                mLastLocation = locationGson;
+                addDesk(locationGson);
+            }
+            else {
+                addDesk(mLastLocation);
+            }
+
+            DBHelper.getInstance().newRoute(groupId, routeId);
+            Airship.getInstance().synRouteSummaryToCloud();
+            Airship.getInstance().synRouteDeskToCloud();
         }
     }
 
@@ -204,7 +239,8 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
         String routeName = mRouteName.getText().toString();
         RouteSummary route = new RouteSummary();
         route.setGroupId(groupId);
-        route.setRouteId(mRouteId);
+        int routeId = GlobeFun.parseInt(mRouteId.getText().toString());
+        route.setRouteId(routeId);
         route.setRouteName(routeName);
         route.setStartTimeStamp(System.currentTimeMillis());
         route.setTimeStamp(System.currentTimeMillis());
@@ -220,9 +256,16 @@ public class CreateRouteActivity extends AppCompatActivity implements View.OnCli
             return;
         }
 
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
+
         RouteDesk routeDesk = new RouteDesk();
         mLastLocation = location;
-        routeDesk.setRouteId(mRouteId);
+        routeDesk.setGroupId(groupId);
+        int routeId = GlobeFun.parseInt(mRouteId.getText().toString());
+        routeDesk.setRouteId(routeId);
         routeDesk.setLat(location.getLat());
         routeDesk.setLng(location.getLng());
         routeDesk.setTimeStamp(System.currentTimeMillis());

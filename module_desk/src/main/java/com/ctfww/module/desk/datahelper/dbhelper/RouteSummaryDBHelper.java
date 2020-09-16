@@ -36,8 +36,8 @@ public class RouteSummaryDBHelper {
     }
 
     // 获取路线概要信息
-    public static RouteSummary get(RouteSummaryDao dao, String routeId) {
-        return dao.queryBuilder().where(RouteSummaryDao.Properties.RouteId.eq(routeId)).unique();
+    public static RouteSummary get(RouteSummaryDao dao, String groupId, int routeId) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(RouteSummaryDao.Properties.GroupId.eq(groupId), RouteSummaryDao.Properties.RouteId.eq(routeId))).unique();
     }
 
     // 获取路线概要信息列表
@@ -46,8 +46,8 @@ public class RouteSummaryDBHelper {
     }
 
     // 删除某条路线
-    public static void newRoute(RouteSummaryDao dao, String routeId) {
-        RouteSummary routeSummary = dao.queryBuilder().where(RouteSummaryDao.Properties.RouteId.eq(routeId)).unique();
+    public static void newRoute(RouteSummaryDao dao, String groupId, int routeId) {
+        RouteSummary routeSummary = dao.queryBuilder().where(dao.queryBuilder().and(RouteSummaryDao.Properties.GroupId.eq(groupId), RouteSummaryDao.Properties.RouteId.eq(routeId))).unique();
         if (routeSummary == null) {
             return;
         }
@@ -58,8 +58,8 @@ public class RouteSummaryDBHelper {
     }
 
     // 删除某条路线
-    public static void deleteRoute(RouteSummaryDao dao, String routeId, boolean isDirect) {
-        RouteSummary routeSummary = dao.queryBuilder().where(RouteSummaryDao.Properties.RouteId.eq(routeId)).unique();
+    public static void deleteRoute(RouteSummaryDao dao, String groupId, int routeId, boolean isDirect) {
+        RouteSummary routeSummary = dao.queryBuilder().where(dao.queryBuilder().and(RouteSummaryDao.Properties.GroupId.eq(groupId), RouteSummaryDao.Properties.RouteId.eq(routeId))).unique();
         if (routeSummary == null) {
             return;
         }

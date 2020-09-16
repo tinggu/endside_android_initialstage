@@ -21,6 +21,16 @@ public class KeyEventTraceDBHelper {
         }
     }
 
+    public static boolean addOrReplace(KeyEventTraceDao dao, KeyEventTrace keyEventTrace) {
+        try {
+            dao.insertOrReplace(keyEventTrace);
+            return true;
+        }
+        catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
+
     public static boolean update(KeyEventTraceDao dao, KeyEventTrace keyEventTrace) {
         try {
             dao.update(keyEventTrace);
@@ -31,8 +41,19 @@ public class KeyEventTraceDBHelper {
         }
     }
 
-    public static KeyEventTrace get(KeyEventTraceDao dao, String eventId) {
-        return dao.queryBuilder().where(KeyEventTraceDao.Properties.EventId.eq(eventId)).unique();
+    public static KeyEventTrace get(KeyEventTraceDao dao, String eventId, long timeStamp) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(KeyEventTraceDao.Properties.EventId.eq(eventId), KeyEventTraceDao.Properties.TimeStamp.eq(timeStamp))).unique();
+    }
+
+    public static List<KeyEventTrace> getListForKeyEvent(KeyEventTraceDao dao, String eventId) {
+        return dao.queryBuilder().where(KeyEventTraceDao.Properties.EventId.eq(eventId)).list();
+    }
+
+    public static List<KeyEventTrace> getListForGroup(KeyEventTraceDao dao, String groupId) {
+        return dao.queryBuilder()
+                .where(KeyEventTraceDao.Properties.GroupId.eq(groupId))
+                .orderDesc(KeyEventTraceDao.Properties.TimeStamp)
+                .list();
     }
 
     public static List<KeyEventTrace> getNoSynList(KeyEventTraceDao dao) {

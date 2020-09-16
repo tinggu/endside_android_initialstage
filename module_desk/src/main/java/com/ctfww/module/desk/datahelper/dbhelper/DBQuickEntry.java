@@ -21,6 +21,15 @@ public class DBQuickEntry {
         return DBHelper.getInstance().getDeskList(groupId);
     }
 
+    public static long getDeskCount() {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return 0;
+        }
+
+        return DBHelper.getInstance().getDeskCount(groupId);
+    }
+
     public static List<RouteSummary> getWorkingRouteSummaryList() {
         String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {

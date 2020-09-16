@@ -5,26 +5,20 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
+import com.ctfww.module.assignment.entity.AssignmentInfo;
+import com.ctfww.module.assignment.entity.AssignmentInfoDao;
 import com.ctfww.module.assignment.entity.DaoMaster;
 import com.ctfww.module.assignment.entity.DaoSession;
-import com.ctfww.module.assignment.entity.DeskAssignment;
-import com.ctfww.module.assignment.entity.DeskAssignmentDao;
-import com.ctfww.module.assignment.entity.DeskTodayAssignment;
-import com.ctfww.module.assignment.entity.DeskTodayAssignmentDao;
-import com.ctfww.module.assignment.entity.RouteAssignment;
-import com.ctfww.module.assignment.entity.RouteAssignmentDao;
-import com.ctfww.module.assignment.entity.RouteTodayAssignment;
-import com.ctfww.module.assignment.entity.RouteTodayAssignmentDao;
+import com.ctfww.module.assignment.entity.TodayAssignment;
+import com.ctfww.module.assignment.entity.TodayAssignmentDao;
 
 import java.util.List;
 
 public class DBHelper {
     private final static String TAG = "DBHelper";
 
-    private DeskAssignmentDao deskAssignmentDao;
-    private RouteAssignmentDao routeAssignmentDao;
-    private DeskTodayAssignmentDao deskTodayAssignmentDao;
-    private RouteTodayAssignmentDao routeTodayAssignmentDao;
+    private AssignmentInfoDao assignmentInfoDao;
+    private TodayAssignmentDao todayAssignmentDao;
 
     private static class Inner {
         private static final DBHelper INSTANCE = new DBHelper();
@@ -44,226 +38,206 @@ public class DBHelper {
         DaoMaster daoMaster = new DaoMaster(db);
         DaoSession daoSession = daoMaster.newSession();
 
-        deskAssignmentDao = daoSession.getDeskAssignmentDao();
-        routeAssignmentDao = daoSession.getRouteAssignmentDao();
-        deskTodayAssignmentDao = daoSession.getDeskTodayAssignmentDao();
-        routeTodayAssignmentDao = daoSession.getRouteTodayAssignmentDao();
+        assignmentInfoDao = daoSession.getAssignmentInfoDao();
+        todayAssignmentDao = daoSession.getTodayAssignmentDao();
     }
 
     // 1. 与任务有关
 
     // 用于app增加任务
-    public boolean addDeskAssignment(DeskAssignment deskAssignment) {
-        return DeskAssignmentDBHelper.add(deskAssignmentDao, deskAssignment);
+    public boolean addAssignment(AssignmentInfo info) {
+        return AssignmentInfoDBHelper.add(assignmentInfoDao, info);
     }
 
     // 用于app对任务信息的修改（包括删除：将status置为“delete”状态）
-    public void updateDeskAssignment(DeskAssignment deskAssignment) {
-        DeskAssignmentDBHelper.update(deskAssignmentDao, deskAssignment);
+    public void updateAssignment(AssignmentInfo info) {
+        AssignmentInfoDBHelper.update(assignmentInfoDao, info);
     }
 
     // 获取需要同步上云的任务
-    public List<DeskAssignment> getNoSynDeskAssignmentList() {
-        return DeskAssignmentDBHelper.getNoSynList(deskAssignmentDao);
+    public List<AssignmentInfo> getNoSynAssignmentList() {
+        return AssignmentInfoDBHelper.getNoSynList(assignmentInfoDao);
     }
 
     // 用于app查看某个任务详细信息
     // 用于app确实是否存在该任务
-    public DeskAssignment getDeskAssignment(String groupId, int deskId, String userId) {
-        return DeskAssignmentDBHelper.get(deskAssignmentDao, groupId, deskId, userId);
+    public AssignmentInfo getAssignment(String groupId, int objectId, String userId, String type) {
+        return AssignmentInfoDBHelper.get(assignmentInfoDao, groupId, objectId, userId, type);
     }
 
-    public DeskAssignment getDeskAssignment(String groupId, int deskId, String routeId, String userId, String weekDay) {
-        return DeskAssignmentDBHelper.get(deskAssignmentDao, groupId, deskId, routeId, userId, weekDay);
-    }
-
-    // 获取所有任务（任务列表，但不包括是删除状态的）
-    public List<DeskAssignment> getDeskAssignmentList(String groupId) {
-        return DeskAssignmentDBHelper.getList(deskAssignmentDao, groupId);
-    }
-
-    public List<DeskAssignment> getDeskAssignmentList(String groupId, String userId) {
-        return DeskAssignmentDBHelper.getList(deskAssignmentDao, groupId, userId);
-    }
-
-    public List<DeskAssignment> getWeekDayDeskAssignmentList(String weekDay) {
-        return DeskAssignmentDBHelper.getWeekDayList(deskAssignmentDao, weekDay);
-    }
-
-    public List<DeskAssignment> getWeekDayDeskAssignmentList(String groupId, String weekDay) {
-        return DeskAssignmentDBHelper.getWeekDayList(deskAssignmentDao, groupId, weekDay);
-    }
-
-    public List<DeskAssignment> getWeekDayDeskAssignmentList(String groupId, String userId, String weekDay) {
-        return DeskAssignmentDBHelper.getWeekDayList(deskAssignmentDao, groupId, userId, weekDay);
-    }
-
-    // 2. 与任务有关
-
-    // 用于app增加任务
-    public boolean addRouteAssignment(RouteAssignment routeAssignment) {
-        return RouteAssignmentDBHelper.add(routeAssignmentDao, routeAssignment);
-    }
-
-    // 用于app对任务信息的修改（包括删除：将status置为“delete”状态）
-    public void updateRouteAssignment(RouteAssignment routeAssignment) {
-        RouteAssignmentDBHelper.update(routeAssignmentDao, routeAssignment);
-    }
-
-    // 获取需要同步上云的任务
-    public List<RouteAssignment> getNoSynRouteAssignmentList() {
-        return RouteAssignmentDBHelper.getNoSynList(routeAssignmentDao);
-    }
-
-    // 用于app查看某个任务详细信息
-    // 用于app确实是否存在该任务
-    public RouteAssignment getRouteAssignment(String groupId, String routeId, String userId) {
-        return RouteAssignmentDBHelper.get(routeAssignmentDao, groupId, routeId, userId);
-    }
-
-    public RouteAssignment getRouteAssignment(String groupId, String routeId, String userId, String weekDay) {
-        return RouteAssignmentDBHelper.get(routeAssignmentDao, groupId, routeId, userId, weekDay);
+    public AssignmentInfo getAssignment(String groupId, int objectId, String userId, String weekDay, String type) {
+        return AssignmentInfoDBHelper.get(assignmentInfoDao, groupId, objectId, userId, weekDay, type);
     }
 
     // 获取所有任务（任务列表，但不包括是删除状态的）
-    public List<RouteAssignment> getRouteAssignmentList(String groupId) {
-        return RouteAssignmentDBHelper.getList(routeAssignmentDao, groupId);
+    public List<AssignmentInfo> getAssignmentList(String groupId) {
+        return AssignmentInfoDBHelper.getList(assignmentInfoDao, groupId);
     }
 
-    public List<RouteAssignment> getRouteAssignmentList(String groupId, String userId) {
-        return RouteAssignmentDBHelper.getList(routeAssignmentDao, groupId, userId);
+    public List<AssignmentInfo> getAssignmentList(String groupId, String userId) {
+        return AssignmentInfoDBHelper.getList(assignmentInfoDao, groupId, userId);
     }
 
-    public List<RouteAssignment> getWeekDayRouteAssignmentList(String weekDay) {
-        return RouteAssignmentDBHelper.getWeekDayList(routeAssignmentDao, weekDay);
+    public List<AssignmentInfo> getWeekDayAssignmentList(String weekDay) {
+        return AssignmentInfoDBHelper.getWeekDayList(assignmentInfoDao, weekDay);
     }
 
-    public List<RouteAssignment> getWeekDayRouteAssignmentList(String groupId, String weekDay) {
-        return RouteAssignmentDBHelper.getWeekDayList(routeAssignmentDao, groupId, weekDay);
+    public List<AssignmentInfo> getWeekDayAssignmentList(String groupId, String weekDay) {
+        return AssignmentInfoDBHelper.getWeekDayList(assignmentInfoDao, groupId, weekDay);
     }
 
-    public List<RouteAssignment> getWeekDayRouteAssignmentList(String groupId, String userId, String weekDay) {
-        return RouteAssignmentDBHelper.getWeekDayList(routeAssignmentDao, groupId, userId, weekDay);
+    public List<AssignmentInfo> getWeekDayAssignmentList(String groupId, String userId, String weekDay) {
+        return AssignmentInfoDBHelper.getWeekDayList(assignmentInfoDao, groupId, userId, weekDay);
     }
 
     // 3. 与任务有关
 
-    public boolean addDeskTodayAssignment(DeskTodayAssignment info) {
-        return DeskTodayAssignmentDBHelper.add(deskTodayAssignmentDao, info);
+    public boolean addTodayAssignment(TodayAssignment info) {
+        return TodayAssignmentDBHelper.add(todayAssignmentDao, info);
     }
 
-    public void updateDeskTodayAssignment(DeskTodayAssignment info) {
-        DeskTodayAssignmentDBHelper.update(deskTodayAssignmentDao, info);
+    public void updateTodayAssignment(TodayAssignment info) {
+        TodayAssignmentDBHelper.update(todayAssignmentDao, info);
     }
 
-    public void updateDeskTodayAssignment(DeskAssignment info) {
-        DeskTodayAssignment deskTodayAssignment = getDeskTodayAssignment(info.getGroupId(), info.getDeskId(), info.getUserId());
+    public void updateTodayAssignment(AssignmentInfo info) {
+        TodayAssignment todayAssignment = getTodayAssignment(info.getGroupId(), info.getObjectId(), info.getUserId(), MyDateTimeUtils.getTodayStartTime(), info.getType());
         String weekDay = GlobeFun.getTodayWeekDayStr();
-        if ("delete".equals(info.getStatus()) || -1 == info.getCircleType().indexOf(weekDay)) {
-            if (deskTodayAssignment != null) {
-                deleteDeskTodayAssignment(deskTodayAssignment);
+        if (todayAssignment == null) { // 今日本没有此任务
+            if (-1 == info.getCircleType().indexOf(weekDay)) { // 更新的计划任务不涉及今天
                 return;
             }
-        }
 
-        if (deskTodayAssignment == null) {
-            deskTodayAssignment = new DeskTodayAssignment();
-            deskTodayAssignment.setAssignmentId(info.getGroupId() + info.getId() + MyDateTimeUtils.getTodayStartTime());
-            deskTodayAssignment.setDeskId(info.getDeskId());
-            deskTodayAssignment.setGroupId(info.getGroupId());
-            deskTodayAssignment.setUserId(info.getUserId());
-            deskTodayAssignment.setFrequency(info.getFrequency());
-            deskTodayAssignment.setStartTime(info.getStartTime());
-            deskTodayAssignment.setEndTime(info.getEndTime());
+            todayAssignment = new TodayAssignment();
+            todayAssignment.setAssignmentId(info.createTodayAssignmentId(info.getGroupId(), info.getObjectId(), info.getUserId(), info.getType()));
+            todayAssignment.setObjectId(info.getObjectId());
+            todayAssignment.setGroupId(info.getGroupId());
+            todayAssignment.setUserId(info.getUserId());
+            todayAssignment.setDayTimeStamp(MyDateTimeUtils.getTodayStartTime());
+            todayAssignment.setStartTime(info.getStartTime());
+            todayAssignment.setEndTime(info.getEndTime());
+            todayAssignment.setFrequency(info.getFrequency());
+            todayAssignment.setScore(info.getScore());
+            todayAssignment.setType(info.getType());
+            todayAssignment.setTimeStamp(info.getTimeStamp());
 
-            DBHelper.getInstance().addDeskTodayAssignment(deskTodayAssignment);
+            addTodayAssignment(todayAssignment);
         }
         else {
-            deskTodayAssignment.setFrequency(info.getFrequency());
-            deskTodayAssignment.setStartTime(info.getStartTime());
-            deskTodayAssignment.setEndTime(info.getEndTime());
-
-            DBHelper.getInstance().updateDeskTodayAssignment(deskTodayAssignment);
-        }
-    }
-
-    public DeskTodayAssignment getDeskTodayAssignment(String groupId, int deskId, String userId) {
-        return DeskTodayAssignmentDBHelper.get(deskTodayAssignmentDao, groupId, deskId, userId);
-    }
-
-    public List<DeskTodayAssignment> getDeskTodayAssignmentList(String groupId) {
-        return DeskTodayAssignmentDBHelper.getList(deskTodayAssignmentDao, groupId);
-    }
-
-    public List<DeskTodayAssignment> getDeskTodayAssignmentList(String groupId, String userId) {
-        return DeskTodayAssignmentDBHelper.getList(deskTodayAssignmentDao, groupId, userId);
-    }
-
-    public void deleteDeskTodayAssignment(DeskTodayAssignment deskTodayAssignment) {
-        DeskTodayAssignmentDBHelper.delete(deskTodayAssignmentDao, deskTodayAssignment);
-    }
-
-    public void clearDeskTodayAssignment() {
-        DeskTodayAssignmentDBHelper.clear(deskTodayAssignmentDao);
-    }
-
-    // 4. 与任务有关
-
-    public boolean addRouteTodayAssignment(RouteTodayAssignment info) {
-        return RouteTodayAssignmentDBHelper.add(routeTodayAssignmentDao, info);
-    }
-
-    public void updateRouteTodayAssignment(RouteTodayAssignment info) {
-        RouteTodayAssignmentDBHelper.update(routeTodayAssignmentDao, info);
-    }
-
-    public void updateRouteTodayAssignment(RouteAssignment info) {
-        RouteTodayAssignment routeTodayAssignment = getRouteTodayAssignment(info.getGroupId(), info.getRouteId(), info.getUserId());
-        String weekDay = GlobeFun.getTodayWeekDayStr();
-        if ("delete".equals(info.getStatus()) || -1 == info.getCircleType().indexOf(weekDay)) {
-            if (routeTodayAssignment != null) {
-                deleteRouteTodayAssignment(routeTodayAssignment);
-                return;
+            if ("delete".equals(info.getStatus()) || -1 == info.getCircleType().indexOf(weekDay)) {
+                todayAssignment.setStatus("delete");
+                todayAssignment.setTimeStamp(info.getTimeStamp());
+                updateTodayAssignment(todayAssignment);
+            }
+            else {
+                todayAssignment.setStatus("reserve");
+                todayAssignment.setStartTime(info.getStartTime());
+                todayAssignment.setEndTime(info.getEndTime());
+                todayAssignment.setFrequency(info.getFrequency());
+                todayAssignment.setScore(info.getScore());
+                todayAssignment.setTimeStamp(info.getTimeStamp());
+                updateTodayAssignment(todayAssignment);
             }
         }
-
-        if (routeTodayAssignment == null) {
-            routeTodayAssignment = new RouteTodayAssignment();
-            routeTodayAssignment.setAssignmentId(info.getRouteId() + MyDateTimeUtils.getTodayStartTime());
-            routeTodayAssignment.setGroupId(info.getGroupId());
-            routeTodayAssignment.setUserId(info.getUserId());
-            routeTodayAssignment.setFrequency(info.getFrequency());
-            routeTodayAssignment.setStartTime(info.getStartTime());
-            routeTodayAssignment.setEndTime(info.getEndTime());
-
-            DBHelper.getInstance().addRouteTodayAssignment(routeTodayAssignment);
-        }
-        else {
-            routeTodayAssignment.setFrequency(info.getFrequency());
-            routeTodayAssignment.setStartTime(info.getStartTime());
-            routeTodayAssignment.setEndTime(info.getEndTime());
-
-            DBHelper.getInstance().updateRouteTodayAssignment(routeTodayAssignment);
-        }
     }
 
-    public RouteTodayAssignment getRouteTodayAssignment(String groupId, String routeId, String userId) {
-        return RouteTodayAssignmentDBHelper.get(routeTodayAssignmentDao, groupId, routeId, userId);
+    public TodayAssignment getTodayAssignment(String groupId, int deskId, String userId, long dayTimeStamp, String type) {
+        return TodayAssignmentDBHelper.get(todayAssignmentDao, groupId, deskId, userId, dayTimeStamp, type);
     }
 
-    public List<RouteTodayAssignment> getRouteTodayAssignmentList(String groupId) {
-        return RouteTodayAssignmentDBHelper.getList(routeTodayAssignmentDao, groupId);
+    public List<TodayAssignment> getTodayAssignmentList(String groupId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getList(todayAssignmentDao, groupId, dayTimeStamp);
     }
 
-    public List<RouteTodayAssignment> getRouteTodayAssignmentList(String groupId, String userId) {
-        return RouteTodayAssignmentDBHelper.getList(routeTodayAssignmentDao, groupId, userId);
+    public List<TodayAssignment> getTodayAssignmentList(String groupId, String userId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getList(todayAssignmentDao, groupId, userId, dayTimeStamp);
     }
 
-    public void deleteRouteTodayAssignment(RouteTodayAssignment routeTodayAssignment) {
-        routeTodayAssignmentDao.delete(routeTodayAssignment);
+    public List<TodayAssignment> getTodayAssignmentList(String groupId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getList(todayAssignmentDao, groupId, startTime, endTime);
     }
 
-    public void clearRouteTodayAssignment() {
-        RouteTodayAssignmentDBHelper.clear(routeTodayAssignmentDao);
+    public List<TodayAssignment> getTodayAssignmentList(String groupId, String userId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getList(todayAssignmentDao, groupId, userId, startTime, endTime);
+    }
+
+    public long getTodayAssignmentCount(String groupId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getCount(todayAssignmentDao, groupId, dayTimeStamp);
+    }
+
+    public long getTodayAssignmentCount(String groupId, String userId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getCount(todayAssignmentDao, groupId, userId, dayTimeStamp);
+    }
+
+    public long getTodayAssignmentCount(String groupId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getCount(todayAssignmentDao, groupId, startTime, endTime);
+    }
+
+    public long getTodayAssignmentCount(String groupId, String userId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getCount(todayAssignmentDao, groupId, userId, startTime, endTime);
+    }
+
+    public List<TodayAssignment> getFinishList(String groupId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, dayTimeStamp);
+    }
+
+    public List<TodayAssignment> getFinishList(String groupId, String userId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, userId, dayTimeStamp);
+    }
+
+    public List<TodayAssignment> getFinishList(String groupId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, startTime, endTime);
+    }
+
+    public List<TodayAssignment> getFinishList(String groupId, String userId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, userId, startTime, endTime);
+    }
+
+    public long getFinishCount(String groupId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, dayTimeStamp);
+    }
+
+    public long getFinishCount(String groupId, String userId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, userId, dayTimeStamp);
+    }
+
+    public long getFinishCount(String groupId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, startTime, endTime);
+    }
+
+    public long getFinishCount(String groupId, String userId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, userId, startTime, endTime);
+    }
+
+    public List<TodayAssignment> getLeakList(String groupId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getLeakList(todayAssignmentDao, groupId, dayTimeStamp);
+    }
+
+    public List<TodayAssignment> getLeakList(String groupId, String userId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getLeakList(todayAssignmentDao, groupId, userId, dayTimeStamp);
+    }
+
+    public List<TodayAssignment> getLeakList(String groupId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getLeakList(todayAssignmentDao, groupId, startTime, endTime);
+    }
+
+    public List<TodayAssignment> getLeakList(String groupId, String userId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getLeakList(todayAssignmentDao, groupId, userId, startTime, endTime);
+    }
+
+    public long getLeakCount(String groupId, long dayTimeStamp) {
+        return TodayAssignmentDBHelper.getLeakCount(todayAssignmentDao, groupId, dayTimeStamp);
+    }
+
+    public long getLeakCount(String groupId, String userId, long dyaTimeStamp) {
+        return TodayAssignmentDBHelper.getLeakCount(todayAssignmentDao, groupId, userId, dyaTimeStamp);
+    }
+
+    public long getLeakCount(String groupId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getLeakCount(todayAssignmentDao, groupId, startTime, endTime);
+    }
+
+    public long getLeakCount(String groupId, String userId, long startTime, long endTime) {
+        return TodayAssignmentDBHelper.getLeakCount(todayAssignmentDao, groupId, userId, startTime, endTime);
     }
 }

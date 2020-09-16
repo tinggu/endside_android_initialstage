@@ -3,7 +3,6 @@ package com.ctfww.module.keyevents.datahelper;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
-import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 
 import okhttp3.MultipartBody;
@@ -51,22 +50,6 @@ public interface ICloudMethod {
      */
     @POST("/microcloudkeyevents/keyevent/synKeyEventTraceFromCloud")
     Call<ResponseBody> synKeyEventTraceFromCloud(@Body QueryCondition condition);
-
-    /**
-     * 同步关键事件负责状态上云
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyevent/synKeyEventPersonToCloud")
-    Call<ResponseBody> synKeyEventPersonToCloud(@Body CargoToCloud<KeyEventPerson> info);
-
-    /**
-     * 从云上同步关键事件负责状态
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keyevent/synKeyEventPersonFromCloud")
-    Call<ResponseBody> synKeyEventPersonFromCloud(@Body QueryCondition condition);
 
     /**
      * 上传文件 http://39.98.147.77:8003/fileMgt/uploadFile

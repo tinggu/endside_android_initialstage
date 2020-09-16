@@ -7,7 +7,6 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.user.datahelper.sp.Const;
 import com.google.gson.reflect.TypeToken;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
@@ -111,48 +110,6 @@ public class NetworkHelper {
             @Override
             public void onError(int code, String errorMsg) {
                 LogUtils.i(TAG, "synKeyEventTraceFromCloud fail: codee = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeyEventPersonToCloud(CargoToCloud<KeyEventPerson> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeyEventPersonToCloud(cargoToCloud, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeyEventPersonToCloud fail: codee = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeyEventPersonFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeyEventPersonFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeyEventPerson>>() {}.getType();
-                List<KeyEventPerson> keyEventPersonList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(keyEventPersonList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeyEventPersonFromCloud fail: codee = " + code);
                 callback.onError(code);
             }
 

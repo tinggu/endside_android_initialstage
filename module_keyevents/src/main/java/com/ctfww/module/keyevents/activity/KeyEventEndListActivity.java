@@ -113,7 +113,7 @@ public class KeyEventEndListActivity extends AppCompatActivity implements View.O
         long endTime = MyDateTimeUtils.getMonthEndTime(timeStamp);
         HashMap<String, Calendar> hashMap = new HashMap<>();
         for (long time = startTime; time < endTime; time += 24l * 3600l * 1000l) {
-            long count = "admin".equals(role) ? DBHelper.getInstance().getEndKeyEventPersonCount(groupId, time, time + 24l * 3600l * 1000l) : DBHelper.getInstance().getEndKeyEventPersonCount(groupId, userId, time, time + 24l * 3600l * 1000l);
+            long count = "admin".equals(role) ? DBHelper.getInstance().getEndCount(groupId, time, time + 24l * 3600l * 1000l) : DBHelper.getInstance().getEndCount(groupId, userId, time, time + 24l * 3600l * 1000l);
             if (count > 0) {
                 Calendar key = CalendarUtils.produceCalendar(time);
                 Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_END_ABNORMAL, "结");

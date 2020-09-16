@@ -3,7 +3,7 @@
 
     <application android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.PeriodAssignmentListActivity"
+        <activity android:name=".activity.AssignmentListActivity"
             android:screenOrientation="portrait">
         </activity>
 

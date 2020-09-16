@@ -9,7 +9,6 @@ import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.entity.CloudRspData;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
-import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.user.datahelper.sp.Const;
 
@@ -210,18 +209,6 @@ public class CloudClient {
     public void synKeyEventTraceFromCloud(QueryCondition condition, final ICloudCallback callback) {
         LogUtils.i(TAG, "synKeyEventTraceFromCloud: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventTraceFromCloud(condition);
-        processListRsp(responseBodyCall, callback);
-    }
-
-    public void synKeyEventPersonToCloud(CargoToCloud<KeyEventPerson> cargoToCloud, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synKeyEventPersonToCloud: cargoToCloud = " + cargoToCloud.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventPersonToCloud(cargoToCloud);
-        processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void synKeyEventPersonFromCloud(QueryCondition condition, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synKeyEventPersonFromCloud: condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeyEventPersonFromCloud(condition);
         processListRsp(responseBodyCall, callback);
     }
 

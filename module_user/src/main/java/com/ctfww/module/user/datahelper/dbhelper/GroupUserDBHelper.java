@@ -69,6 +69,21 @@ public class GroupUserDBHelper {
     }
 
     public static long getAdminCount(GroupUserInfoDao dao, String groupId) {
-        return dao.queryBuilder().where(dao.queryBuilder().and(GroupUserInfoDao.Properties.GroupId.eq(groupId), GroupUserInfoDao.Properties.Role.eq(Const.ROLE_ADMIN))).buildCount().count();
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(GroupUserInfoDao.Properties.GroupId.eq(groupId),
+                                GroupUserInfoDao.Properties.Role.eq(Const.ROLE_ADMIN),
+                                GroupUserInfoDao.Properties.Status.notEq("delete")))
+                .buildCount()
+                .count();
+    }
+
+    public static long getCount(GroupUserInfoDao dao, String groupId) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(GroupUserInfoDao.Properties.GroupId.eq(groupId),
+                                GroupUserInfoDao.Properties.Status.eq("delete")))
+                .buildCount()
+                .count();
     }
 }

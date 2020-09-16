@@ -1,8 +1,6 @@
 package com.ctfww.module.keepwatch.datahelper;
 
-import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
-import com.ctfww.module.keepwatch.entity.SigninInfo;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -15,22 +13,6 @@ import retrofit2.http.POST;
  */
 public interface ICloudMethod {
     /***********************new**********************/
-
-    /**
-     * 同步签到信息上云
-     * @param info
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchSigninToCloud")
-    Call<ResponseBody> synKeepWatchSigninToCloud(@Body CargoToCloud<SigninInfo> info);
-
-    /**
-     * 从云上同步签到信息
-     * @param condition
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/synKeepWatchSigninFromCloud")
-    Call<ResponseBody> synKeepWatchSigninFromCloud(@Body QueryCondition condition);
 
     /**
      * 从云上同步今天动态
@@ -87,16 +69,6 @@ public interface ICloudMethod {
      */
     @POST("/microcloudkeyevents/keepWatch/takeBackKeepWatchAssignment")
     Call<ResponseBody> takeBackKeepWatchAssignment(@Body QueryCondition condition);
-
-
-
-    /**
-     * 获取群组概要
-     * @param groupId
-     * @return 返回值
-     */
-    @POST("/microcloudkeyevents/keepWatch/getKeepWatchGroupSummary")
-    Call<ResponseBody> getKeepWatchGroupSummary(@Body String groupId);
 
     /**
      * 获得漏检点

@@ -18,14 +18,10 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.Utils;
-import com.ctfww.module.keepwatch.entity.KeepWatchGroupSummary;
-import com.ctfww.module.user.datahelper.sp.Const;
-import com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry;
+import com.ctfww.module.keepwatch.datahelper.sp.Const;
+import com.ctfww.module.signin.fragment.SigninListFragment;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,7 +49,7 @@ public class KeepWatchMyFragment extends Fragment {
     private LinearLayout mMonthReportLL;
     private LinearLayout mInviteLL;
 
-    private KeepWatchSigninListFragment mKeepWatchSigninListFragment;
+    private SigninListFragment mSigninListFragment;
     private TextView mSigninListTittle;
 
     @Nullable
@@ -70,7 +66,7 @@ public class KeepWatchMyFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        UserInfo userInfo = DBQuickEntry.getSelfInfo();
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getSelfInfo();
         mUserInfoLL = v.findViewById(R.id.keepwatch_user_info_ll);
         mHead = v.findViewById(R.id.keepwatch_head);
         Glide.with(this).load(userInfo.getHeadUrl()).into(mHead);
@@ -98,17 +94,12 @@ public class KeepWatchMyFragment extends Fragment {
         mMonthReportLL = v.findViewById(R.id.keepwatch_month_report_ll);
         mInviteLL = v.findViewById(R.id.keepwatch_invite_ll);
 
-        mKeepWatchSigninListFragment = (KeepWatchSigninListFragment)getChildFragmentManager().findFragmentById(R.id.keepwatch_signin_list_fragment);
-        mSigninListTittle = mKeepWatchSigninListFragment.getView().findViewById(R.id.keepwatch_signin_list_tittle);
+        mSigninListFragment = (SigninListFragment)getChildFragmentManager().findFragmentById(R.id.keepwatch_signin_list_fragment);
+        mSigninListTittle = mSigninListFragment.getView().findViewById(R.id.list_tittle);
         mSigninListTittle.setText("今日巡检记录");
-        mKeepWatchSigninListFragment.setMaxCount(3);
+        mSigninListFragment.setMaxCount(3);
 
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
-            mRole.setText("");
-            mMemberCount.setText("");
-            mDeskCount.setText("");
-        }
+        showGroupSummary();
     }
 
     private void setOnClickListener() {
@@ -220,24 +211,25 @@ public class KeepWatchMyFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
         String msg = messageEvent.getMessage();
-        if ("tms_first_token".equals(msg)) {
-            getGroupSummary();
-            mKeepWatchSigninListFragment.getTodaySigninList();
+        if (com.ctfww.module.desk.datahelper.sp.Const.FINISH_DESK_SYN.equals(msg)) {
+            showGroupSummary();
+        }
+        else if (com.ctfww.module.user.datahelper.sp.Const.FINISH_GROUP_USER_SYN.equals(msg)) {
+            showGroupSummary();
+        }
+        else if (com.ctfww.module.signin.datahelper.sp.Const.FINISH_SIGNIN_SYN.equals(msg)) {
+            mSigninListFragment.showTodaySigninList();
         }
         else if ("bind_group".equals(msg)) {
-            getGroupSummary();
-            mKeepWatchSigninListFragment.getTodaySigninList();
+            showGroupSummary();
+            mSigninListFragment.showTodaySigninList();
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (Utils.isFirstToken()) {
-            LogUtils.i(TAG, "onResume: Utils.isFirstToken()");
-            getGroupSummary();
-            mKeepWatchSigninListFragment.getTodaySigninList();
-        }
+        showGroupSummary();
     }
 
     @Override
@@ -253,23 +245,36 @@ public class KeepWatchMyFragment extends Fragment {
         }
     }
 
-    private void getGroupSummary() {
-        NetworkHelper.getInstance().getKeepWatchGroupSummary(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                KeepWatchGroupSummary keepWatchGroupSummary = (KeepWatchGroupSummary) obj;
-                updateGroupSummaryToUI(keepWatchGroupSummary);
-            }
+    private void showGroupSummary() {
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+        UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(userId);
+        if (userInfo != null) {
+            mNickName.setText(userInfo.getNickName());
+        }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getKeepWatchInfo fail: code = " + code);
-            }
-        });
-    }
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return;
+        }
 
-    private void updateGroupSummaryToUI(KeepWatchGroupSummary keepWatchGroupSummary) {
-        mMemberCount.setText("" + keepWatchGroupSummary.getMemberCount());
-        mDeskCount.setText("" + keepWatchGroupSummary.getDeskCount());
+        String role = SPStaticUtils.getString(Const.ROLE);
+        if ("admin".equals(role)) {
+            mRole.setText("管理员");
+        }
+        else if ("repaire".equals(role)) {
+            mRole.setText("维修员");
+        }
+        else {
+            mRole.setText("成员");
+        }
+
+        long memberCount = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getGroupUserCount();
+        mMemberCount.setText("" + memberCount);
+
+        long deskCount = com.ctfww.module.desk.datahelper.dbhelper.DBQuickEntry.getDeskCount();
+        mDeskCount.setText("" + deskCount);
     }
 }

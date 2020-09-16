@@ -16,13 +16,11 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.DialogUtils;
-import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.assignment.R;
 import com.ctfww.module.assignment.datahelper.airship.Airship;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry;
-import com.ctfww.module.assignment.entity.DeskAssignment;
-import com.ctfww.module.assignment.entity.RouteAssignment;
+import com.ctfww.module.assignment.entity.AssignmentInfo;
 import com.ctfww.module.datapicker.data.DataPicker;
 import com.ctfww.module.datapicker.time.HourAndMinutePicker;
 import com.ctfww.module.user.datahelper.sp.Const;
@@ -68,7 +66,7 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
     private UserInfo mUserInfo;
 
     private List<Integer> mDeskIdList = new ArrayList<>();
-    private List<String> mRouteIdList = new ArrayList<>();
+    private List<Integer> mRouteIdList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,21 +146,22 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             createAssignment();
         }
         else if (id == mSelectObjectLL.getId()) {
-            List<DeskAssignment> deskAssignmentList = DBQuickEntry.getWorkingDeskAssignmentList();
+            List<AssignmentInfo> assignmentList = DBQuickEntry.getAssignmentList();
             ArrayList<Integer> deskIdList = new ArrayList<>();
-            for (int i = 0; i < deskAssignmentList.size(); ++i) {
-                deskIdList.add(deskAssignmentList.get(i).getDeskId());
-            }
-
-            List<RouteAssignment> routeAssignmentList = DBQuickEntry.getWorkingRouteAssignmentList();
-            ArrayList<String> routeIdList = new ArrayList<>();
-            for (int i = 0; i < routeAssignmentList.size(); ++i) {
-                routeIdList.add(routeAssignmentList.get(i).getRouteId());
+            ArrayList<Integer> routeIdList = new ArrayList<>();
+            for (int i = 0; i < assignmentList.size(); ++i) {
+                AssignmentInfo assignment = assignmentList.get(i);
+                if ("desk".equals(assignment.getType())) {
+                    deskIdList.add(assignment.getObjectId());
+                }
+                else if ("route".equals(assignment.getType())) {
+                    routeIdList.add(assignment.getObjectId());
+                }
             }
 
             ARouter.getInstance().build("/desk/selectSignObject")
                     .withIntegerArrayList("selected_desk_id_list", deskIdList)
-                    .withStringArrayList("selected_route_id_list", routeIdList)
+                    .withIntegerArrayList("selected_route_id_list", routeIdList)
                     .navigation();
         }
 
@@ -193,7 +192,7 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
             mSelectObjectSummary.setText("签到点：" + mDeskIdList.size() + "个" + ", 签到线路：" + mRouteIdList.size() + "条");
         }
         else if ("selected_route".equals(messageEvent.getMessage())) {
-            Type type = new TypeToken<List<String>>(){}.getType();
+            Type type = new TypeToken<List<Integer>>(){}.getType();
             mRouteIdList = GsonUtils.fromJson(messageEvent.getValue(), type);
             mSelectObjectSummary.setText("签到点：" + mDeskIdList.size() + "个" + ", 签到线路：" + mRouteIdList.size() + "条");
         }
@@ -230,52 +229,45 @@ public class CreateAssignmentActivity extends AppCompatActivity implements View.
 
 
         for (int i = 0; i < mDeskIdList.size(); ++i) {
-            DeskAssignment assignment = new DeskAssignment();
-            String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-            assignment.setGroupId(groupId);
-            assignment.setUserId(mUserInfo.getUserId());
-            assignment.setCircleType(circleType);
-            assignment.setStartTime(startTime);
-            assignment.setEndTime(endTime);
-            assignment.setFrequency(frequency);
-            assignment.setTimeStamp(System.currentTimeMillis());
-            assignment.setStatus("reserve");
-            assignment.setSynTag("new");
+            AssignmentInfo assignment = newAssignmentInfo(circleType, startTime, endTime, frequency);
             int deskId = mDeskIdList.get(i);
-            assignment.setDeskId(deskId);
+            assignment.setObjectId(deskId);
             assignment.combineId();
-            DBHelper.getInstance().addDeskAssignment(assignment);
-            DBHelper.getInstance().updateDeskTodayAssignment(assignment);
-        }
-
-        if (!mDeskIdList.isEmpty()) {
-            Airship.getInstance().synDeskAssignmentToCloud();
+            assignment.setType("desk");
+            DBHelper.getInstance().addAssignment(assignment);
+            DBHelper.getInstance().updateTodayAssignment(assignment);
         }
 
         for (int i = 0; i < mRouteIdList.size(); ++i) {
-            RouteAssignment assignment = new RouteAssignment();
-            String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-            assignment.setGroupId(groupId);
-            assignment.setUserId(mUserInfo.getUserId());
-            assignment.setCircleType(circleType);
-            assignment.setStartTime(startTime);
-            assignment.setEndTime(endTime);
-            assignment.setFrequency(frequency);
-            assignment.setTimeStamp(System.currentTimeMillis());
-            assignment.setStatus("reserve");
-            assignment.setSynTag("new");
-            String routeId = mRouteIdList.get(i);
-            assignment.setRouteId(routeId);
+            AssignmentInfo assignment = newAssignmentInfo(circleType, startTime, endTime, frequency);
+            int routeId = mRouteIdList.get(i);
+            assignment.setObjectId(routeId);
             assignment.combineId();
-            DBHelper.getInstance().addRouteAssignment(assignment);
-            DBHelper.getInstance().updateRouteTodayAssignment(assignment);
+            DBHelper.getInstance().addAssignment(assignment);
+            DBHelper.getInstance().updateTodayAssignment(assignment);
         }
 
-        if (!mRouteIdList.isEmpty()) {
-            Airship.getInstance().synRouteAssignmentToCloud();
+        if (!mDeskIdList.isEmpty() || !mRouteIdList.isEmpty()) {
+            Airship.getInstance().synAssignmentToCloud();
         }
 
         finish();
+    }
+
+    private AssignmentInfo newAssignmentInfo(String circleType, long startTime, long endTime, int frequency) {
+        AssignmentInfo assignment = new AssignmentInfo();
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        assignment.setGroupId(groupId);
+        assignment.setUserId(mUserInfo.getUserId());
+        assignment.setCircleType(circleType);
+        assignment.setStartTime(startTime);
+        assignment.setEndTime(endTime);
+        assignment.setFrequency(frequency);
+        assignment.setTimeStamp(System.currentTimeMillis());
+        assignment.setStatus("reserve");
+        assignment.setSynTag("new");
+
+        return assignment;
     }
 
     private String getCircleType() {

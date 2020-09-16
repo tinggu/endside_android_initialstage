@@ -41,7 +41,7 @@ public class KeyEventNoEndListActivity extends AppCompatActivity implements View
         EventBus.getDefault().register(this);
 
         Airship.getInstance().synKeyEventFromCloud();
-        Airship.getInstance().synKeyEventPersonFromCloud();
+        Airship.getInstance().synKeyEventTraceFromCloud();
     }
 
     private void initViews() {

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.module.keepwatch.entity.PersonTrends;
 import com.ctfww.module.keepwatch.entity.Ranking;
@@ -15,8 +14,6 @@ import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.network.NetworkConst;
-import com.ctfww.module.keepwatch.entity.KeepWatchGroupSummary;
-import com.ctfww.module.keepwatch.entity.SigninInfo;
 import com.ctfww.module.keepwatch.entity.KeepWatchSigninStatistics;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByDesk;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
@@ -38,49 +35,6 @@ public class NetworkHelper {
 
     public static NetworkHelper getInstance() {
         return NetworkHelper.Inner.INSTANCE;
-    }
-
-    public void synKeepWatchSigninToCloud(CargoToCloud<SigninInfo> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchSigninToCloud(cargoToCloud, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchSigninToCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void synKeepWatchSigninFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synKeepWatchSigninFromCloud(condition, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<SigninInfo>>() {}.getType();
-                List<SigninInfo> signinList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synKeepWatchSigninFromCloud: signinList.size() = " + signinList.size());
-                callback.onSuccess(signinList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synKeepWatchSigninFromCloud fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
     }
 
     public void synTodayKeepWatchPersonTrendsFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
@@ -264,90 +218,6 @@ public class NetworkHelper {
             @Override
             public void onError(int code, String errorMsg) {
                 LogUtils.i(TAG, "takeBackKeepWatchAssignment fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void getKeepWatchGroupSummary(final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        CloudClient.getInstance().getKeepWatchGroupSummary(groupId, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                KeepWatchGroupSummary keepWatchGroupSummary = GsonUtils.fromJson(data, KeepWatchGroupSummary.class);
-                callback.onSuccess(keepWatchGroupSummary);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getKeepWatchGroupSummary fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void getKeepWatchSigninList(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
-
-        CloudClient.getInstance().getKeepWatchSigninList(groupId, userId, startTime, endTime, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<SigninInfo>>() {}.getType();
-                List<SigninInfo> keepWatchSigninInfoList = GsonUtils.fromJson(data, type);
-                callback.onSuccess(keepWatchSigninInfoList);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getKeepWatchSigninShow fail: code = " + code);
-                callback.onError(code);
-            }
-
-            @Override
-            public void onFailure(String errorMsg) {
-                callback.onError(NetworkConst.ERR_CODE_NETWORK_FIAL);
-            }
-        });
-    }
-
-    public void getKeepWatchSigninLeak(long startTime, long endTime, final IUIDataHelperCallback callback) {
-        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
-        if (TextUtils.isEmpty(groupId)) {
-            return;
-        }
-
-        String userId = "admin".equals(com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup()) ? "" : SPStaticUtils.getString(Const.USER_OPEN_ID);
-
-        CloudClient.getInstance().getKeepWatchSigninLeak(groupId, userId, startTime, endTime, new ICloudCallback() {
-            @Override
-            public void onSuccess(String data) {
-                Type type = new TypeToken<List<KeepWatchSigninStatistics>>() {}.getType();
-                List<KeepWatchSigninStatistics> keepWatchSigninStatistics = GsonUtils.fromJson(data, type);
-                callback.onSuccess(keepWatchSigninStatistics);
-            }
-
-            @Override
-            public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "getKeepWatchSigninLeak fail: code = " + code);
                 callback.onError(code);
             }
 

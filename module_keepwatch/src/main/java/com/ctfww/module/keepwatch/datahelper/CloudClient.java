@@ -1,12 +1,10 @@
 package com.ctfww.module.keepwatch.datahelper;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.entity.CargoToCloud;
 import com.ctfww.commonlib.entity.QueryCondition;
 import com.ctfww.commonlib.network.CloudClientRsp;
 import com.ctfww.commonlib.network.ICloudCallback;
 import com.ctfww.commonlib.utils.NetworkUtils;
-import com.ctfww.module.keepwatch.entity.SigninInfo;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -40,20 +38,6 @@ public class CloudClient {
     }
 
     /****************************new*****************************************/
-
-
-
-    public void synKeepWatchSigninToCloud(CargoToCloud<SigninInfo> cargoToCloud, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synKeepWatchSigninToCloud: cargoToCloud = " + cargoToCloud.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchSigninToCloud(cargoToCloud);
-        CloudClientRsp.processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void synKeepWatchSigninFromCloud(QueryCondition condition, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synKeepWatchSigninFromCloud: condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synKeepWatchSigninFromCloud(condition);
-        CloudClientRsp.processListRsp(responseBodyCall, callback);
-    }
 
     public void synTodayKeepWatchPersonTrendsFromCloud(QueryCondition condition, final ICloudCallback callback) {
         LogUtils.i(TAG, "synTodayKeepWatchPersonTrendsFromCloud: condition = " + condition.toString());
@@ -105,12 +89,6 @@ public class CloudClient {
         LogUtils.i(TAG, "takeBackKeepWatchAssignment: condition = " + condition.toString());
         Call<ResponseBody> responseBodyCall = mCloudMethod.takeBackKeepWatchAssignment(condition);
         CloudClientRsp.processGeneralRsp(responseBodyCall, callback);
-    }
-
-    public void getKeepWatchGroupSummary(String groupId, final ICloudCallback callback) {
-        LogUtils.i(TAG, "getKeepWatchGroupSummary: groupId = " + groupId);
-        Call<ResponseBody> responseBodyCall = mCloudMethod.getKeepWatchGroupSummary(groupId);
-        CloudClientRsp.processSingleObjRsp(responseBodyCall, callback);
     }
 
     public void getKeepWatchSigninLeak(String groupId, String userId, long startTime, long endTime, final ICloudCallback callback) {

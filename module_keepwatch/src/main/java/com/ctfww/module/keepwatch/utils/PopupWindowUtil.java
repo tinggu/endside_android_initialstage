@@ -80,7 +80,7 @@ public class PopupWindowUtil {
         mAddRouteLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/dest/createRoute").navigation();
+                ARouter.getInstance().build("/desk/createRoute").navigation();
                 popupWindow.dismiss();
             }
         });

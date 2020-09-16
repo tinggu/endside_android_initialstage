@@ -1,8 +1,6 @@
 package com.ctfww.module.keepwatch.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,24 +14,19 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.utils.DialogUtils;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
+import com.ctfww.module.assignment.entity.TodayAssignment;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.Utils;
-import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keyevents.fragment.KeyEventSnatchFragment;
-import com.ctfww.module.useim.entity.Head;
-import com.ctfww.module.user.datahelper.sp.Const;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 public class KeepWatchStatisticsFragment extends Fragment {
     private final static String TAG = "KeepWatchFragment";
@@ -59,7 +52,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
     private TextView mAbnormalReportCount;
 
     private KeyEventSnatchFragment mKeyEventSnatchFragment;
-    private KeepWatchPersonTrendsFragment mKeepWatchPersonTrendsFragment;
+    private PersonTrendsFragment mPersonTrendsFragment;
 
     private KeepWatchRankingFragment mKeepWatchRankingFragment;
     private TextView mRankingTittle;
@@ -97,12 +90,12 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mTodayLeakCount = v.findViewById(R.id.keepwatch_today_leak_count);
         mAbnormalReportCountLL = v.findViewById(R.id.keepwatch_abnormal_report_count_ll);
         mAbnormalReportCount = v.findViewById(R.id.keepwatch_abnormal_report_count);
-        long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNoEndKeyEventCount();
+        long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNotEndCount();
         mAbnormalReportCount.setText("" + noEndKeyEventCount);
 
         mKeyEventSnatchFragment = (KeyEventSnatchFragment) getChildFragmentManager().findFragmentById(R.id.keepwatch_snatch_key_event_fragment);
 
-        mKeepWatchPersonTrendsFragment = (KeepWatchPersonTrendsFragment)getChildFragmentManager().findFragmentById(R.id.keepwatch_person_trends_fragment);
+        mPersonTrendsFragment = (PersonTrendsFragment)getChildFragmentManager().findFragmentById(R.id.keepwatch_person_trends_fragment);
 
         mKeepWatchRankingFragment = (KeepWatchRankingFragment)getChildFragmentManager().findFragmentById(R.id.keepwatch_ranking_fragment);
         mRankingTittle = mKeepWatchRankingFragment.getView().findViewById(R.id.keepwatch_ranking_tittle);
@@ -120,11 +113,11 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getTodayKeepWatchStatistics();
-                getNoEndKeyEventCount();
-                mKeyEventSnatchFragment.refresh();
-                mKeepWatchPersonTrendsFragment.getPersonTrends();
-                mKeepWatchRankingFragment.getTodayRanking();
+                com.ctfww.module.user.datahelper.airship.Airship.getInstance().synFromCloud();
+                com.ctfww.module.desk.datahelper.airship.Airship.getInstance().synFromCloud();
+                com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synFromCloud();
+                com.ctfww.module.signin.datahelper.airship.Airship.getInstance().synFromCloud();
+                com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synFromCloud();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -183,78 +176,88 @@ public class KeepWatchStatisticsFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
         String msg = messageEvent.getMessage();
-        if ("tms_first_token".equals(msg)) {
-            LogUtils.i(TAG, "tms_first_token refresh!");
-            getTodayKeepWatchStatistics();
-            getNoEndKeyEventCount();
-            mKeyEventSnatchFragment.refresh();
-            mKeepWatchPersonTrendsFragment.getPersonTrends();
-            mKeepWatchRankingFragment.getTodayRanking();
-        }
-        else if ("bind_group".equals(msg)) {
+        if ("bind_group".equals(msg)) {
             LogUtils.i(TAG, "bind_group refresh!");
+            updateFinishRate();
+            updateCoverageRate();
+            updateAssignmentStatus();
+            updateLeakCount();
+            updateAbnormalCount();
             mKeyEventSnatchFragment.refresh();
-            mKeepWatchPersonTrendsFragment.getPersonTrends();
+            mPersonTrendsFragment.showPersonTrends();
             mKeepWatchRankingFragment.getTodayRanking();
 
-            long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNoEndKeyEventCount();
+            long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNotEndCount();
             mAbnormalReportCount.setText("" + noEndKeyEventCount);
         }
-        else if ("im_received_data".equals(msg)) {
-            Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
-            if (head.getMsgType() == 3001) {
-                if (head.getMsgContentType() == 10) {
-                    mKeyEventSnatchFragment.refresh();
-                    mKeepWatchPersonTrendsFragment.getPersonTrends();
-                    if (!mKeyEventSnatchFragment.isDoing()) {
-                        Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        long[] patter = {1000, 2000, 2000, 50};
-                        vibrator.vibrate(patter, -1);
-                    }
-                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
-                    if ("admin".equals(role)) {
-                        getNoEndKeyEventCount();
-                    }
-                }
-                else if (head.getMsgContentType() == 11) {
-                    mKeepWatchPersonTrendsFragment.getPersonTrends();
-                    String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
-                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
-                    if (userId.equals(head.getFromId()) || "admin".equals(role)) {
-                        getNoEndKeyEventCount();
-                    }
+        else if (com.ctfww.module.assignment.datahelper.sp.Const.FINISH_ASSIGNMENT_SYN.equals(messageEvent.getMessage())) {
+            updateFinishRate();
+            updateCoverageRate();
+            updateAssignmentStatus();
+            updateLeakCount();
+        }
+        else if (com.ctfww.module.signin.datahelper.sp.Const.FINISH_SIGNIN_SYN.equals(messageEvent.getMessage())) {
+            updateFinishRate();
+            updateCoverageRate();
+            updateAssignmentStatus();
+            updateLeakCount();
 
-                    if (userId.equals(head.getFromId())) {
-                        mKeyEventSnatchFragment.refresh();
-                    }
-                }
-                else if (head.getMsgContentType() == 20) {
-                    mKeepWatchPersonTrendsFragment.getPersonTrends();
-                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
-                    String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
-                    if ("admin".equals(role) || userId.equals(head.getFromId())) {
-                        getTodayKeepWatchStatistics();
-                    }
-                }
-            }
+            mPersonTrendsFragment.showPersonTrends();
+        }
+        else if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_TRACE_SYN.equals(messageEvent.getMessage())) {
+            mPersonTrendsFragment.showPersonTrends();
         }
         else if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVNET_PERSON_SYN.equals(messageEvent.getMessage())) {
-            long noEndKeyEventCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNoEndKeyEventCount();
-            mAbnormalReportCount.setText("" + noEndKeyEventCount);
+            updateAbnormalCount();
         }
+//        else if ("im_received_data".equals(msg)) {
+//            Head head = GsonUtils.fromJson(messageEvent.getValue(), Head.class);
+//            if (head.getMsgType() == 3001) {
+//                if (head.getMsgContentType() == 10) {
+//                    mKeyEventSnatchFragment.refresh();
+//                    mKeepWatchPersonTrendsFragment.getPersonTrends();
+//                    if (!mKeyEventSnatchFragment.isDoing()) {
+//                        Vibrator vibrator = (Vibrator)getContext().getSystemService(Context.VIBRATOR_SERVICE);
+//                        long[] patter = {1000, 2000, 2000, 50};
+//                        vibrator.vibrate(patter, -1);
+//                    }
+//                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
+//                    if ("admin".equals(role)) {
+//                        getNoEndKeyEventCount();
+//                    }
+//                }
+//                else if (head.getMsgContentType() == 11) {
+//                    mKeepWatchPersonTrendsFragment.getPersonTrends();
+//                    String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+//                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
+//                    if (userId.equals(head.getFromId()) || "admin".equals(role)) {
+//                        getNoEndKeyEventCount();
+//                    }
+//
+//                    if (userId.equals(head.getFromId())) {
+//                        mKeyEventSnatchFragment.refresh();
+//                    }
+//                }
+//                else if (head.getMsgContentType() == 20) {
+//                    mKeepWatchPersonTrendsFragment.getPersonTrends();
+//                    String role = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getRoleInWorkingGroup();
+//                    String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+//                    if ("admin".equals(role) || userId.equals(head.getFromId())) {
+//                        getTodayKeepWatchStatistics();
+//                    }
+//                }
+//            }
+//        }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (Utils.isFirstToken()) {
-            LogUtils.i(TAG, "onResume refresh!");
-            getTodayKeepWatchStatistics();
-            getNoEndKeyEventCount();
-            mKeyEventSnatchFragment.refresh();
-            mKeepWatchPersonTrendsFragment.getPersonTrends();
-            mKeepWatchRankingFragment.getTodayRanking();
-        }
+        updateWatchInfoToUI();
+        mKeyEventSnatchFragment.refresh();
+        mPersonTrendsFragment.showPersonTrends();
+        mKeepWatchRankingFragment.getTodayRanking();
     }
 
     @Override
@@ -270,61 +273,12 @@ public class KeepWatchStatisticsFragment extends Fragment {
         }
     }
 
-    private void getTodayKeepWatchStatistics() {
-        long startTime = MyDateTimeUtils.getTodayStartTime();
-        long endTime = MyDateTimeUtils.getTodayEndTime();
-        NetworkHelper.getInstance().getKeepWatchStatistics(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod = (KeepWatchStatisticsByPeriod)obj;
-                updateWatchInfoToUI(keepWatchStatisticsByPeriod);
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getKeepWatchInfo fail: code = " + code);
-            }
-        });
-    }
-
-    private void getNoEndKeyEventCount() {
-        com.ctfww.module.keyevents.datahelper.NetworkHelper.getInstance().getNoEndKeyEventCount(new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                int count = (int)obj;
-                mAbnormalReportCount.setText("" + count);
-                LogUtils.i(TAG, "getNoEndKeyEventCount success: count = " + count);
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getNoEndKeyEventCount fail: code = " + code);
-            }
-        });
-    }
-
-    private void updateWatchInfoToUI(KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod) {
-        String rate = keepWatchStatisticsByPeriod.getCompletionRatePercent();
-        mCompletionRate.setText(rate);
-
-        rate = keepWatchStatisticsByPeriod.getCoverageRatePercent();
-        mCoverageRate.setText(rate);
-
-        String count = "签到数：" + keepWatchStatisticsByPeriod.getSigninCount() + "次";
-        mSigninCount.setText(count);
-
-        count = "点位数：" + keepWatchStatisticsByPeriod.getDeskCount() + "个";
-        mDeskCount.setText(count);
-
-        String completion = "" + keepWatchStatisticsByPeriod.getAssignmentCount() + "/" + keepWatchStatisticsByPeriod.getShouldAssignmentCount();
-        if (completion.length() >= 5) {
-            mTodayCompletion.setTextSize(22);
-        }
-        mTodayCompletion.setText(completion);
-
-        mTodayLeakCount.setText("" + (keepWatchStatisticsByPeriod.getShouldDeskCount() - keepWatchStatisticsByPeriod.getDeskCount()));
-
-//        mAbnormalReportCount.setText("" + keepWatchInfo.getAbnormalReportCount());
+    private void updateWatchInfoToUI() {
+        updateFinishRate();
+        updateCoverageRate();
+        updateAssignmentStatus();
+        updateLeakCount();
+        updateAbnormalCount();
     }
 
 
@@ -338,5 +292,53 @@ public class KeepWatchStatisticsFragment extends Fragment {
             mode = View.MeasureSpec.EXACTLY;
         }
         return View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(measureSpec), mode);
+    }
+
+    private void updateFinishRate() {
+        List<TodayAssignment> todayAssignmentList = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentList(MyDateTimeUtils.getTodayStartTime());
+        int shouldCount = 0;
+        int signinCount = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            shouldCount += todayAssignment.getFrequency();
+            signinCount += Math.min(todayAssignment.getFrequency(), todayAssignment.getSigninCount());
+        }
+
+        String str = String.format("%.1f%%", (double)signinCount * 100 / shouldCount);
+        mCompletionRate.setText(str);
+
+        String count = "签到数：" + signinCount + "次";
+        mSigninCount.setText(count);
+    }
+
+    private void updateCoverageRate() {
+        long leakCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getLeakCount(MyDateTimeUtils.getTodayStartTime());
+        long count = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(MyDateTimeUtils.getTodayStartTime());
+        long coverageCount = count - leakCount;
+
+        String str = String.format("%.1f%%", (double)coverageCount * 100 / count);
+        mCoverageRate.setText(str);
+
+        mDeskCount.setText("点位数：" + count + "个");
+    }
+
+    private void updateAssignmentStatus() {
+        long finishCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getFinishCount(MyDateTimeUtils.getTodayStartTime());
+        long count = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(MyDateTimeUtils.getTodayStartTime());
+        String completion = "" + finishCount + "/" + count;
+        if (completion.length() >= 5) {
+            mTodayCompletion.setTextSize(22);
+        }
+        mTodayCompletion.setText(completion);
+    }
+
+    private void updateLeakCount() {
+        long leakCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getLeakCount(MyDateTimeUtils.getTodayStartTime());
+        mTodayLeakCount.setText("" + leakCount);
+    }
+
+    private void updateAbnormalCount() {
+        long abnormalCount = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNotEndCount();
+        mAbnormalReportCount.setText("" + abnormalCount);
     }
 }

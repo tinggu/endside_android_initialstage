@@ -358,8 +358,8 @@ public class KeyEventReportFragment extends Fragment{
             keyEvent.setLng(location.getLongitude());
             keyEvent.setAddress(MyLocation.getAddr(getContext(), location));
         }
-        int deskId = SPStaticUtils.getInt("curr_desk_id");
-        keyEvent.setDeskId(deskId);
+
+        keyEvent.setDeskId(mDeskId);
         keyEvent.setVoicePath(getVoiceFilePath());
         keyEvent.setPicPath(getPicFilePath());
         keyEvent.setVideoPath(getVideoFilePath());

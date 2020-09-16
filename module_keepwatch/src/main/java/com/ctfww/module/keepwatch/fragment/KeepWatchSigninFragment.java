@@ -16,10 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.ctfww.module.keepwatch.entity.SigninInfo;
+import com.ctfww.commonlib.activity.ScanActivity;
+import com.ctfww.module.signin.entity.SigninInfo;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ctfww.commonlib.entity.MessageEvent;
@@ -29,8 +31,6 @@ import com.ctfww.commonlib.utils.DialogUtils;
 import com.ctfww.commonlib.utils.QRCodeUtils;
 import com.ctfww.module.fingerprint.entity.DistResult;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.activity.KeepWatchReportSigninActivity;
-import com.ctfww.module.keepwatch.activity.ScanActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -85,7 +85,6 @@ public class KeepWatchSigninFragment extends Fragment {
                         return;
                     }
 
-                    LogUtils.i("cccccccccccccc", "");
                     DistResult distResult = com.ctfww.module.fingerprint.Utils.getGpsId(gpsLocation);
                     if (distResult.getLevel() > 2) {
                         DialogUtils.onlyPrompt("附近没有可用GPS匹配能签到的点，请选择其他签到方式！", v.getContext());
@@ -93,13 +92,14 @@ public class KeepWatchSigninFragment extends Fragment {
                     }
 
                     LogUtils.i(TAG, "distResult = " + distResult.toString());
-                    SigninInfo keepWatchSigninInfo = new SigninInfo();
-                    keepWatchSigninInfo.setDeskId(distResult.getId());
-                    keepWatchSigninInfo.setFinishType("gps");
-                    keepWatchSigninInfo.setMatchLevel(distResult.getStringMatchLevel());
-                    Intent intent = new Intent(getContext(), KeepWatchReportSigninActivity.class);
-                    intent.putExtra("signin", GsonUtils.toJson(keepWatchSigninInfo));
-                    startActivity(intent);
+                    SigninInfo signin = new SigninInfo();
+                    signin.setObjectId(distResult.getId());
+                    signin.setFinishType("gps");
+                    signin.setType("desk");
+                    signin.setMatchLevel(distResult.getStringMatchLevel());
+                    ARouter.getInstance().build("/keepwatch/reportSignin")
+                            .withString("signin", GsonUtils.toJson(signin))
+                            .navigation();
                 }
                 else {
                     DialogUtils.selectDialog("要签到，必须打开定位！", getContext(), new DialogUtils.Callback() {
@@ -149,9 +149,6 @@ public class KeepWatchSigninFragment extends Fragment {
 //        Toast.makeText(context, "是否支持hce===" + b2, 1).show();
     }
 
-    private int mCurrDeskId = 0;
-    private String mSigninType = "";
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -160,12 +157,13 @@ public class KeepWatchSigninFragment extends Fragment {
             if (deskId != 0) {
                 com.ctfww.module.fingerprint.Utils.startScan("calc");
 
-                SigninInfo keepWatchSigninInfo = new SigninInfo();
-                keepWatchSigninInfo.setDeskId(deskId);
-                keepWatchSigninInfo.setFinishType("qr");
-                Intent intent = new Intent(getContext(), KeepWatchReportSigninActivity.class);
-                intent.putExtra("signin", GsonUtils.toJson(keepWatchSigninInfo));
-                startActivity(intent);
+                SigninInfo signin = new SigninInfo();
+                signin.setObjectId(deskId);
+                signin.setFinishType("qr");
+                signin.setType("desk");
+                ARouter.getInstance().build("/keepwatch/reportSignin")
+                        .withString("signin", GsonUtils.toJson(signin))
+                        .navigation();
             }
         }
         else {

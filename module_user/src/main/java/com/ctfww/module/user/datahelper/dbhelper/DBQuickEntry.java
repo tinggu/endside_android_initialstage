@@ -79,6 +79,15 @@ public class DBQuickEntry {
         return DBHelper.getInstance().getGroupUserAdminCount(groupId);
     }
 
+    public static long getGroupUserCount() {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return 0;
+        }
+
+        return DBHelper.getInstance().getGroupUserCount(groupId);
+    }
+
     // 获得工作群组信息
     public static GroupInfo getWorkingGroup() {
         String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);

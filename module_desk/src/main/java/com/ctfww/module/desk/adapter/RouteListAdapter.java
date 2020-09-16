@@ -69,7 +69,7 @@ public class RouteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 int position = holder.getAdapterPosition();
                 RouteSummary routeSummary = list.get(position);
-                List<RouteDesk> routeDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(routeSummary.getRouteId());
+                List<RouteDesk> routeDeskList = DBHelper.getInstance().getRouteDeskInOneRoute(routeSummary.getGroupId(), routeSummary.getRouteId());
                 if (routeDeskList.size() < 2) {
                     ToastUtils.showShort("该路线的形状点不足两个，不能显示路线！");
                     return;
@@ -126,7 +126,8 @@ public class RouteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 int position = holder.getAdapterPosition();
                 RouteSummary routeSummary = list.get(position);
                 ARouter.getInstance().build("/desk/modifyRoute")
-                        .withString("route_id", routeSummary.getRouteId())
+                        .withString("group_id", routeSummary.getGroupId())
+                        .withInt("route_id", routeSummary.getRouteId())
                         .navigation();
             }
         });

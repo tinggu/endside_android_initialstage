@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.KeepWatchPersonTrendsListActivity">
+    tools:context=".activity.PersonTrendsListActivity">
 
     <include layout="@layout/sub_top_bar" />
 

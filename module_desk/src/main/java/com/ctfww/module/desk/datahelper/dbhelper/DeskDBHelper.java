@@ -51,6 +51,10 @@ public class DeskDBHelper {
         return dao.queryBuilder().where(dao.queryBuilder().and(DeskInfoDao.Properties.GroupId.eq(groupId), DeskInfoDao.Properties.Status.notEq("delete"))).list();
     }
 
+    public static long getCount(DeskInfoDao dao, String groupId) {
+        return dao.queryBuilder().where(dao.queryBuilder().and(DeskInfoDao.Properties.GroupId.eq(groupId), DeskInfoDao.Properties.Status.notEq("delete"))).buildCount().count();
+    }
+
     // 删除签到点
     public static void delete(DeskInfoDao dao, DeskInfo desk) {
         desk.setStatus("delete");

@@ -124,13 +124,13 @@ public class KeyEventSnatchFragment extends Fragment {
     }
 
     public void refresh() {
-        List<KeyEvent> keyEventList = DBQuickEntry.getDoingKeyEventList();
+        List<KeyEvent> keyEventList = DBQuickEntry.getDoingList();
         if (!keyEventList.isEmpty()) {
             updateKeyEventToUI(keyEventList, false);
             return;
         }
 
-        keyEventList = DBQuickEntry.getCanSnatchKeyEventList();
+        keyEventList = DBQuickEntry.getCanSnatchList();
         updateKeyEventToUI(keyEventList, true);
 
         if (!keyEventList.isEmpty()) {
@@ -143,7 +143,7 @@ public class KeyEventSnatchFragment extends Fragment {
             return;
         }
 
-        KeyEventTrace keyEventTrace = DBHelper.getInstance().getKeyEventTrace(mKeyEvent.getEventId());
+        KeyEventTrace keyEventTrace = DBHelper.getInstance().getKeyEventTrace(mKeyEvent.getEventId(), System.currentTimeMillis());
         if (keyEventTrace == null || "end".equals(keyEventTrace.getStatus()) || "snatch".equals(keyEventTrace.getStatus()) || "accepted".equals(keyEventTrace.getStatus())) {
             refresh();
             return;

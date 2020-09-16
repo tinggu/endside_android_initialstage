@@ -3,8 +3,6 @@ package com.ctfww.module.keepwatch.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -40,9 +38,8 @@ import com.ctfww.commonlib.utils.FileUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.PermissionUtils;
 import com.ctfww.module.desk.entity.DeskInfo;
-import com.ctfww.module.keepwatch.datahelper.airship.Airship;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.Utils;
+import com.ctfww.module.keepwatch.datahelper.Utils;
 import com.ctfww.module.keepwatch.fragment.KeepWatchMyFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchSigninFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchStatisticsFragment;
@@ -318,17 +315,12 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
             Utils.setFirstToken(true);
             LogUtils.i(TAG, "onGetMessage: tms_first_token");
             checkUpgrade();
-            Airship.getInstance().startTimedSyn();
+            Utils.startTimeSyn();
 
-
-            // 同步基本的用户信息与群组信息
             com.ctfww.module.user.datahelper.airship.Airship.getInstance().synFromCloud();
-
-            // 同步签到点相关信息
             com.ctfww.module.desk.datahelper.airship.Airship.getInstance().synFromCloud();
-
             com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synFromCloud();
-
+            com.ctfww.module.signin.datahelper.airship.Airship.getInstance().synFromCloud();
             com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synFromCloud();
         }
         else if ("update_location".equals(msg)) {
@@ -395,14 +387,12 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
                 }
                 else if (head.getMsgContentType() == 10) {
                     com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
-                    Airship.getInstance().synKeepWatchPersonTrendsFromCloud();
                 }
                 else if (head.getMsgContentType() == 11) {
-                    Airship.getInstance().synKeepWatchRankingFromCloud();
+//                    Airship.getInstance().synKeepWatchRankingFromCloud();
                 }
                 else if (head.getMsgContentType() == 20) {
-                    Airship.getInstance().synKeepWatchPersonTrendsFromCloud();
-                    Airship.getInstance().synKeepWatchRankingFromCloud();
+//                    Airship.getInstance().synKeepWatchRankingFromCloud();
                 }
             }
         }

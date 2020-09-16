@@ -93,10 +93,10 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
         fragmentList.add(mDeskFragment);
 
         mRouteFragment = new SelectRouteFragment();
-        ArrayList<String> routeIdList = getIntent().getStringArrayListExtra("selected_route_id_list");
+        ArrayList<Integer> routeIdList = getIntent().getIntegerArrayListExtra("selected_route_id_list");
         if (routeIdList != null && !routeIdList.isEmpty()) {
             Bundle bundle = new Bundle();
-            bundle.putStringArrayList("selected_route_id_list", routeIdList);
+            bundle.putIntegerArrayList("selected_route_id_list", routeIdList);
             mRouteFragment.setArguments(bundle);
         }
         fragmentList.add(mRouteFragment);

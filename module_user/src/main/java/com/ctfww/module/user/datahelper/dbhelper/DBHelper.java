@@ -286,6 +286,10 @@ public class DBHelper {
         return GroupUserDBHelper.getAdminCount(groupUserInfoDao, groupId);
     }
 
+    public long getGroupUserCount(String groupId) {
+        return GroupUserDBHelper.getCount(groupUserInfoDao, groupId);
+    }
+
     // 6. 与通知读取状态有关
 
     /**

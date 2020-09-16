@@ -18,18 +18,28 @@ import androidx.fragment.app.Fragment;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.bumptech.glide.Glide;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.FileInfo;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
+import com.ctfww.module.assignment.entity.TodayAssignment;
 import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
+import com.ctfww.module.keepwatch.datahelper.sp.Const;
 import com.ctfww.module.keepwatch.entity.Ranking;
+import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.keyevents.Entity.KeyEventTrace;
+import com.ctfww.module.user.entity.GroupUserInfo;
 import com.ctfww.module.user.entity.UserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class KeepWatchRankingFragment extends Fragment {
@@ -108,6 +118,7 @@ public class KeepWatchRankingFragment extends Fragment {
     }
 
     public void getTodayRanking() {
+
         getRanking(MyDateTimeUtils.getTodayStartTime(), MyDateTimeUtils.getTodayEndTime());
         mType = "keepwatch_day_report";
         mTimeStamp = System.currentTimeMillis();
@@ -207,5 +218,45 @@ public class KeepWatchRankingFragment extends Fragment {
             MessageEvent messageEvent = new MessageEvent("download_file", GsonUtils.toJson(fileInfo));
             EventBus.getDefault().post(messageEvent);
         }
+    }
+
+    public List<Ranking> getRankingList(long startTime, long endTime) {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return new ArrayList<Ranking>();
+        }
+
+        List<GroupUserInfo> groupUserInfoList = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getSelfGroupUserList();
+        List<Ranking> rankingList = new ArrayList<>(groupUserInfoList.size());
+        for (int i = 0; i < groupUserInfoList.size(); ++i) {
+            String userId = groupUserInfoList.get(i).getUserId();
+            rankingList.get(i).setUserId(userId);
+
+            List<TodayAssignment> todayAssignmentList = com.ctfww.module.assignment.datahelper.dbhelper.DBHelper.getInstance().getFinishList(groupId, userId, startTime, endTime);
+            int score = 0;
+            for (int j = 0; j < todayAssignmentList.size(); ++j) {
+                TodayAssignment todayAssignment = todayAssignmentList.get(j);
+                score += todayAssignment.getScore();
+            }
+
+            List<KeyEvent> keyEventList = com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper.getInstance().getEndList(groupId, userId, startTime, endTime);
+            for (int j = 0; j < keyEventList.size(); ++j) {
+                KeyEvent keyEvent = keyEventList.get(j);
+                score += keyEvent.getScore();
+            }
+
+            rankingList.get(i).setScore(score);
+        }
+
+        rankingList.sort(new Comparator<Ranking>() {
+            @Override
+            public int compare(Ranking o1, Ranking o2) {
+                Integer val1 = o1.getScore();
+                Integer val2 = o2.getScore();
+                return val2.compareTo(val1);
+            }
+        });
+
+        return rankingList;
     }
 }

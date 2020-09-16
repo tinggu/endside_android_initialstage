@@ -1,7 +1,6 @@
 package com.ctfww.module.keyevents.fragment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
-import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
-import com.ctfww.module.keyevents.Entity.KeyEventPerson;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.keyevents.adapter.KeyEventListAdapter;
-import com.ctfww.module.keyevents.datahelper.NetworkHelper;
 import com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry;
 
 import java.util.ArrayList;
@@ -66,7 +60,7 @@ public class KeyEventListFragment extends Fragment{
     }
 
     public void showNoEndList() {
-        List<KeyEvent> keyEventList = DBQuickEntry.getNoEndKeyEventList();
+        List<KeyEvent> keyEventList = DBQuickEntry.getNotEndList();
         if (keyEventList.isEmpty()) {
             mNoData.setVisibility(View.VISIBLE);
             mKeyEventListView.setVisibility(View.GONE);
@@ -80,7 +74,7 @@ public class KeyEventListFragment extends Fragment{
     }
 
     public void showEndList(long startTime, long endTime) {
-        List<KeyEvent> keyEventList = DBQuickEntry.getEndKeyEventList(startTime, endTime);
+        List<KeyEvent> keyEventList = DBQuickEntry.getEndList(startTime, endTime);
         if (keyEventList.isEmpty()) {
             mNoData.setVisibility(View.VISIBLE);
             mKeyEventListView.setVisibility(View.GONE);

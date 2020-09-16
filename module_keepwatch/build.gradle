@@ -99,6 +99,7 @@ dependencies {
     api project(':module_user')
     api project(':module_desk')
     api project(':module_assignment')
+    api project(':module_signin')
     api project(':module_upgrade')
     api project(':module_fingerprint')
     api project(':module_datapicker')

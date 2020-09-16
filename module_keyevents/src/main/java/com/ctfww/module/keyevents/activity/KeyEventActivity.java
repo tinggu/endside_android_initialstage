@@ -192,36 +192,16 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             ARouter.getInstance().build("/user/selectUser").navigation();
         }
         else if (id == mSnatch.getId()) {
-            snatch();
+            newKeyEventTrace("snatch");
         }
         else if (id == mFree.getId()) {
-            free();
+            newKeyEventTrace("free");
         }
-        else if (id == mAccept.getId() || id == mEnd.getId()) {
-            KeyEventTrace keyEventTrace = new KeyEventTrace();
-            keyEventTrace.setEventId(mKeyEvent.getEventId());
-            keyEventTrace.setTimeStamp(System.currentTimeMillis());
-            keyEventTrace.setDeskId(mKeyEvent.getDeskId());
-            keyEventTrace.setMatchLevel("default");
-            UserInfo userInfo = DBQuickEntry.getSelfInfo();
-            if (userInfo == null) {
-                return;
-            }
-
-            keyEventTrace.setSynTag("modify");
-
-            if (id == mAccept.getId()) {
-                keyEventTrace.setStatus("accepted");
-            }
-            else {
-                keyEventTrace.setStatus("end");
-                String print = com.ctfww.module.fingerprint.Utils.getWifiCalculateFingerPrint();
-                DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeyEvent.getDeskId());
-                String matchLevel = distResult.getStringMatchLevel();
-                keyEventTrace.setMatchLevel(matchLevel);
-            }
-
-            DBHelper.getInstance().updateKeyEventTrace(keyEventTrace);
+        else if (id == mAccept.getId()) {
+            newKeyEventTrace("accepted");
+        }
+        else if (id == mEnd.getId()) {
+            newKeyEventTrace("end");
         }
     }
 
@@ -229,22 +209,8 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
     public void onMessageEvent(MessageEvent messageEvent) {
         if ("selected_user".equals(messageEvent.getMessage())) {
             String userId = messageEvent.getValue();
-            GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser(userId);
-            if (groupUserInfo == null) {
-                return;
-            }
-
-            KeyEventTrace keyEventTrace = new KeyEventTrace();
-            keyEventTrace.setEventId(mKeyEvent.getEventId());
-            keyEventTrace.setTimeStamp(System.currentTimeMillis());
-            keyEventTrace.setDeskId(mKeyEvent.getDeskId());
-            keyEventTrace.setMatchLevel("default");
-            keyEventTrace.setUserId(groupUserInfo.getUserId());
-            keyEventTrace.setStatus("received");
-            keyEventTrace.setSynTag("modify");
-
             if (mAssignment.getVisibility() == View.VISIBLE || mTransfer.getVisibility() == View.VISIBLE) { // 要分派给某人
-                DBHelper.getInstance().updateKeyEventTrace(keyEventTrace);
+                newKeyEventTrace("received");
             }
         }
     }
@@ -295,42 +261,42 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    public void snatch() {
+    private void newKeyEventTrace(String status) {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
-        if (TextUtils.isEmpty(userId)) {
+        if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
             return;
         }
 
         KeyEventTrace keyEventTrace = new KeyEventTrace();
+        keyEventTrace.setGroupId(groupId);
         keyEventTrace.setUserId(userId);
-        keyEventTrace.setStatus("snatch");
+        keyEventTrace.setStatus(status);
         keyEventTrace.setDeskId(mKeyEvent.getDeskId());
         keyEventTrace.setEventId(mKeyEvent.getEventId());
         keyEventTrace.setTimeStamp(System.currentTimeMillis());
         keyEventTrace.setSynTag("new");
 
-
-        DBHelper.getInstance().addKeyEventTrace(keyEventTrace);
-        Airship.getInstance().synKeyEventTraceToCloud();
-    }
-
-    public void free() {
-        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
-        if (TextUtils.isEmpty(userId)) {
-            return;
+        keyEventTrace.setMatchLevel("default");
+        if ("end".equals(keyEventTrace.getStatus())) {
+            String print = com.ctfww.module.fingerprint.Utils.getWifiCalculateFingerPrint();
+            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeyEvent.getDeskId());
+            String matchLevel = distResult.getStringMatchLevel();
+            keyEventTrace.setMatchLevel(matchLevel);
         }
 
-        KeyEventTrace keyEventTrace = new KeyEventTrace();
-        keyEventTrace.setUserId(userId);
-        keyEventTrace.setStatus("free");
-        keyEventTrace.setDeskId(mKeyEvent.getDeskId());
-        keyEventTrace.setEventId(mKeyEvent.getEventId());
-        keyEventTrace.setTimeStamp(System.currentTimeMillis());
-        keyEventTrace.setSynTag("new");
-
-
         DBHelper.getInstance().addKeyEventTrace(keyEventTrace);
         Airship.getInstance().synKeyEventTraceToCloud();
+
+        mKeyEvent.setStatus(keyEventTrace.getStatus());
+        mKeyEvent.setTimeStamp(keyEventTrace.getTimeStamp());
+        mKeyEvent.setUserId(keyEventTrace.getUserId());
+        if ("new".equals(mKeyEvent.getSynTag())) {
+            mKeyEvent.setSynTag("modify");
+        }
+
+        DBHelper.getInstance().updateKeyEvent(mKeyEvent);
+        Airship.getInstance().synKeyEventToCloud();
     }
 
     private void setCurrentProcessStatus(List<KeyEventTrace> keyEventTraceList) {

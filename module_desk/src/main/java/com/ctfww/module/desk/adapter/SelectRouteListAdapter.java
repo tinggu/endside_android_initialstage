@@ -22,10 +22,10 @@ public class SelectRouteListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private final static String TAG = "SelectRouteListAdapter";
 
     private List<RouteSummary> list;
-    private HashMap<String, String> selectedMapOld = new HashMap<>();
-    private HashMap<String, String> selectedMapNew = new HashMap<>();
+    private HashMap<Integer, Integer> selectedMapOld = new HashMap<>();
+    private HashMap<Integer, Integer> selectedMapNew = new HashMap<>();
 
-    public SelectRouteListAdapter(List<RouteSummary> list, List<String> selectedRouteIdList) {
+    public SelectRouteListAdapter(List<RouteSummary> list, List<Integer> selectedRouteIdList) {
         this.list = list;
         setSelectedRouteIdList(selectedRouteIdList);
     }
@@ -34,9 +34,9 @@ public class SelectRouteListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.list = list;
     }
 
-    public void setSelectedRouteIdList(List<String> routeIdList) {
+    public void setSelectedRouteIdList(List<Integer> routeIdList) {
         for (int i = 0; i < routeIdList.size(); ++i) {
-            String routeId = routeIdList.get(i);
+            int routeId = routeIdList.get(i);
             selectedMapOld.put(routeId, routeId);
         }
     }
@@ -57,8 +57,8 @@ public class SelectRouteListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         final RouteSummary route = list.get(position);
         ((SelectRouteViewHolder) holder).routeName.setText(route.getRouteName());
-        String routeId = selectedMapOld.get(selectedMapOld.get(route.getRouteId()));
-        if (TextUtils.isEmpty(routeId)) {
+        Integer routeId = selectedMapOld.get(selectedMapOld.get(route.getRouteId()));
+        if (routeId == null) {
             ((SelectRouteViewHolder) holder).routeSelect.setVisibility(View.VISIBLE);
             ((SelectRouteViewHolder) holder).prompt.setVisibility(View.GONE);
         }
@@ -89,7 +89,7 @@ public class SelectRouteListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
     }
 
-    public HashMap<String, String> getSelectedMap() {
+    public HashMap<Integer, Integer> getSelectedMap() {
         return selectedMapNew;
     }
 }
