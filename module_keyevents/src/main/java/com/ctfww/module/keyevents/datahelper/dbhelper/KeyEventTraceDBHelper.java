@@ -2,7 +2,6 @@ package com.ctfww.module.keyevents.datahelper.dbhelper;
 
 import android.database.sqlite.SQLiteConstraintException;
 
-import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.Entity.KeyEventTraceDao;
 
@@ -58,5 +57,70 @@ public class KeyEventTraceDBHelper {
 
     public static List<KeyEventTrace> getNoSynList(KeyEventTraceDao dao) {
         return dao.queryBuilder().where(KeyEventTraceDao.Properties.SynTag.eq("new")).list();
+    }
+
+    public static List<KeyEventTrace> getCreateList(KeyEventTraceDao dao, String groupId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(KeyEventTraceDao.Properties.Status.notEq("create"),
+                                KeyEventTraceDao.Properties.GroupId.eq(groupId),
+                                KeyEventTraceDao.Properties.TimeStamp.ge(startTime),
+                                KeyEventTraceDao.Properties.TimeStamp.le(endTime)))
+                .list();
+    }
+
+    public static List<KeyEventTrace> getCreateList(KeyEventTraceDao dao, String groupId, String userId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(KeyEventTraceDao.Properties.Status.notEq("create"),
+                                KeyEventTraceDao.Properties.GroupId.eq(groupId),
+                                KeyEventTraceDao.Properties.UserId.eq(userId),
+                                KeyEventTraceDao.Properties.TimeStamp.ge(startTime),
+                                KeyEventTraceDao.Properties.TimeStamp.le(endTime)))
+                .list();
+    }
+
+    public static long getCreateCount(KeyEventTraceDao dao, String groupId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(KeyEventTraceDao.Properties.Status.notEq("create"),
+                                KeyEventTraceDao.Properties.GroupId.eq(groupId),
+                                KeyEventTraceDao.Properties.TimeStamp.ge(startTime),
+                                KeyEventTraceDao.Properties.TimeStamp.le(endTime)))
+                .buildCount()
+                .count();
+    }
+
+    public static long getCreateCount(KeyEventTraceDao dao, String groupId, String userId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(KeyEventTraceDao.Properties.Status.notEq("create"),
+                                KeyEventTraceDao.Properties.GroupId.eq(groupId),
+                                KeyEventTraceDao.Properties.UserId.eq(userId),
+                                KeyEventTraceDao.Properties.TimeStamp.ge(startTime),
+                                KeyEventTraceDao.Properties.TimeStamp.le(endTime)))
+                .buildCount()
+                .count();
+    }
+
+    public static List<KeyEventTrace> getEndList(KeyEventTraceDao dao, String groupId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(KeyEventTraceDao.Properties.Status.notEq("end"),
+                                KeyEventTraceDao.Properties.GroupId.eq(groupId),
+                                KeyEventTraceDao.Properties.TimeStamp.ge(startTime),
+                                KeyEventTraceDao.Properties.TimeStamp.le(endTime)))
+                .list();
+    }
+
+    public static List<KeyEventTrace> getEndList(KeyEventTraceDao dao, String groupId, String userId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(KeyEventTraceDao.Properties.Status.notEq("end"),
+                                KeyEventTraceDao.Properties.GroupId.eq(groupId),
+                                KeyEventTraceDao.Properties.UserId.eq(userId),
+                                KeyEventTraceDao.Properties.TimeStamp.ge(startTime),
+                                KeyEventTraceDao.Properties.TimeStamp.le(endTime)))
+                .list();
     }
 }

@@ -155,14 +155,9 @@ public class KeepWatchSigninFragment extends Fragment {
         if(result != null) {
             int deskId = QRCodeUtils.getQrDeskId(result.getContents(), getContext());
             if (deskId != 0) {
-                com.ctfww.module.fingerprint.Utils.startScan("calc");
-
-                SigninInfo signin = new SigninInfo();
-                signin.setObjectId(deskId);
-                signin.setFinishType("qr");
-                signin.setType("desk");
                 ARouter.getInstance().build("/keepwatch/reportSignin")
-                        .withString("signin", GsonUtils.toJson(signin))
+                        .withInt("desk_id", deskId)
+                        .withString("finish_type", "qr")
                         .navigation();
             }
         }

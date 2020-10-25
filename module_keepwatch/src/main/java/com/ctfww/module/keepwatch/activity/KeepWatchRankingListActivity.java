@@ -1,6 +1,7 @@
 package com.ctfww.module.keepwatch.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,21 +11,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
+import com.ctfww.module.assignment.entity.TodayAssignment;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.adapter.KeepWatchRankingListAdapter;
+import com.ctfww.module.keepwatch.datahelper.sp.Const;
 import com.ctfww.module.keepwatch.entity.Ranking;
+import com.ctfww.module.keyevents.Entity.KeyEvent;
+import com.ctfww.module.user.entity.GroupUserInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Route(path = "/keepwatch/ranking")
@@ -65,21 +69,47 @@ public class KeepWatchRankingListActivity extends AppCompatActivity implements V
         mBack.setOnClickListener(this);
     }
 
-    private void getRankingList(long startTime, long endTime) {
-        NetworkHelper.getInstance().getKeepWatchRanking(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mKeepWatchRankingList = (List<Ranking>)obj;
-                mKeepWatchRankingListAdapter.setList(mKeepWatchRankingList);
-                mKeepWatchRankingListAdapter.notifyDataSetChanged();
-                LogUtils.i(TAG, "getRankingList success!");
+    private List<Ranking> getRankingList(long startTime, long endTime) {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        if (TextUtils.isEmpty(groupId)) {
+            return new ArrayList<Ranking>();
+        }
+
+        List<GroupUserInfo> groupUserInfoList = com.ctfww.module.user.datahelper.dbhelper.DBQuickEntry.getGroupUserList();
+        List<Ranking> rankingList = new ArrayList<>();
+        for (int i = 0; i < groupUserInfoList.size(); ++i) {
+            Ranking ranking  = new Ranking();
+            String userId = groupUserInfoList.get(i).getUserId();
+            ranking.setUserId(userId);
+
+            List<TodayAssignment> todayAssignmentList = com.ctfww.module.assignment.datahelper.dbhelper.DBHelper.getInstance().getFinishList(groupId, userId, startTime, endTime);
+            int score = 0;
+            for (int j = 0; j < todayAssignmentList.size(); ++j) {
+                TodayAssignment todayAssignment = todayAssignmentList.get(j);
+                score += todayAssignment.getScore();
             }
 
+            List<KeyEvent> keyEventList = com.ctfww.module.keyevents.datahelper.dbhelper.DBHelper.getInstance().getEndList(groupId, userId, startTime, endTime);
+            for (int j = 0; j < keyEventList.size(); ++j) {
+                KeyEvent keyEvent = keyEventList.get(j);
+                score += keyEvent.getScore();
+            }
+
+            ranking.setScore(score);
+
+            rankingList.add(ranking);
+        }
+
+        rankingList.sort(new Comparator<Ranking>() {
             @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getRankingList fail: code = " + code);
+            public int compare(Ranking o1, Ranking o2) {
+                Integer val1 = o1.getScore();
+                Integer val2 = o2.getScore();
+                return val2.compareTo(val1);
             }
         });
+
+        return rankingList;
     }
 
     @Override

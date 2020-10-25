@@ -83,6 +83,27 @@ public class SigninInfoDBHelper {
                 .list();
     }
 
+    public static long getCount(SigninInfoDao dao, String groupId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(SigninInfoDao.Properties.GroupId.eq(groupId),
+                                SigninInfoDao.Properties.TimeStamp.ge(startTime),
+                                SigninInfoDao.Properties.TimeStamp.le(endTime)))
+                .buildCount()
+                .count();
+    }
+
+    public static long getCount(SigninInfoDao dao, String groupId, String userId, long startTime, long endTime) {
+        return dao.queryBuilder()
+                .where(dao.queryBuilder()
+                        .and(SigninInfoDao.Properties.GroupId.eq(groupId),
+                                SigninInfoDao.Properties.UserId.eq(userId),
+                                SigninInfoDao.Properties.TimeStamp.ge(startTime),
+                                SigninInfoDao.Properties.TimeStamp.le(endTime)))
+                .buildCount()
+                .count();
+    }
+
     public static void update(SigninInfoDao dao, SigninInfo info) {
         try {
             dao.update(info);

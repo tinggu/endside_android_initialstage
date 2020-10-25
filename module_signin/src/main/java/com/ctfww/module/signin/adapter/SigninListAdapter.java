@@ -2,6 +2,7 @@ package com.ctfww.module.signin.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.service.autofill.FieldClassification;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,7 +105,7 @@ public class SigninListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void setList(List<SigninInfo> list) {
-        this.list = list.subList(0, mMaxCount);
+        this.list = list.subList(0, Math.min(mMaxCount, list.size()));
     }
 
     private void setOnClickListener(SigninViewHolder holder) {

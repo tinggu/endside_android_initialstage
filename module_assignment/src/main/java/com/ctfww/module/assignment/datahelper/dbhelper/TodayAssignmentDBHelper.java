@@ -118,88 +118,6 @@ public class TodayAssignmentDBHelper {
                 .count();
     }
 
-    public static List<TodayAssignment> getFinishList(TodayAssignmentDao dao, String groupId, long dayTimeStamp) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.eq(dayTimeStamp),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency)))
-                .list();
-    }
-
-    public static List<TodayAssignment> getFinishList(TodayAssignmentDao dao, String groupId, String userId, long dayTimeStamp) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.UserId.notEq(userId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.eq(dayTimeStamp),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency))).list();
-    }
-
-    public static List<TodayAssignment> getFinishList(TodayAssignmentDao dao, String groupId, long startTime, long endTime) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.ge(startTime),
-                                TodayAssignmentDao.Properties.DayTimeStamp.le(endTime),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency)))
-                .list();
-    }
-
-    public static List<TodayAssignment> getFinishList(TodayAssignmentDao dao, String groupId, String userId, long startTime, long endTime) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.UserId.notEq(userId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.ge(startTime),
-                                TodayAssignmentDao.Properties.DayTimeStamp.le(endTime),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency))).list();
-    }
-
-    public static long getFinishCount(TodayAssignmentDao dao, String groupId, long dayTimeStamp) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.eq(dayTimeStamp),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency)))
-                .buildCount()
-                .count();
-    }
-
-    public static long getFinishCount(TodayAssignmentDao dao, String groupId, String userId, long dayTimeStamp) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.UserId.notEq(userId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.eq(dayTimeStamp),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency)))
-                .buildCount()
-                .count();
-    }
-
-    public static long getFinishCount(TodayAssignmentDao dao, String groupId, long startTime, long endTime) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.ge(startTime),
-                                TodayAssignmentDao.Properties.DayTimeStamp.le(endTime),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency)))
-                .buildCount()
-                .count();
-    }
-
-    public static long getFinishCount(TodayAssignmentDao dao, String groupId, String userId, long startTime, long endTime) {
-        return dao.queryBuilder()
-                .where(dao.queryBuilder()
-                        .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
-                                TodayAssignmentDao.Properties.UserId.notEq(userId),
-                                TodayAssignmentDao.Properties.DayTimeStamp.ge(startTime),
-                                TodayAssignmentDao.Properties.DayTimeStamp.le(endTime),
-                                TodayAssignmentDao.Properties.SigninCount.ge(TodayAssignmentDao.Properties.Frequency)))
-                .buildCount()
-                .count();
-    }
-
     public static List<TodayAssignment> getLeakList(TodayAssignmentDao dao, String groupId, long dayTimeStamp) {
         return dao.queryBuilder()
                 .where(dao.queryBuilder()
@@ -239,7 +157,7 @@ public class TodayAssignmentDBHelper {
                                 TodayAssignmentDao.Properties.UserId.notEq(userId),
                                 TodayAssignmentDao.Properties.DayTimeStamp.ge(startTime),
                                 TodayAssignmentDao.Properties.DayTimeStamp.le(endTime),
-                                TodayAssignmentDao.Properties.SigninCount.ge(0),
+                                TodayAssignmentDao.Properties.SigninCount.eq(0),
                                 TodayAssignmentDao.Properties.Status.notEq("delete")))
                 .list();
     }
@@ -249,7 +167,7 @@ public class TodayAssignmentDBHelper {
                 .where(dao.queryBuilder()
                         .and(TodayAssignmentDao.Properties.GroupId.eq(groupId),
                                 TodayAssignmentDao.Properties.DayTimeStamp.eq(dayTimeStamp),
-                                TodayAssignmentDao.Properties.SigninCount.ge(0),
+                                TodayAssignmentDao.Properties.SigninCount.eq(0),
                                 TodayAssignmentDao.Properties.Status.notEq("delete")))
                 .buildCount()
                 .count();

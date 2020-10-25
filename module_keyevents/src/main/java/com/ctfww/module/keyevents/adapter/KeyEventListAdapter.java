@@ -14,6 +14,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.module.desk.entity.DeskInfo;
+import com.ctfww.module.desk.entity.RouteSummary;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.R;
 import com.ctfww.module.user.entity.UserInfo;
@@ -49,12 +50,19 @@ public class KeyEventListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         KeyEvent keyEvent = list.get(position);
-        String deskName = "[" + keyEvent.getDeskId() + "]";
-        DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getDeskId());
-        if (deskInfo != null) {
-            deskName += " " + deskInfo.getDeskName();
+        if (keyEvent.getType() < 100) {
+            DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getObjectId());
+            if (deskInfo != null) {
+                ((KeyEventViewHolder)holder).deskName.setText(deskInfo.getIdName());
+            }
         }
-        ((KeyEventViewHolder)holder).deskName.setText(deskName);
+        else {
+            RouteSummary routeSummary = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(keyEvent.getGroupId(), keyEvent.getObjectId());
+            if (routeSummary != null) {
+                ((KeyEventViewHolder)holder).deskName.setText(routeSummary.getIdName());
+            }
+        }
+
         ((KeyEventViewHolder)holder).keyEventName.setText(keyEvent.getEventName());
 
         UserInfo userInfo = com.ctfww.module.user.datahelper.dbhelper.DBHelper.getInstance().getUser(keyEvent.getUserId());

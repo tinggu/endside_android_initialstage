@@ -12,6 +12,7 @@ import com.ctfww.module.assignment.entity.DaoSession;
 import com.ctfww.module.assignment.entity.TodayAssignment;
 import com.ctfww.module.assignment.entity.TodayAssignmentDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper {
@@ -120,6 +121,7 @@ public class DBHelper {
             todayAssignment.setScore(info.getScore());
             todayAssignment.setType(info.getType());
             todayAssignment.setTimeStamp(info.getTimeStamp());
+            todayAssignment.setStatus(info.getStatus());
 
             addTodayAssignment(todayAssignment);
         }
@@ -178,35 +180,107 @@ public class DBHelper {
     }
 
     public List<TodayAssignment> getFinishList(String groupId, long dayTimeStamp) {
-        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, dayTimeStamp);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, dayTimeStamp);
+        List<TodayAssignment> todayAssignmentListRet = new ArrayList<>();
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                todayAssignmentListRet.add(todayAssignment);
+            }
+        }
+
+        return todayAssignmentListRet;
     }
 
     public List<TodayAssignment> getFinishList(String groupId, String userId, long dayTimeStamp) {
-        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, userId, dayTimeStamp);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, userId, dayTimeStamp);
+        List<TodayAssignment> todayAssignmentListRet = new ArrayList<>();
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                todayAssignmentListRet.add(todayAssignment);
+            }
+        }
+
+        return todayAssignmentListRet;
     }
 
     public List<TodayAssignment> getFinishList(String groupId, long startTime, long endTime) {
-        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, startTime, endTime);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, startTime, endTime);
+        List<TodayAssignment> todayAssignmentListRet = new ArrayList<>();
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                todayAssignmentListRet.add(todayAssignment);
+            }
+        }
+
+        return todayAssignmentListRet;
     }
 
     public List<TodayAssignment> getFinishList(String groupId, String userId, long startTime, long endTime) {
-        return TodayAssignmentDBHelper.getFinishList(todayAssignmentDao, groupId, userId, startTime, endTime);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, userId, startTime, endTime);
+        List<TodayAssignment> todayAssignmentListRet = new ArrayList<>();
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                todayAssignmentListRet.add(todayAssignment);
+            }
+        }
+
+        return todayAssignmentListRet;
     }
 
     public long getFinishCount(String groupId, long dayTimeStamp) {
-        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, dayTimeStamp);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, dayTimeStamp);
+        long ret = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                ++ret;
+            }
+        }
+
+        return ret;
     }
 
     public long getFinishCount(String groupId, String userId, long dayTimeStamp) {
-        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, userId, dayTimeStamp);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, userId, dayTimeStamp);
+        long ret = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                ++ret;
+            }
+        }
+
+        return ret;
     }
 
     public long getFinishCount(String groupId, long startTime, long endTime) {
-        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, startTime, endTime);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, startTime, endTime);
+        long ret = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                ++ret;
+            }
+        }
+
+        return ret;
     }
 
     public long getFinishCount(String groupId, String userId, long startTime, long endTime) {
-        return TodayAssignmentDBHelper.getFinishCount(todayAssignmentDao, groupId, userId, startTime, endTime);
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(groupId, userId, startTime, endTime);
+        long ret = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            if (todayAssignment.isFinished()) {
+                ++ret;
+            }
+        }
+
+        return ret;
     }
 
     public List<TodayAssignment> getLeakList(String groupId, long dayTimeStamp) {

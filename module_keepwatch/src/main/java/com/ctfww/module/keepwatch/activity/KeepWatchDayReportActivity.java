@@ -12,16 +12,20 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.Consts;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
+import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.fragment.ColorPromptFragment;
 import com.ctfww.commonlib.fragment.DayCalendarFragment;
 import com.ctfww.commonlib.utils.CalendarUtils;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByUser;
 import com.ctfww.module.keepwatch.fragment.KeepWatchRankingFragment;
 import com.haibin.calendarview.Calendar;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +59,7 @@ public class KeepWatchDayReportActivity extends AppCompatActivity implements Vie
     private KeepWatchRankingFragment mKeepWatchRankingFragment;
     private TextView mRankingTittle;
 
-    List<KeepWatchStatisticsByUser> mKeepWatchStatisticsByUserList = new ArrayList<>();
+    private long mTimeStamp;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -65,7 +69,13 @@ public class KeepWatchDayReportActivity extends AppCompatActivity implements Vie
         setOnClickListener();
 
         mDayCalendarFragment.initData();
-        mKeepWatchRankingFragment.getTodayRanking();
+
+        EventBus.getDefault().register(this);
+
+        com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synAssignmentFromCloud();
+        com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synTodayAssignmentFromCloud();
+        com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
+        com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventFromCloud();
     }
 
     private void initViews() {
@@ -126,14 +136,16 @@ public class KeepWatchDayReportActivity extends AppCompatActivity implements Vie
     @Override
     public void onDayCalendarSelect(Calendar calendar) {
         LogUtils.i(TAG, "onDayCalendarSelect");
-        long timeStamp = calendar.getTimeInMillis();
-        long monthStartTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
+        mTimeStamp = calendar.getTimeInMillis();
+        long monthStartTime = MyDateTimeUtils.getMonthStartTime(mTimeStamp);
         if (mMonthStartTime != monthStartTime) {
-            getHistoryEveryDayStatistics(timeStamp);
+            showEveryDayStatus(mTimeStamp);
             mMonthStartTime = monthStartTime;
         }
-        getStatistics(timeStamp);
-        mKeepWatchRankingFragment.getThisDayRanking(timeStamp);
+
+        showAssignment(mTimeStamp);
+        showKeyEvent(mTimeStamp);
+        mKeepWatchRankingFragment.getThisDayRanking(mTimeStamp);
     }
 
     /**
@@ -145,80 +157,53 @@ public class KeepWatchDayReportActivity extends AppCompatActivity implements Vie
 
     }
 
-    private void getStatistics(long timeStamp) {
-        long startTime = MyDateTimeUtils.getDayStartTime(timeStamp);
-        long endTime = MyDateTimeUtils.getDayEndTime(timeStamp);
-        NetworkHelper.getInstance().getKeepWatchStatistics(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod = (KeepWatchStatisticsByPeriod)obj;
-                showStatistics(keepWatchStatisticsByPeriod);
-                LogUtils.i(TAG, "getStatistics success!");
-            }
+    private void showAssignment(long timeStamp) {
+        long startTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getStatistics fail: code= " + code);
-            }
-        });
+        long finishAssignmentCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getFinishCount(startTime);
+        long shouldAssignmentCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(startTime);
+        mAssigmentCompeltion.setText("" + finishAssignmentCount + "/" + shouldAssignmentCount);
+
+        long signinCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getSigninCount(startTime);
+        mSigninCount.setText("" + signinCount);
+        mMemberCount.setText("" + 0);
+
+//        long todayAssignmentCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(startTime);
+        long leakCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getLeakCount(startTime);
+        mDeskCoverage.setText("" + (finishAssignmentCount - leakCount) + "/" + finishAssignmentCount);
+        mLeakCount.setText("" + leakCount);
     }
 
-    private void showStatistics(KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod) {
-        mAssigmentCompeltion.setText("" + keepWatchStatisticsByPeriod.getAssignmentCount() + "/" + keepWatchStatisticsByPeriod.getShouldAssignmentCount());
-        mSigninCount.setText("" + keepWatchStatisticsByPeriod.getSigninCount());
-        mMemberCount.setText("" + keepWatchStatisticsByPeriod.getMemberCount());
-        mDeskCoverage.setText("" + keepWatchStatisticsByPeriod.getDeskCount() + "/" + keepWatchStatisticsByPeriod.getShouldDeskCount());
-        mLeakCount.setText("" + (keepWatchStatisticsByPeriod.getShouldCount() - keepWatchStatisticsByPeriod.getSigninCount()));
-        mAbnormalCount.setText("" + keepWatchStatisticsByPeriod.getAbnormalCount());
-        mEndAbnormalCount.setText("" + keepWatchStatisticsByPeriod.getEndCount());
-    }
-
-    private void getHistoryEveryDayStatistics(long timeStamp) {
+    private void showKeyEvent(long timeStamp) {
         long startTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
         long endTime = MyDateTimeUtils.getMonthEndTime(timeStamp);
-        NetworkHelper.getInstance().getHistoryEveryDayStatistics(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                mKeepWatchStatisticsByUserList = (List<KeepWatchStatisticsByUser>)obj;
-                LogUtils.i(TAG, "getHistoryEveryDayStatistics: mKeepWatchStatisticsByUserList.size() = " + mKeepWatchStatisticsByUserList.size());
 
-                HashMap<String, Calendar> hashMap = new HashMap<>();
-                for (int i = 0; i < mKeepWatchStatisticsByUserList.size(); ++i) {
-                    KeepWatchStatisticsByUser keepWatchStatisticsByUser = mKeepWatchStatisticsByUserList.get(i);
-                    if (keepWatchStatisticsByUser.getAbnormalCount() > 0) {
-                        Calendar key = CalendarUtils.produceCalendar(keepWatchStatisticsByUser.getStartTimeStamp());
-                        Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_REPORT_ABNORMAL, "异");
-                        hashMap.put(key.toString(), value);
-                    }
-                    else if (keepWatchStatisticsByUser.getShouldAssignmentCount() - keepWatchStatisticsByUser.getDeskCount() > 0) {
-                        Calendar key = CalendarUtils.produceCalendar(keepWatchStatisticsByUser.getStartTimeStamp());
-                        Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_LEAK_DESK, "漏");
-                        hashMap.put(key.toString(), value);
-                    }
-                    else if (keepWatchStatisticsByUser.getSigninCount() < keepWatchStatisticsByUser.getShouldCount()) {
-                        Calendar key = CalendarUtils.produceCalendar(keepWatchStatisticsByUser.getStartTimeStamp());
-                        Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_LEAK_SIGNIN, "少");
-                        hashMap.put(key.toString(), value);
-                    }
-                    else if (keepWatchStatisticsByUser.getEndCount() > 0) {
-                        Calendar key = CalendarUtils.produceCalendar(keepWatchStatisticsByUser.getStartTimeStamp());
-                        Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_END_ABNORMAL, "结");
-                        hashMap.put(key.toString(), value);
-                    }
-                    else if (keepWatchStatisticsByUser.getSigninCount() > 0) {
-                        Calendar key = CalendarUtils.produceCalendar(keepWatchStatisticsByUser.getStartTimeStamp());
-                        Calendar value = CalendarUtils.produceCalendar(Consts.CALENDAR_SIGNIN, "签");
-                        hashMap.put(key.toString(), value);
-                    }
-                }
+        mAbnormalCount.setText("" + com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getCreateCount(startTime, endTime));
+        mEndAbnormalCount.setText("" + com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getEndCount(startTime, endTime));
+    }
 
-                mDayCalendarFragment.setSchemeData(hashMap);
-            }
+    private void showEveryDayStatus(long timeStamp) {
+        HashMap<String, Calendar> hashMap = com.ctfww.module.keepwatch.datahelper.Utils.getCalendarEveryStatus(timeStamp);
+        mDayCalendarFragment.setSchemeData(hashMap);
+    }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getHistoryEveryDayStatistics: code = " + code);
-            }
-        });
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(MessageEvent messageEvent) {
+        if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_SYN.equals(messageEvent.getMessage())
+                || com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_TRACE_SYN.equals(messageEvent.getMessage())) {
+            showKeyEvent(mTimeStamp);
+            mKeepWatchRankingFragment.getThisDayRanking(mTimeStamp);
+        }
+        else if (com.ctfww.module.assignment.datahelper.sp.Const.FINISH_ASSIGNMENT_SYN.equals(messageEvent.getMessage())
+                || com.ctfww.module.assignment.datahelper.sp.Const.FINISH_TODAY_ASSIGNMENT_SYN.equals(messageEvent.getMessage())) {
+            showAssignment(mTimeStamp);
+            mKeepWatchRankingFragment.getThisDayRanking(mTimeStamp);
+        }
     }
 }

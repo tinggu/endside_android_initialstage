@@ -158,7 +158,9 @@ public class KeyEventDBHelper {
     public static long getNotEndCount(KeyEventDao dao, String groupId, String userId) {
         return dao.queryBuilder()
                 .where(dao.queryBuilder()
-                        .and(KeyEventDao.Properties.Status.notEq("end"),
+                        .and(dao.queryBuilder()
+                                .or(KeyEventDao.Properties.Status.notEq("snatch"),
+                                        KeyEventDao.Properties.Status.notEq("accepted")),
                                 KeyEventDao.Properties.GroupId.eq(groupId),
                                 KeyEventDao.Properties.UserId.eq(userId)))
                 .buildCount()

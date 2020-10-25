@@ -25,7 +25,7 @@ public class DBQuickEntry {
     }
 
     // 获得用户在工作组中的成员信息
-    public static GroupUserInfo getWorkingGroupUser(String userId) {
+    public static GroupUserInfo getGroupUserInfo(String userId) {
         String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return null;
@@ -42,7 +42,7 @@ public class DBQuickEntry {
     }
 
     // 获得工作组中的成员信息列表
-    public static List<GroupUserInfo> getWorkingGroupUserList() {
+    public static List<GroupUserInfo> getGroupUserList() {
         String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return new ArrayList<GroupUserInfo>();
@@ -51,7 +51,7 @@ public class DBQuickEntry {
         return DBHelper.getInstance().getGroupUserList(groupId);
     }
 
-    public static List<GroupUserInfo> getSelfGroupUserList() {
+    public static List<GroupUserInfo> getUserGroupList() {
         String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
         if (TextUtils.isEmpty(userId)) {
             return new ArrayList<GroupUserInfo>();
@@ -62,7 +62,7 @@ public class DBQuickEntry {
 
     // 获得自己在工作组中的角色
     public static String getRoleInWorkingGroup() {
-        GroupUserInfo groupUserInfo = getWorkingGroupUser("");
+        GroupUserInfo groupUserInfo = getGroupUserInfo("");
         if (groupUserInfo == null) {
             return "member";
         }

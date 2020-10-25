@@ -2,6 +2,7 @@ package com.ctfww.module.assignment.datahelper.dbhelper;
 
 import android.text.TextUtils;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.utils.GlobeFun;
@@ -140,6 +141,8 @@ public class DBQuickEntry {
             return;
         }
 
+        SPStaticUtils.put(Const.PRODUCE_TODAY_ASSIGNMENT_TIME_STAMP, System.currentTimeMillis());
+
         String weekDay = GlobeFun.getTodayWeekDayStr();
         List<AssignmentInfo> assignmentList = DBHelper.getInstance().getWeekDayAssignmentList(weekDay);
         for (int i = 0; i < assignmentList.size(); ++i) {
@@ -162,11 +165,30 @@ public class DBQuickEntry {
             todayAssignment.setType(assignment.getType());
             todayAssignment.setScore(assignment.getScore());
             todayAssignment.setTimeStamp(System.currentTimeMillis());
+            todayAssignment.combineId();
 
             DBHelper.getInstance().addTodayAssignment(todayAssignment);
         }
+    }
 
-        SPStaticUtils.put(Const.PRODUCE_TODAY_ASSIGNMENT_TIME_STAMP, timeStamp);
+    public static int getSigninCount(long dayTimeStamp) {
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(dayTimeStamp);
+        int ret = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            ret += Math.min(todayAssignmentList.get(i).getFrequency(), todayAssignmentList.get(i).getSigninCount());
+        }
+
+        return ret;
+    }
+
+    public static int getSigninCount(long startTime, long endTime) {
+        List<TodayAssignment> todayAssignmentList = getTodayAssignmentList(startTime, endTime);
+        int ret = 0;
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            ret += Math.min(todayAssignmentList.get(i).getFrequency(), todayAssignmentList.get(i).getSigninCount());
+        }
+
+        return ret;
     }
 
 

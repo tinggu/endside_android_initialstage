@@ -18,6 +18,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.module.desk.entity.DeskInfo;
+import com.ctfww.module.desk.entity.RouteSummary;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.R;
@@ -190,12 +191,18 @@ public class KeyEventSnatchFragment extends Fragment {
 
 //        LogUtils.i(TAG, "updateKeyEventToUI: keyEvent = " + keyEvent.toString());
 
-        String deskName = "[" + keyEvent.getDeskId() + "]";
-        DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getDeskId());
-        if (deskInfo != null) {
-            deskName += " " + deskInfo.getDeskName();
+        if (keyEvent.getType() < 100) {
+            DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getObjectId());
+            if (deskInfo != null) {
+                mDeskName.setText(deskInfo.getIdName());
+            }
         }
-        mDeskName.setText(deskName);
+        else {
+            RouteSummary routeSummary = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(keyEvent.getGroupId(), keyEvent.getObjectId());
+            if (routeSummary != null) {
+                mDeskName.setText(routeSummary.getIdName());
+            }
+        }
 
         mEventName.setText(keyEvent.getEventName());
 

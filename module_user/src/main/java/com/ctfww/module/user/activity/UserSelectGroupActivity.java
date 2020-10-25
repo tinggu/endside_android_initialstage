@@ -60,7 +60,7 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
         mUserSelectGroupListView = findViewById(R.id.user_group_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mUserSelectGroupListView.setLayoutManager(layoutManager);
-        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getSelfGroupUserList();
+        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getUserGroupList();
         mUserSelectGroupListAdapter = new UserSelectGroupListAdapter(groupUserInfoList);
         mUserSelectGroupListView.setAdapter(mUserSelectGroupListAdapter);
         if (groupUserInfoList.isEmpty()) {
@@ -81,7 +81,7 @@ public class UserSelectGroupActivity extends AppCompatActivity implements View.O
     @Subscribe(threadMode= ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
         if ("finish_group_user_syn".equals(messageEvent.getMessage())) {
-            List<GroupUserInfo> infoList = DBQuickEntry.getSelfGroupUserList();
+            List<GroupUserInfo> infoList = DBQuickEntry.getUserGroupList();
             mUserSelectGroupListAdapter.setList(infoList);
             mUserSelectGroupListAdapter.notifyDataSetChanged();
             if (infoList.isEmpty()) {

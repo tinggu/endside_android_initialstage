@@ -53,17 +53,17 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         AssignmentInfo assignment = list.get(position);
         if ("desk".equals(assignment.getType())) {
-            ((TodayAssignmentViewHolder)holder).deskType.setImageResource(R.drawable.desk);
+            ((AssignmentViewHolder)holder).deskType.setImageResource(R.drawable.desk);
             DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(assignment.getGroupId(), assignment.getObjectId());
             if (deskInfo != null) {
-                ((TodayAssignmentViewHolder)holder).deskName.setText(deskInfo.getIdName());
+                ((AssignmentViewHolder)holder).deskName.setText(deskInfo.getIdName());
             }
         }
         else if ("route".equals(assignment.getType())) {
-            ((TodayAssignmentViewHolder)holder).deskType.setImageResource(R.drawable.route);
+            ((AssignmentViewHolder)holder).deskType.setImageResource(R.drawable.route);
             RouteSummary routeSummary = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(assignment.getGroupId(), assignment.getObjectId());
             if (routeSummary != null) {
-                ((TodayAssignmentViewHolder)holder).deskName.setText(routeSummary.getIdName());
+                ((AssignmentViewHolder)holder).deskName.setText(routeSummary.getIdName());
             }
         }
 

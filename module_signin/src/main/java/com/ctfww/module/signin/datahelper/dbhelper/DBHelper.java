@@ -72,6 +72,14 @@ public class DBHelper {
         return SigninInfoDBHelper.getList(signinInfoDao, groupId, deskId, userId, type, startTime, endTime);
     }
 
+    public long getSigninCount(String groupId, long startTime, long endTime) {
+        return SigninInfoDBHelper.getCount(signinInfoDao, groupId, startTime, endTime);
+    }
+
+    public long getSigninCount(String groupId, String userId, long startTime, long endTime) {
+        return SigninInfoDBHelper.getCount(signinInfoDao, groupId, userId, startTime, endTime);
+    }
+
     // 用于同步上云后更改同步状态
     public void updateSignin(SigninInfo info) {
         SigninInfoDBHelper.update(signinInfoDao, info);

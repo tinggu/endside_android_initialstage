@@ -10,11 +10,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.GsonUtils;
 import com.ctfww.commonlib.R;
 import com.ctfww.commonlib.entity.Qr;
 import com.ctfww.commonlib.utils.ImageUtils;
 import com.ctfww.commonlib.utils.QRCodeUtils;
+import com.ctfww.commonlib.utils.QRUtils;
 
 import java.util.Calendar;
 
@@ -66,8 +68,14 @@ public class QrActivity extends AppCompatActivity implements View.OnClickListene
             @Override
             public boolean onLongClick(View v) {
                 if (mBitmap != null) {
-//                    String result = QRUtils.getResult(mBitmap);
- //                   ARouter.getInstance().build("/keepwatch/reportSignin").withString("qr", GsonUtils.toJson(mQr)).navigation();
+                    String result = QRUtils.getResult(mBitmap);
+                    int deskId = QRCodeUtils.getQrDeskId(result, getApplicationContext());
+                    if (deskId != 0) {
+                        ARouter.getInstance().build("/keepwatch/reportSignin")
+                                .withInt("desk_id", deskId)
+                                .withString("finish_type", "qr")
+                                .navigation();
+                    }
                 }
                 return false;
             }

@@ -32,15 +32,15 @@ public class CloudClient {
     }
 
 
-    public void synSigninToCloud(CargoToCloud<SigninInfo> cargoToCloud, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synSigninToCloud: cargoToCloud = " + cargoToCloud.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synSigninToCloud(cargoToCloud);
+    public void synSigninInfoToCloud(CargoToCloud<SigninInfo> cargoToCloud, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synSigninInfoToCloud: cargoToCloud = " + cargoToCloud.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synSigninInfoToCloud(cargoToCloud);
         CloudClientRsp.processGeneralRsp(responseBodyCall, callback);
     }
 
-    public void synSigninFromCloud(QueryCondition condition, final ICloudCallback callback) {
-        LogUtils.i(TAG, "synSigninFromCloud: condition = " + condition.toString());
-        Call<ResponseBody> responseBodyCall = mCloudMethod.synSigninFromCloud(condition);
+    public void synSigninInfoFromCloud(QueryCondition condition, final ICloudCallback callback) {
+        LogUtils.i(TAG, "synSigninInfoFromCloud: condition = " + condition.toString());
+        Call<ResponseBody> responseBodyCall = mCloudMethod.synSigninInfoFromCloud(condition);
         CloudClientRsp.processListRsp(responseBodyCall, callback);
     }
 }

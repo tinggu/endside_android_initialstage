@@ -39,7 +39,8 @@ public class RouteListFragment extends Fragment {
         mRouteListView = mV.findViewById(R.id.route_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRouteListView.setLayoutManager(layoutManager);
-        List<RouteSummary> routeList = DBQuickEntry.getWorkingRouteSummaryList();
+        List<RouteSummary> routeList = DBQuickEntry.getRouteSummaryList();
+        LogUtils.i(TAG, "initViews: routeList = " + routeList.toString());
         mRouteListAdapter = new RouteListAdapter(routeList);
         mRouteListView.setAdapter(mRouteListAdapter);
     }
@@ -54,7 +55,7 @@ public class RouteListFragment extends Fragment {
     }
 
     public void updateRouteList() {
-        List<RouteSummary> routeList = DBQuickEntry.getWorkingRouteSummaryList();
+        List<RouteSummary> routeList = DBQuickEntry.getRouteSummaryList();
         mRouteListAdapter.setList(routeList);
         mRouteListAdapter.notifyDataSetChanged();
     }

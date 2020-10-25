@@ -99,7 +99,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         int index = view.getId();
-        if (index == R.id.user_back) {
+        if (index == mBack.getId()) {
             Airship.getInstance().synUserInfoToCloud();
             finish();
         }

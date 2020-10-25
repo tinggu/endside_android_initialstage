@@ -61,7 +61,7 @@ public class UserSelectUserActivity extends AppCompatActivity implements View.On
         mUserSelectUserListView = findViewById(R.id.user_group_user_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mUserSelectUserListView.setLayoutManager(layoutManager);
-        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getWorkingGroupUserList();
+        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getGroupUserList();
         mUserSelectUserListAdapter = new UserSelectUserListAdapter(groupUserInfoList);
         mUserSelectUserListView.setAdapter(mUserSelectUserListAdapter);
     }
@@ -74,7 +74,7 @@ public class UserSelectUserActivity extends AppCompatActivity implements View.On
     @Subscribe(threadMode= ThreadMode.MAIN)
     public  void onGetMessage(MessageEvent messageEvent) {
         if ("finish_group_user_syn".equals(messageEvent.getMessage())) {
-            List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getWorkingGroupUserList();
+            List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getGroupUserList();
             mUserSelectUserListAdapter.setList(groupUserInfoList);
             mUserSelectUserListAdapter.notifyDataSetChanged();
         }

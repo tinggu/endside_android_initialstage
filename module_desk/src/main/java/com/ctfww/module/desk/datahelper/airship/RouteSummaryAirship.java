@@ -87,6 +87,7 @@ public class RouteSummaryAirship {
             RouteSummary localRouteSummary = DBHelper.getInstance().getRouteSummary(routeSummary.getGroupId(), routeSummary.getRouteId());
             if (localRouteSummary == null) {
                 routeSummary.setSynTag("cloud");
+                routeSummary.combineId();
                 DBHelper.getInstance().addRouteSummary(routeSummary);
                 ret = true;
             }

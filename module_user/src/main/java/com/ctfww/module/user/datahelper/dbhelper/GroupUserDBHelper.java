@@ -82,7 +82,7 @@ public class GroupUserDBHelper {
         return dao.queryBuilder()
                 .where(dao.queryBuilder()
                         .and(GroupUserInfoDao.Properties.GroupId.eq(groupId),
-                                GroupUserInfoDao.Properties.Status.eq("delete")))
+                                GroupUserInfoDao.Properties.Status.notEq("delete")))
                 .buildCount()
                 .count();
     }

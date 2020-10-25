@@ -32,4 +32,15 @@ public class DBQuickEntry {
 
         return "admin".equals(role) ? DBHelper.getInstance().getSigninList(groupId, startTime, endTime) : DBHelper.getInstance().getSigninList(groupId, userId, startTime, endTime);
     }
+
+    public static long getSigninCount(long startTime, long endTime) {
+        String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
+        String userId = SPStaticUtils.getString(Const.USER_OPEN_ID);
+        String role = SPStaticUtils.getString(Const.ROLE);
+        if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
+            return 0;
+        }
+
+        return "admin".equals(role) ? DBHelper.getInstance().getSigninCount(groupId, startTime, endTime) : DBHelper.getInstance().getSigninCount(groupId, userId, startTime, endTime);
+    }
 }

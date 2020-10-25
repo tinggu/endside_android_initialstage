@@ -106,7 +106,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mKeepWatchLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/statisticsDetail").navigation();
+                ARouter.getInstance().build("/keepwatch/todayFinishStatusList").navigation();
             }
         });
 
@@ -153,14 +153,14 @@ public class KeepWatchStatisticsFragment extends Fragment {
         mTodayCompletionLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/statisticsDetail").navigation();
+                ARouter.getInstance().build("/keepwatch/todayFinishStatusList").navigation();
             }
         });
 
         mTodayLeakCountLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build("/keepwatch/signinLeak").navigation();
+                ARouter.getInstance().build("/keepwatch/todayLeakList").navigation();
             }
         });
 
@@ -207,7 +207,7 @@ public class KeepWatchStatisticsFragment extends Fragment {
         else if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_TRACE_SYN.equals(messageEvent.getMessage())) {
             mPersonTrendsFragment.showPersonTrends();
         }
-        else if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVNET_PERSON_SYN.equals(messageEvent.getMessage())) {
+        else if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_SYN.equals(messageEvent.getMessage())) {
             updateAbnormalCount();
         }
 //        else if ("im_received_data".equals(msg)) {
@@ -304,7 +304,8 @@ public class KeepWatchStatisticsFragment extends Fragment {
             signinCount += Math.min(todayAssignment.getFrequency(), todayAssignment.getSigninCount());
         }
 
-        String str = String.format("%.1f%%", (double)signinCount * 100 / shouldCount);
+        double val = (double)signinCount * 100 / shouldCount;
+        String str = val >= 100.0 ? String.format("%d%%", (int)val) : String.format("%.1f%%", val);
         mCompletionRate.setText(str);
 
         String count = "签到数：" + signinCount + "次";
@@ -316,7 +317,8 @@ public class KeepWatchStatisticsFragment extends Fragment {
         long count = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(MyDateTimeUtils.getTodayStartTime());
         long coverageCount = count - leakCount;
 
-        String str = String.format("%.1f%%", (double)coverageCount * 100 / count);
+        double val = (double)coverageCount * 100 / count;
+        String str = val >= 100.0 ? String.format("%d%%", (int)val) : String.format("%.1f%%", val);
         mCoverageRate.setText(str);
 
         mDeskCount.setText("点位数：" + count + "个");

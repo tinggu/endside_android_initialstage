@@ -42,7 +42,7 @@ public class SelectRouteFragment extends Fragment {
         mRouteListView = mV.findViewById(R.id.route_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRouteListView.setLayoutManager(layoutManager);
-        List<RouteSummary> routeList = DBQuickEntry.getWorkingRouteSummaryList();
+        List<RouteSummary> routeList = DBQuickEntry.getRouteSummaryList();
         Bundle bundle = getArguments();
         List<Integer> selectedRouteId = bundle == null ? new ArrayList<>() : bundle.getIntegerArrayList("selected_route_id_list");
         mRouteListAdapter = new SelectRouteListAdapter(routeList, selectedRouteId);
@@ -59,7 +59,7 @@ public class SelectRouteFragment extends Fragment {
     }
 
     public void updateRouteList() {
-        List<RouteSummary> routeList = DBQuickEntry.getWorkingRouteSummaryList();
+        List<RouteSummary> routeList = DBQuickEntry.getRouteSummaryList();
         mRouteListAdapter.setList(routeList);
         mRouteListAdapter.notifyDataSetChanged();
     }

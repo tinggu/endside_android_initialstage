@@ -25,6 +25,7 @@ import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.utils.GlobeFun;
 import com.ctfww.commonlib.utils.VoiceUtils;
 import com.ctfww.module.desk.entity.DeskInfo;
+import com.ctfww.module.desk.entity.RouteSummary;
 import com.ctfww.module.fingerprint.entity.DistResult;
 import com.ctfww.module.keyevents.Entity.KeyEvent;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
@@ -223,12 +224,19 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
             mCreate.setText(userInfo.getNickName());
         }
 
-        String deskName = "[" + keyEvent.getDeskId() + "]";
-        DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getDeskId());
-        if (deskInfo != null) {
-            deskName += " " + deskInfo.getDeskName();
+        if (keyEvent.getType() < 100) {
+            DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(keyEvent.getGroupId(), keyEvent.getObjectId());
+            if (deskInfo != null) {
+                mDeskName.setText(deskInfo.getIdName());
+            }
         }
-        mDeskName.setText(deskName);
+        else {
+            RouteSummary routeSummary = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getRouteSummary(keyEvent.getGroupId(), keyEvent.getObjectId());
+            if (routeSummary != null) {
+                mDeskName.setText(routeSummary.getIdName());
+            }
+        }
+
         mEventName.setText(keyEvent.getEventName());
         if (!TextUtils.isEmpty(mKeyEvent.getPicPath())) {
             Glide.with(this).load(mKeyEvent.getPicPath()).into(mPic);
@@ -272,15 +280,16 @@ public class KeyEventActivity extends AppCompatActivity implements View.OnClickL
         keyEventTrace.setGroupId(groupId);
         keyEventTrace.setUserId(userId);
         keyEventTrace.setStatus(status);
-        keyEventTrace.setDeskId(mKeyEvent.getDeskId());
+        keyEventTrace.setObjectId(mKeyEvent.getObjectId());
         keyEventTrace.setEventId(mKeyEvent.getEventId());
         keyEventTrace.setTimeStamp(System.currentTimeMillis());
+        keyEventTrace.setType(mKeyEvent.getType() < 100 ? "desk" : "route");
         keyEventTrace.setSynTag("new");
 
         keyEventTrace.setMatchLevel("default");
-        if ("end".equals(keyEventTrace.getStatus())) {
+        if ("end".equals(keyEventTrace.getStatus()) && "desk".equals(keyEventTrace.getType())) {
             String print = com.ctfww.module.fingerprint.Utils.getWifiCalculateFingerPrint();
-            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeyEvent.getDeskId());
+            DistResult distResult = com.ctfww.module.fingerprint.Utils.getWifiDist(print, mKeyEvent.getObjectId());
             String matchLevel = distResult.getStringMatchLevel();
             keyEventTrace.setMatchLevel(matchLevel);
         }

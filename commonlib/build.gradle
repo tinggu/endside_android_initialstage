@@ -13,6 +13,13 @@ android {
         targetSdkVersion config_android.targetSdkVersion
         versionCode      config_android.versionCode
         versionName      config_android.versionName
+
+        // 组件路由配置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
     }
 
     greendao {
@@ -28,6 +35,8 @@ dependencies {
     testImplementation config_dependencies["junit"]
     androidTestImplementation config_dependencies["test_runner"]
     androidTestImplementation config_dependencies["test_espresso"]
+
+    annotationProcessor config_dependencies["arouter_compiler"]
 
     // utilCode
     api config_dependencies["utilCode"]

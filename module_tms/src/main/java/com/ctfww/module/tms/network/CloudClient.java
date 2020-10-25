@@ -28,7 +28,7 @@ public class CloudClient {
 
     private static final int VALIDE_DATA = 80000000;
     private static final String USER_OPEN_ID = "user_open_id";
-    private static final String URL = "http://39.98.147.77:9090";
+    private static final String URL = "http://39.99.194.231:9090";
 
     private static final int MAX_CNT = 3;
     private static final int INTERVAL = 5 * 60 * 1000;

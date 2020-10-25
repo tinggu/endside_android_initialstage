@@ -8,6 +8,8 @@
     android:background="#FFFFFF"
     tools:context=".activity.UserInviteActivity">
 
+    <include layout="@layout/sub_top_bar"/>
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +24,6 @@
 <!--            app:layout_scrollFlags="scroll|enterAlways">-->
 
 <!--        </androidx.appcompat.widget.Toolbar>-->
-        <include layout="@layout/sub_top_bar"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/user_invite_tab_layout"

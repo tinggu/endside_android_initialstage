@@ -28,8 +28,8 @@ public class NetworkHelper {
         return NetworkHelper.Inner.INSTANCE;
     }
 
-    public void synSigninToCloud(CargoToCloud<SigninInfo> cargoToCloud, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synSigninToCloud(cargoToCloud, new ICloudCallback() {
+    public void synSigninInfoToCloud(CargoToCloud<SigninInfo> cargoToCloud, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synSigninInfoToCloud(cargoToCloud, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 callback.onSuccess(data);
@@ -37,7 +37,7 @@ public class NetworkHelper {
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synSigninToCloud fail: code = " + code);
+                LogUtils.i(TAG, "synSigninInfoToCloud fail: code = " + code);
                 callback.onError(code);
             }
 
@@ -48,19 +48,19 @@ public class NetworkHelper {
         });
     }
 
-    public void synSigninFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
-        CloudClient.getInstance().synSigninFromCloud(condition, new ICloudCallback() {
+    public void synSigninInfoFromCloud(QueryCondition condition, final IUIDataHelperCallback callback) {
+        CloudClient.getInstance().synSigninInfoFromCloud(condition, new ICloudCallback() {
             @Override
             public void onSuccess(String data) {
                 Type type = new TypeToken<List<SigninInfo>>() {}.getType();
                 List<SigninInfo> signinList = GsonUtils.fromJson(data, type);
-                LogUtils.i(TAG, "synSigninFromCloud: signinList.size() = " + signinList.size());
+                LogUtils.i(TAG, "synSigninInfoFromCloud: signinList.size() = " + signinList.size());
                 callback.onSuccess(signinList);
             }
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "synSigninFromCloud fail: code = " + code);
+                LogUtils.i(TAG, "synSigninInfoFromCloud fail: code = " + code);
                 callback.onError(code);
             }
 

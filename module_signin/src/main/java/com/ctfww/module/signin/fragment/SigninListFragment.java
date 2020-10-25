@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.module.signin.R;
 import com.ctfww.module.signin.adapter.SigninListAdapter;
@@ -50,6 +51,7 @@ public class SigninListFragment extends Fragment {
         LinearLayoutManager layoutManager= new LinearLayoutManager(mV.getContext());
         mSigninInfoListView.setLayoutManager(layoutManager);
         List<SigninInfo> signinList = DBQuickEntry.getSigninList(MyDateTimeUtils.getTodayStartTime(), MyDateTimeUtils.getTodayEndTime());
+        LogUtils.i(TAG, "initViews: signinList.size() = " + signinList.size());
         mSigninListAdapter = new SigninListAdapter(signinList, mMaxCount);
         mSigninInfoListView.setAdapter(mSigninListAdapter);
 

@@ -60,7 +60,7 @@ public class KeyEventReportFragment extends Fragment{
     private ImageView mVoice;
 
     private String mEventId;
-    private int mDeskId = 0;
+    private int mObjectId = 0;
 
     private int mType = 0; // 暂不区分关键事件类型
 
@@ -359,7 +359,7 @@ public class KeyEventReportFragment extends Fragment{
             keyEvent.setAddress(MyLocation.getAddr(getContext(), location));
         }
 
-        keyEvent.setDeskId(mDeskId);
+        keyEvent.setObjectId(mObjectId);
         keyEvent.setVoicePath(getVoiceFilePath());
         keyEvent.setPicPath(getPicFilePath());
         keyEvent.setVideoPath(getVideoFilePath());
@@ -375,7 +375,7 @@ public class KeyEventReportFragment extends Fragment{
         KeyEventTrace keyEventTrace = new KeyEventTrace();
         keyEventTrace.setEventId(keyEvent.getEventId());
         keyEventTrace.setTimeStamp(keyEvent.getTimeStamp());
-        keyEventTrace.setDeskId(keyEvent.getDeskId());
+        keyEventTrace.setObjectId(keyEvent.getObjectId());
         keyEventTrace.setMatchLevel("default");
         keyEventTrace.setUserId(userId);
         keyEventTrace.setStatus("create");
@@ -387,8 +387,8 @@ public class KeyEventReportFragment extends Fragment{
         return true;
     }
 
-    public void setDeskId(int deskId) {
-        mDeskId = deskId;
+    public void setObjectId(int objectId) {
+        mObjectId = objectId;
     }
 
     private String getPicFilePath() {

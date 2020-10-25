@@ -93,7 +93,7 @@ public class NetworkHelper {
 
             @Override
             public void onError(int code, String errorMsg) {
-                LogUtils.i(TAG, "由于TMS微服务的原因，token刷新失败！");
+                LogUtils.i(TAG, "refreshToken: code = " + code + "，说明：由于TMS微服务的原因，token刷新失败！");
             }
 
             @Override

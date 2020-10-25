@@ -314,7 +314,7 @@ public class KeepWatchMainActivity extends FragmentActivity implements View.OnCl
         if ("tms_first_token".equals(msg)) {
             Utils.setFirstToken(true);
             LogUtils.i(TAG, "onGetMessage: tms_first_token");
-            checkUpgrade();
+ //           checkUpgrade();
             Utils.startTimeSyn();
 
             com.ctfww.module.user.datahelper.airship.Airship.getInstance().synFromCloud();

@@ -12,30 +12,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
+import com.ctfww.module.assignment.entity.TodayAssignment;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.adapter.KeepWatchDangerListAdapter;
-import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByDesk;
+import com.ctfww.module.keepwatch.adapter.DangerListAdapter;
+import com.ctfww.module.keepwatch.entity.temp.DangerObject;
+import com.ctfww.module.keyevents.Entity.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KeepWatchDangerListFragment extends Fragment {
     private final static String TAG = "KeepWatchDangerListFragment";
 
     private View mV;
 
-    private RecyclerView mKeepWatchDangerListView;
-    private List<KeepWatchStatisticsByDesk> mKeepWatchStatisticsByDeskList = new ArrayList<>();
-    private KeepWatchDangerListAdapter mKeepWatchDangerListAdapter;
+    private RecyclerView mDangerListView;
+    private DangerListAdapter mDangerListAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mV = inflater.inflate(R.layout.keepwatch_danger_list_fragment, container, false);
+        mV = inflater.inflate(R.layout.danger_list_fragment, container, false);
         initViews(mV);
         setOnClickListener();
 
@@ -44,11 +45,12 @@ public class KeepWatchDangerListFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        mKeepWatchDangerListView = v.findViewById(R.id.keepwatch_danger_list);
+        mDangerListView = v.findViewById(R.id.danger_list);
         LinearLayoutManager layoutManager= new LinearLayoutManager(v.getContext());
-        mKeepWatchDangerListView.setLayoutManager(layoutManager);
-        mKeepWatchDangerListAdapter = new KeepWatchDangerListAdapter(mKeepWatchStatisticsByDeskList);
-        mKeepWatchDangerListView.setAdapter(mKeepWatchDangerListAdapter);
+        mDangerListView.setLayoutManager(layoutManager);
+        List<DangerObject> dangerObjectList = getDangerList(MyDateTimeUtils.getPresentMonthStartTime(), MyDateTimeUtils.getPresentMonthEndTime());
+        mDangerListAdapter = new DangerListAdapter(dangerObjectList);
+        mDangerListView.setAdapter(mDangerListAdapter);
     }
 
     private void setOnClickListener() {
@@ -74,45 +76,65 @@ public class KeepWatchDangerListFragment extends Fragment {
         getDangerList(MyDateTimeUtils.getMonthStartTime(timeStamp), MyDateTimeUtils.getMonthEndTime(timeStamp));
     }
 
-    public void getDangerList(long startTime, long endTime) {
-        LogUtils.i(TAG, "getDangerList: startTime = " + startTime + ", endTime = " + endTime);
-        NetworkHelper.getInstance().getKeepWatchSigninStatisticsForDesk(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                List<KeepWatchStatisticsByDesk> keepWatchStatisticsByDeskList = (List<KeepWatchStatisticsByDesk>)obj;
-                LogUtils.i(TAG, "getDangerList: keepWatchStatisticsByDeskList.size() = " + keepWatchStatisticsByDeskList.size());
- //               LogUtils.i(TAG, "getDangerList: keepWatchStatisticsByDeskList");
-                List<KeepWatchStatisticsByDesk> dangerList = _getDangerList(keepWatchStatisticsByDeskList);
-                mKeepWatchDangerListAdapter.setList(dangerList);
-                mKeepWatchDangerListAdapter.notifyDataSetChanged();
+    public List<DangerObject> getDangerList(long startTime, long endTime) {
+        HashMap<String, DangerObject> dangerObjectHashMap = new HashMap<>();
+        List<TodayAssignment> todayAssignmentList = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentList(startTime, endTime);
+        for (int i = 0; i < todayAssignmentList.size(); ++i) {
+            TodayAssignment todayAssignment = todayAssignmentList.get(i);
+            String key = todayAssignment.getGroupId() + todayAssignment.getObjectId() + todayAssignment.getType();
+            DangerObject dangerObject = dangerObjectHashMap.get(key);
+            if (dangerObject == null) {
+                dangerObject = new DangerObject();
+                dangerObject.setGroupId(todayAssignment.getGroupId());
+                dangerObject.setObjectId(todayAssignment.getObjectId());
+                dangerObject.setType(todayAssignment.getType());
+                dangerObjectHashMap.put(key, dangerObject);
             }
 
-            @Override
-            public void onError(int code) {
+            dangerObject.setSigninCount(dangerObject.getSigninCount() + todayAssignment.getSigninCount());
+            dangerObject.setShouldCount(dangerObject.getShouldCount() + todayAssignment.getFrequency());
 
-            }
-        });
-    }
-
-    private  List<KeepWatchStatisticsByDesk> _getDangerList(List<KeepWatchStatisticsByDesk> keepWatchStatisticsByDeskList) {
-        for (int i = 0; i < keepWatchStatisticsByDeskList.size(); ++i) {
-            keepWatchStatisticsByDeskList.get(i).combineDangerFactor();
+            dangerObject.setSigninScore(dangerObject.getSigninScore() + (todayAssignment.getSigninCount() == todayAssignment.getFrequency() ? todayAssignment.getScore() : 0));
+            dangerObject.setShouldScore(dangerObject.getShouldScore() + todayAssignment.getScore());
         }
 
-        keepWatchStatisticsByDeskList.sort(new Comparator<KeepWatchStatisticsByDesk>() {
+        List<KeyEvent> keyEventList = com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getNotEndList();
+        for (int i = 0; i < keyEventList.size(); ++i) {
+            KeyEvent keyEvent = keyEventList.get(i);
+            if (keyEvent.getObjectId() == 0) {
+                continue;
+            }
+
+            String type = keyEvent.getType() < 100 ? "desk" : "route";
+            String key = keyEvent.getGroupId() + keyEvent.getObjectId() + type;
+            DangerObject dangerObject = dangerObjectHashMap.get(key);
+            if (dangerObject == null) {
+                dangerObject = new DangerObject();
+                dangerObject.setGroupId(keyEvent.getGroupId());
+                dangerObject.setObjectId(keyEvent.getObjectId());
+                dangerObject.setType(type);
+                dangerObjectHashMap.put(key, dangerObject);
+            }
+
+            dangerObject.setKeyeventCount(dangerObject.getKeyeventCount() + 1);
+
+            dangerObject.setKeyeventScore(dangerObject.getSigninScore() + keyEvent.getScore());
+        }
+
+        List<DangerObject> dangerObjectList = new ArrayList<>();
+        for (Map.Entry<String, DangerObject> entry : dangerObjectHashMap.entrySet()) {
+            dangerObjectList.add(entry.getValue());
+        }
+
+        dangerObjectList.sort(new Comparator<DangerObject>() {
             @Override
-            public int compare(KeepWatchStatisticsByDesk o1, KeepWatchStatisticsByDesk o2) {
-                return (int)(o2.getDangerFactor() - o1.getDangerFactor() + 0.5);
+            public int compare(DangerObject o1, DangerObject o2) {
+                Integer val1 = o1.getKeyeventScore() + o1.getShouldScore() - o1.getSigninScore();
+                Integer val2 = o2.getKeyeventScore() + o2.getShouldScore() - o2.getSigninScore();
+                return val2.compareTo(val1);
             }
         });
 
-        List<KeepWatchStatisticsByDesk>  ret = new ArrayList<>();
-        for (int i = 0; i < keepWatchStatisticsByDeskList.size(); ++i) {
-            if (keepWatchStatisticsByDeskList.get(i).getDangerFactor() >= 10.0) {
-                ret.add(keepWatchStatisticsByDeskList.get(i));
-            }
-        }
-
-        return ret;
+        return dangerObjectList;
     }
 }

@@ -76,10 +76,7 @@ public class KeyEventNoEndListActivity extends AppCompatActivity implements View
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(MessageEvent messageEvent) {
-        if (Const.FINISH_KEY_EVNET_PERSON_SYN.equals(messageEvent.getMessage())) {
-            mKeyEventListFragment.showNoEndList();
-        }
-        else if (Const.FINISH_KEY_EVENT_SYN.equals(messageEvent.getMessage())) {
+        if (Const.FINISH_KEY_EVENT_SYN.equals(messageEvent.getMessage())) {
             mKeyEventListFragment.showNoEndList();
         }
     }

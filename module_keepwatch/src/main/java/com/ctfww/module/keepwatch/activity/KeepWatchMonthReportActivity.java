@@ -11,17 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.LogUtils;
-import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MessageEvent;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.fragment.MonthCalendarFragment;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
-import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keepwatch.fragment.KeepWatchDangerListFragment;
 import com.ctfww.module.keepwatch.fragment.KeepWatchRankingFragment;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Calendar;
 
@@ -53,6 +52,8 @@ public class KeepWatchMonthReportActivity extends AppCompatActivity implements V
     private KeepWatchRankingFragment mKeepWatchRankingFragment;
     private TextView mRankingTittle;
 
+    private long mTimeStamp;
+
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -60,11 +61,16 @@ public class KeepWatchMonthReportActivity extends AppCompatActivity implements V
         initViews();
         setOnClickListener();
 
-        long startTime = MyDateTimeUtils.getPresentMonthStartTime();
-        long endTime = MyDateTimeUtils.getPresentMonthEndTime();
-        getStatistics(System.currentTimeMillis());
+ //       showCurrentMonthStatus(System.currentTimeMillis());
 
         mMonthCalendarFragment.initData();
+
+        EventBus.getDefault().register(this);
+
+        com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synAssignmentFromCloud();
+        com.ctfww.module.assignment.datahelper.airship.Airship.getInstance().synTodayAssignmentFromCloud();
+        com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventTraceFromCloud();
+        com.ctfww.module.keyevents.datahelper.airship.Airship.getInstance().synKeyEventFromCloud();
     }
 
     private void initViews() {
@@ -121,44 +127,63 @@ public class KeepWatchMonthReportActivity extends AppCompatActivity implements V
     @Override
     public void onMonthSelected(Calendar calendar) {
         LogUtils.i(TAG, "onMonthSelected");
-        long timeStamp = calendar.getTimeInMillis();
-        LogUtils.i(TAG, "onMonthSelected: timeStamp = " + timeStamp);
-        getStatistics(timeStamp);
-        mKeepWatchRankingFragment.getThisMonthRanking(timeStamp);
-        mKeepWatchDangerListFragment.getThisMonthDangerList(timeStamp);
+        mTimeStamp = calendar.getTimeInMillis();
+        LogUtils.i(TAG, "onMonthSelected: mTimeStamp = " + mTimeStamp);
+        showAssignment(mTimeStamp);
+        showKeyEvent(mTimeStamp);
+        mKeepWatchRankingFragment.getThisMonthRanking(mTimeStamp);
+        mKeepWatchDangerListFragment.getThisMonthDangerList(mTimeStamp);
     }
 
-
-    private void getStatistics(long timeStamp) {
+    private void showAssignment(long timeStamp) {
         long startTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
         long endTime = MyDateTimeUtils.getMonthEndTime(timeStamp);
-        NetworkHelper.getInstance().getKeepWatchStatistics(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod = (KeepWatchStatisticsByPeriod)obj;
-                showStatistics(keepWatchStatisticsByPeriod);
-                LogUtils.i(TAG, "getStatistics success!");
-            }
 
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getStatistics fail: code= " + code);
-            }
-        });
+        long finishAssignmentCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getFinishCount(startTime, endTime);
+        long shouldAssignmentCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(startTime, endTime);
+        mAssigmentCompeltion.setText("" + finishAssignmentCount + "/" + shouldAssignmentCount);
+
+        mSigninCount.setText("" + com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getSigninCount(startTime, endTime));
+
+        mMemberCount.setText("" + 0);
+
+//        long todayAssignmentCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getTodayAssignmentCount(startTime);
+        long leakCount = com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getLeakCount(startTime, endTime);
+        mDeskCoverage.setText("" + (finishAssignmentCount - leakCount) + "/" + finishAssignmentCount);
+        mLeakCount.setText("" + leakCount);
     }
 
-    private void showStatistics(KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod) {
-        LogUtils.i(TAG, "showStatistics: keepWatchStatisticsByPeriod = " + keepWatchStatisticsByPeriod.toString());
-        mAssigmentCompeltion.setText("" + keepWatchStatisticsByPeriod.getAssignmentCount() + "/" + keepWatchStatisticsByPeriod.getShouldAssignmentCount());
-        mSigninCount.setText("" + keepWatchStatisticsByPeriod.getSigninCount());
-        mMemberCount.setText("" + keepWatchStatisticsByPeriod.getMemberCount());
-        mDeskCoverage.setText("" + keepWatchStatisticsByPeriod.getDeskCount() + "/" + keepWatchStatisticsByPeriod.getShouldDeskCount());
-        mLeakCount.setText("" + (keepWatchStatisticsByPeriod.getShouldCount() - keepWatchStatisticsByPeriod.getSigninCount()));
-        mCreateAbnormalCount.setText("" + keepWatchStatisticsByPeriod.getAbnormalCount());
-        mEndAbnormalCount.setText("" + keepWatchStatisticsByPeriod.getEndCount());
+    private void showKeyEvent(long timeStamp) {
+        long startTime = MyDateTimeUtils.getMonthStartTime(timeStamp);
+        long endTime = MyDateTimeUtils.getMonthEndTime(timeStamp);
+
+        mCreateAbnormalCount.setText("" + com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getCreateCount(startTime, endTime));
+        mEndAbnormalCount.setText("" + com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getEndCount(startTime, endTime));
     }
 
     private void getDangerPointList(long timeStamp) {
 //        NetworkHelper.getInstance()
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(MessageEvent messageEvent) {
+        if (com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_SYN.equals(messageEvent.getMessage())
+        || com.ctfww.module.keyevents.datahelper.sp.Const.FINISH_KEY_EVENT_TRACE_SYN.equals(messageEvent.getMessage())) {
+            showKeyEvent(mTimeStamp);
+            mKeepWatchRankingFragment.getThisMonthRanking(mTimeStamp);
+            mKeepWatchDangerListFragment.getThisMonthDangerList(mTimeStamp);
+        }
+        else if (com.ctfww.module.assignment.datahelper.sp.Const.FINISH_ASSIGNMENT_SYN.equals(messageEvent.getMessage())
+                || com.ctfww.module.assignment.datahelper.sp.Const.FINISH_TODAY_ASSIGNMENT_SYN.equals(messageEvent.getMessage())) {
+            showAssignment(mTimeStamp);
+            mKeepWatchRankingFragment.getThisMonthRanking(mTimeStamp);
+            mKeepWatchDangerListFragment.getThisMonthDangerList(mTimeStamp);
+        }
     }
 }

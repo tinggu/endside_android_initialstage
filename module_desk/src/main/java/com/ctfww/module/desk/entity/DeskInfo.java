@@ -22,13 +22,10 @@ public class DeskInfo implements EntityInterface {
     private String status;
     private String synTag;
 
-    private boolean isAssignmented;
-
-    @Generated(hash = 436905516)
+    @Generated(hash = 2007628981)
     public DeskInfo(String id, int deskId, String deskName, long timeStamp,
             double lat, double lng, String deskAddress, String groupId,
-            String fingerPrint, String deskType, String status, String synTag,
-            boolean isAssignmented) {
+            String fingerPrint, String deskType, String status, String synTag) {
         this.id = id;
         this.deskId = deskId;
         this.deskName = deskName;
@@ -41,7 +38,6 @@ public class DeskInfo implements EntityInterface {
         this.deskType = deskType;
         this.status = status;
         this.synTag = synTag;
-        this.isAssignmented = isAssignmented;
     }
 
     @Generated(hash = 1718343961)
@@ -189,13 +185,5 @@ public class DeskInfo implements EntityInterface {
 
     public void setSynTag(String synTag) {
         this.synTag = synTag;
-    }
-
-    public boolean getIsAssignmented() {
-        return this.isAssignmented;
-    }
-
-    public void setIsAssignmented(boolean isAssignmented) {
-        this.isAssignmented = isAssignmented;
     }
 }

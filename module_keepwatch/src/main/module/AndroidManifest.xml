@@ -26,8 +26,8 @@
 
         <activity android:name=".activity.KeepWatchSettingActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.KeepWatchAboutAppActivity" android:screenOrientation="portrait"/>
-        <activity android:name="com.ctfww.module.signin.activity.LeakListActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.KeepWatchStatisticsDetailActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.TodayLeakListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.TodayFinishStatusListActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.PersonTrendsListActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.KeepWatchRankingListActivity" android:screenOrientation="portrait"/>
         <activity android:name="com.ctfww.module.signin.activity.SigninListActivity" android:screenOrientation="portrait"/>

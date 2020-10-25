@@ -19,24 +19,27 @@ public class KeyEventTrace implements EntityInterface {
     private String userId;
     @Index
     private String status;
-    private int deskId;
+    private int objectId;
     private String matchLevel;
+
+    private String type;
 
     @Index
     private String synTag;
 
-    @Generated(hash = 1600781397)
+    @Generated(hash = 1756264121)
     public KeyEventTrace(String id, String eventId, long timeStamp, String groupId,
-            String userId, String status, int deskId, String matchLevel,
-            String synTag) {
+            String userId, String status, int objectId, String matchLevel,
+            String type, String synTag) {
         this.id = id;
         this.eventId = eventId;
         this.timeStamp = timeStamp;
         this.groupId = groupId;
         this.userId = userId;
         this.status = status;
-        this.deskId = deskId;
+        this.objectId = objectId;
         this.matchLevel = matchLevel;
+        this.type = type;
         this.synTag = synTag;
     }
 
@@ -49,7 +52,7 @@ public class KeyEventTrace implements EntityInterface {
                 + ", timeStamp = " + timeStamp
                 + ", userId = " + userId
                 + ", status = " + status
-                + ", deskId = " + deskId
+                + ", objectId = " + objectId
                 + ", matchLevel = " + matchLevel;
     }
 
@@ -89,14 +92,6 @@ public class KeyEventTrace implements EntityInterface {
         this.status = status;
     }
 
-    public int getDeskId() {
-        return this.deskId;
-    }
-
-    public void setDeskId(int deskId) {
-        this.deskId = deskId;
-    }
-
     public String getMatchLevel() {
         return this.matchLevel;
     }
@@ -127,5 +122,21 @@ public class KeyEventTrace implements EntityInterface {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public int getObjectId() {
+        return this.objectId;
+    }
+
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

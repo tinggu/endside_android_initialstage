@@ -10,6 +10,7 @@ import com.ctfww.module.keyevents.Entity.KeyEventDao;
 import com.ctfww.module.keyevents.Entity.KeyEventTrace;
 import com.ctfww.module.keyevents.Entity.KeyEventTraceDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBHelper {
@@ -157,5 +158,55 @@ public class DBHelper {
 
     public List<KeyEventTrace> getNoSynKeyEventTraceList() {
         return KeyEventTraceDBHelper.getNoSynList(keyEventTraceDao);
+    }
+
+    public List<KeyEvent> getCreateList(String groupId, long startTime, long endTime) {
+        List<KeyEventTrace> keyEventTraceList = KeyEventTraceDBHelper.getCreateList(keyEventTraceDao, groupId, startTime, endTime);
+        List<KeyEvent> keyEventList = new ArrayList<>();
+        for (int i = 0; i < keyEventTraceList.size(); ++i) {
+            KeyEvent keyEvent = getKeyEvent(keyEventList.get(i).getEventId());
+            if (keyEvent != null) {
+                keyEventList.add(keyEvent);
+            }
+        }
+
+        return keyEventList;
+    }
+
+    public List<KeyEvent> getCreateList(String groupId, String userId, long startTime, long endTime) {
+        List<KeyEventTrace> keyEventTraceList = KeyEventTraceDBHelper.getCreateList(keyEventTraceDao, groupId, userId, startTime, endTime);
+        List<KeyEvent> keyEventList = new ArrayList<>();
+        for (int i = 0; i < keyEventTraceList.size(); ++i) {
+            KeyEvent keyEvent = getKeyEvent(keyEventList.get(i).getEventId());
+            if (keyEvent != null) {
+                keyEventList.add(keyEvent);
+            }
+        }
+
+        return keyEventList;
+    }
+
+    public long getCreateCount(String groupId, long startTime, long endTime) {
+        return KeyEventTraceDBHelper.getCreateCount(keyEventTraceDao, groupId, startTime, endTime);
+    }
+
+    public long getCreateCount(String groupId, String userId, long startTime, long endTime) {
+        return KeyEventTraceDBHelper.getCreateCount(keyEventTraceDao, groupId, userId, startTime, endTime);
+    }
+
+    public List<KeyEventTrace> getCreateKeyEventTraceList(String groupId, long startTime, long endTime) {
+        return KeyEventTraceDBHelper.getCreateList(keyEventTraceDao, groupId, startTime, endTime);
+    }
+
+    public List<KeyEventTrace> getCreateKeyEventTraceList(String groupId, String userId, long startTime, long endTime) {
+        return KeyEventTraceDBHelper.getCreateList(keyEventTraceDao, groupId, userId, startTime, endTime);
+    }
+
+    public List<KeyEventTrace> getEndKeyEventTraceList(String groupId, long startTime, long endTime) {
+        return KeyEventTraceDBHelper.getEndList(keyEventTraceDao, groupId, startTime, endTime);
+    }
+
+    public List<KeyEventTrace> getEndKeyEventTraceList(String groupId, String userId, long startTime, long endTime) {
+        return KeyEventTraceDBHelper.getEndList(keyEventTraceDao, groupId, userId, startTime, endTime);
     }
 }

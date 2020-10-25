@@ -16,7 +16,7 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/assignment/synAssignmentToCloud")
+    @POST("/microcloudkeyevents/assignment/synAssignmentInfoToCloud")
     Call<ResponseBody> synAssignmentToCloud(@Body CargoToCloud<AssignmentInfo> info);
 
     /**
@@ -24,7 +24,7 @@ public interface ICloudMethod {
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/assignment/synAssignmentFromCloud")
+    @POST("/microcloudkeyevents/assignment/synAssignmentInfoFromCloud")
     Call<ResponseBody> synAssignmentFromCloud(@Body QueryCondition condition);
 
     /**

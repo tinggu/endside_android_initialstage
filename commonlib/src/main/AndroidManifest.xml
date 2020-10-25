@@ -51,6 +51,9 @@
                 android:resource="@xml/share_file_path" />
         </provider>
 
+        <activity android:name=".activity.QrActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 

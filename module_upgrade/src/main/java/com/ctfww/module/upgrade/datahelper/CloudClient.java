@@ -22,7 +22,7 @@ public class CloudClient {
     private static final String TAG = "SelfCloudClient";
 
     private final static int VALIDE_DATA = 80000000;
-    private final static String mUrl = "http://www.littlepine.cn";
+    private final static String mUrl = "http://pro.littlepine.cn";
 
     private ICloudMethod mCloudMethod;
 

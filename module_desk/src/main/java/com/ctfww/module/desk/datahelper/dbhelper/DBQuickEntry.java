@@ -30,7 +30,7 @@ public class DBQuickEntry {
         return DBHelper.getInstance().getDeskCount(groupId);
     }
 
-    public static List<RouteSummary> getWorkingRouteSummaryList() {
+    public static List<RouteSummary> getRouteSummaryList() {
         String groupId = SPStaticUtils.getString(Const.WORKING_GROUP_ID);
         if (TextUtils.isEmpty(groupId)) {
             return new ArrayList<RouteSummary>();

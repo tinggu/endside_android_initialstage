@@ -75,7 +75,7 @@ public class PersonTrends {
 
     public void set(KeyEventTrace keyEventTrace) {
         userId = keyEventTrace.getUserId();
-        objectId = keyEventTrace.getDeskId();
+        objectId = keyEventTrace.getObjectId();
         timeStamp = keyEventTrace.getTimeStamp();
         type = "key_event";
         status = keyEventTrace.getStatus();

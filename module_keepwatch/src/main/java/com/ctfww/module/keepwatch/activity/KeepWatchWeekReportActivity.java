@@ -13,7 +13,6 @@ import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.commonlib.datahelper.IUIDataHelperCallback;
 import com.ctfww.commonlib.entity.MyDateTimeUtils;
 import com.ctfww.commonlib.fragment.WeekCalendarFragment;
-import com.ctfww.module.keepwatch.datahelper.NetworkHelper;
 import com.ctfww.module.keepwatch.R;
 import com.ctfww.module.keepwatch.entity.KeepWatchStatisticsByPeriod;
 import com.ctfww.module.keepwatch.fragment.KeepWatchRankingFragment;
@@ -96,7 +95,7 @@ public class KeepWatchWeekReportActivity extends AppCompatActivity implements Vi
     public void onWeekCalendarSelect(Calendar calendar) {
         LogUtils.i(TAG, "onDayCalendarSelect");
         long timeStamp = calendar.getTimeInMillis();
-        getStatistics(timeStamp);
+        showStatistics(timeStamp);
         showWeek(timeStamp);
         mKeepWatchRankingFragment.getThisWeekRanking(timeStamp);
     }
@@ -110,29 +109,11 @@ public class KeepWatchWeekReportActivity extends AppCompatActivity implements Vi
 
     }
 
-    private void getStatistics(long timeStamp) {
-        long startTime = MyDateTimeUtils.getWeekStartTime(timeStamp);
-        long endTime = MyDateTimeUtils.getWeekEndTime(timeStamp);
-        NetworkHelper.getInstance().getKeepWatchStatistics(startTime, endTime, new IUIDataHelperCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod = (KeepWatchStatisticsByPeriod)obj;
-                showStatistics(keepWatchStatisticsByPeriod);
-                LogUtils.i(TAG, "getStatistics success!");
-            }
-
-            @Override
-            public void onError(int code) {
-                LogUtils.i(TAG, "getStatistics fail: code= " + code);
-            }
-        });
-    }
-
-    private void showStatistics(KeepWatchStatisticsByPeriod keepWatchStatisticsByPeriod) {
-        mSigninCount.setText("" + keepWatchStatisticsByPeriod.getSigninCount());
-        mLeakCount.setText("" + (keepWatchStatisticsByPeriod.getShouldCount() - keepWatchStatisticsByPeriod.getSigninCount()));
-        mAbnormalCount.setText("" + keepWatchStatisticsByPeriod.getAbnormalCount());
-        mEndAbnormalCount.setText("" + keepWatchStatisticsByPeriod.getEndCount());
+    private void showStatistics(long timeStamp) {
+        mSigninCount.setText("" + com.ctfww.module.signin.datahelper.dbhelper.DBQuickEntry.getSigninCount(MyDateTimeUtils.getDayStartTime(timeStamp), MyDateTimeUtils.getDayEndTime(timeStamp)));
+        mLeakCount.setText("" + com.ctfww.module.assignment.datahelper.dbhelper.DBQuickEntry.getLeakCount(MyDateTimeUtils.getDayStartTime(timeStamp)));
+        mAbnormalCount.setText("" + com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getCreateCount(MyDateTimeUtils.getDayStartTime(timeStamp)));
+        mEndAbnormalCount.setText("" + com.ctfww.module.keyevents.datahelper.dbhelper.DBQuickEntry.getEndCount(MyDateTimeUtils.getDayStartTime(timeStamp)));
     }
 
     private void showWeek(long timeStamp) {

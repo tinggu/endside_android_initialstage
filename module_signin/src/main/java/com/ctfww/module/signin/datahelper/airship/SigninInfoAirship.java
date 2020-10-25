@@ -28,7 +28,7 @@ public class SigninInfoAirship {
         }
 
         CargoToCloud<SigninInfo> cargoToCloud = new CargoToCloud<>(infoList);
-        NetworkHelper.getInstance().synSigninToCloud(cargoToCloud, new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().synSigninInfoToCloud(cargoToCloud, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 for (int i = 0; i < infoList.size(); ++i) {
@@ -60,7 +60,7 @@ public class SigninInfoAirship {
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
 
-        NetworkHelper.getInstance().synSigninFromCloud(condition, new IUIDataHelperCallback() {
+        NetworkHelper.getInstance().synSigninInfoFromCloud(condition, new IUIDataHelperCallback() {
             @Override
             public void onSuccess(Object obj) {
                 List<SigninInfo> infoList = (List<SigninInfo>)obj;
@@ -86,6 +86,7 @@ public class SigninInfoAirship {
         for (int i = 0; i < infoList.size(); ++i) {
             SigninInfo info = infoList.get(i);
             info.setSynTag("cloud");
+            info.combineId();
             if (DBHelper.getInstance().addSignin(info)) {
                 ret = true;
             }

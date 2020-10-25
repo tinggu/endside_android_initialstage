@@ -41,6 +41,24 @@ public class TodayAssignment {
         assignmentId = groupId + objectId + MyDateTimeUtils.getTodayStartTime() + userId + type;
     }
 
+    public boolean isFinished() {
+        return signinCount >= frequency;
+    }
+
+    public String toString() {
+        return "groupId = " + groupId
+                + ", objectId = " + objectId
+                + ", dayTimeStamp = " + dayTimeStamp
+                + ", startTime = " + timeStamp
+                + ", endTime = " + endTime
+                + ", frequency = " + frequency
+                + ", signinCount = " + signinCount
+                + ", status = " + status
+                + ", type = " + type
+                + ", score = " + score
+                + ", timeStamp = " + timeStamp;
+    }
+
     @Generated(hash = 1633288211)
     public TodayAssignment(String assignmentId, String groupId, int objectId, String userId,
             long dayTimeStamp, long startTime, long endTime, int frequency, int signinCount,

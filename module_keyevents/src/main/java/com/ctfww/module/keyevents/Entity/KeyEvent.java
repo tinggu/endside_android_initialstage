@@ -23,7 +23,7 @@ public class KeyEvent implements EntityInterface {
     private double lng;
     private String address;
     @Index
-    private int deskId;
+    private int objectId;
     private String description;
     private String voicePath;
     private String picPath;
@@ -38,9 +38,9 @@ public class KeyEvent implements EntityInterface {
     @Index
     private String synTag;
 
-    @Generated(hash = 1252255374)
+    @Generated(hash = 237850682)
     public KeyEvent(String eventId, long timeStamp, String userId, int type, String eventName, double lat,
-            double lng, String address, int deskId, String description, String voicePath, String picPath,
+            double lng, String address, int objectId, String description, String voicePath, String picPath,
             String videoPath, String status, String groupId, int level, int score, String synTag) {
         this.eventId = eventId;
         this.timeStamp = timeStamp;
@@ -50,7 +50,7 @@ public class KeyEvent implements EntityInterface {
         this.lat = lat;
         this.lng = lng;
         this.address = address;
-        this.deskId = deskId;
+        this.objectId = objectId;
         this.description = description;
         this.voicePath = voicePath;
         this.picPath = picPath;
@@ -75,7 +75,7 @@ public class KeyEvent implements EntityInterface {
                 + ", lat = " + lat
                 + ", lng = " + lng
                 + ", address = " + address
-                + ", deskId = " + deskId
+                + ", objectId = " + objectId
                 + ", description = " + description
                 + ", voicePath = " + voicePath
                 + ", picPath = " + picPath
@@ -171,14 +171,6 @@ public class KeyEvent implements EntityInterface {
         this.address = address;
     }
 
-    public int getDeskId() {
-        return this.deskId;
-    }
-
-    public void setDeskId(int deskId) {
-        this.deskId = deskId;
-    }
-
     public String getDescription() {
         return this.description;
     }
@@ -249,5 +241,13 @@ public class KeyEvent implements EntityInterface {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public int getObjectId() {
+        return this.objectId;
+    }
+
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
     }
 }

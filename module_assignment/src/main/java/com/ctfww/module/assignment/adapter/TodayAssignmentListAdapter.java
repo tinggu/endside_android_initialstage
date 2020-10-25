@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.LogUtils;
 import com.ctfww.module.assignment.R;
 import com.ctfww.module.assignment.datahelper.dbhelper.DBHelper;
 import com.ctfww.module.assignment.entity.AssignmentInfo;
@@ -53,6 +54,7 @@ public class TodayAssignmentListAdapter extends RecyclerView.Adapter<RecyclerVie
         if ("desk".equals(todayAssignment.getType())) {
             ((TodayAssignmentViewHolder)holder).deskType.setImageResource(R.drawable.desk);
             DeskInfo deskInfo = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDesk(todayAssignment.getGroupId(), todayAssignment.getObjectId());
+//            List<DeskInfo> deskInfoList = com.ctfww.module.desk.datahelper.dbhelper.DBHelper.getInstance().getDeskList(todayAssignment.getGroupId())
             if (deskInfo != null) {
                 ((TodayAssignmentViewHolder)holder).deskName.setText(deskInfo.getIdName());
             }

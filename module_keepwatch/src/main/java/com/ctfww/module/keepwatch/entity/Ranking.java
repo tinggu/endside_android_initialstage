@@ -12,7 +12,6 @@ public class Ranking {
     public Ranking() {
     }
 
-
     public String toString() {
         return "userId = " + userId
                 + ", score = " + score;

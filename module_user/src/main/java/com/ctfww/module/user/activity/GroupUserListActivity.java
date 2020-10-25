@@ -95,7 +95,7 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
         LinearLayoutManager layoutManager= new LinearLayoutManager(this);
         mMemberListView.setLayoutManager(layoutManager);
 
-        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getWorkingGroupUserList();
+        List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getGroupUserList();
         mGroupUserListAdapter = new GroupUserListAdapter(groupUserInfoList, this);
         mMemberListView.setAdapter(mGroupUserListAdapter);
     }
@@ -145,7 +145,7 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
             });
         }
         else if (id == mWithdrawGroup.getId()) {
-            GroupUserInfo info = DBQuickEntry.getWorkingGroupUser("");
+            GroupUserInfo info = DBQuickEntry.getGroupUserInfo("");
             if (info == null) {
                 return;
             }
@@ -174,7 +174,7 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
             return;
         }
 
-        GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser("");
+        GroupUserInfo groupUserInfo = DBQuickEntry.getGroupUserInfo("");
         if (groupUserInfo == null) {
             return;
         }
@@ -238,7 +238,7 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
             return;
         }
 
-        GroupUserInfo groupUserInfo = DBQuickEntry.getWorkingGroupUser("");
+        GroupUserInfo groupUserInfo = DBQuickEntry.getGroupUserInfo("");
         groupUserInfo.setStatus("delete");
         groupUserInfo.setTimeStamp(System.currentTimeMillis());
         String synTag = "new".equals(groupUserInfo.getSynTag()) ? "new" : "modify";
@@ -256,7 +256,7 @@ public class GroupUserListActivity extends AppCompatActivity implements View.OnC
     @Subscribe(threadMode= ThreadMode.MAIN)
     public void onGetMessage(MessageEvent messageEvent) {
         if ("finish_group_user_syn".equals(messageEvent.getMessage())) {
-            List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getWorkingGroupUserList();
+            List<GroupUserInfo> groupUserInfoList = DBQuickEntry.getGroupUserList();
             mGroupUserListAdapter.setList(groupUserInfoList);
             mGroupUserListAdapter.notifyDataSetChanged();
         }

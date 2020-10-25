@@ -19,14 +19,14 @@ public interface ICloudMethod {
      * @param info
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synSigninToCloud")
-    Call<ResponseBody> synSigninToCloud(@Body CargoToCloud<SigninInfo> info);
+    @POST("/microcloudkeyevents/signin/synSigninInfoToCloud")
+    Call<ResponseBody> synSigninInfoToCloud(@Body CargoToCloud<SigninInfo> info);
 
     /**
      * 从云上同步签到信息
      * @param condition
      * @return 返回值
      */
-    @POST("/microcloudkeyevents/keepWatch/synSigninFromCloud")
-    Call<ResponseBody> synSigninFromCloud(@Body QueryCondition condition);
+    @POST("/microcloudkeyevents/signin/synSigninInfoFromCloud")
+    Call<ResponseBody> synSigninInfoFromCloud(@Body QueryCondition condition);
 }

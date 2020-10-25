@@ -5,13 +5,16 @@ import com.ctfww.commonlib.entity.EntityInterface;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 
 @Entity
 public class SigninInfo implements EntityInterface {
     @Id
     private String id;
 
+    @Index
     private String userId;
+    @Index
     private long timeStamp;
     private int objectId;
     private String groupId;
@@ -52,7 +55,12 @@ public class SigninInfo implements EntityInterface {
                 + ", finishType = " + finishType
                 + ", matchLevel = " + matchLevel
                 + ", synTag = " + synTag
+                + ", id = " + id
                 + ", fingerPrint = " + fingerPrint;
+    }
+
+    public void combineId() {
+        id = userId + timeStamp;
     }
 
     public String getId() {
