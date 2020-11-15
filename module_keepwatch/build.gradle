@@ -36,7 +36,7 @@ android {
         release {
             storeFile file('..\\sign\\mykey.jks')
             storePassword 'monitor666'
-            keyAlias = 'key0'
+            keyAlias 'key0'
             keyPassword 'monitor666'
 
             v1SigningEnabled true
@@ -53,7 +53,13 @@ android {
 //            // Zipalign优化，资源文件对齐
 //            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
+        }
+    }
+
+    android.applicationVariants.all {
+        variant -> variant.outputs.all {
+            outputFileName = "Kepp_watch_${defaultConfig.versionName}.apk"
         }
     }
 

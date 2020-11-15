@@ -14,7 +14,7 @@ import com.ctfww.module.signin.R;
 import com.ctfww.module.signin.fragment.SigninListFragment;
 import com.haibin.calendarview.Calendar;
 
-@Route(path = "/keepwatch/signinList")
+@Route(path = "/signin/signinList")
 public class SigninListActivity extends AppCompatActivity implements View.OnClickListener,
         DayCalendarFragment.OnDayCalendarFragmentInteractionListener {
     private final static String TAG = "SigninListActivity";
