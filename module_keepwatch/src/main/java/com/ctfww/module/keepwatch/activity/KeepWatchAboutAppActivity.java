@@ -30,7 +30,7 @@ public class KeepWatchAboutAppActivity extends AppCompatActivity implements View
     private void initViews() {
         mBack = findViewById(R.id.top_back);
         mTittle = findViewById(R.id.top_tittle);
-        mTittle.setText("关于小松巡检");
+        mTittle.setText("关于慧创未来巡检");
         mVersion = findViewById(R.id.setting_curr_version);
         mVersion.setText("KeepWatch " + GlobeFun.getAppVersion(this));
     }

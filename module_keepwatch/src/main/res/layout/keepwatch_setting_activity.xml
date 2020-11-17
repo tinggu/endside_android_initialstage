@@ -53,7 +53,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:id="@+id/setting_about">
-                <TextView style="@style/KeepWatchContentText" android:text="关于小松巡检" />
+                <TextView style="@style/KeepWatchContentText" android:text="关于慧创未来巡检" />
                 <TextView style="@style/KeepWatchElseContentText" />
                 <ImageView style="@style/KeepWatchSettingSetImg" />
             </LinearLayout>

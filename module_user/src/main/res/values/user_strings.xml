@@ -28,7 +28,9 @@
 
     <string name="uer_login_with_sms_number">短信验证码登录</string>
 
-    <string name="user_login_privacy_statement_entrance">未注册的手机验证成功后将自动注册，视为同意小松服务条款</string>
+    <string name="user_login_user_aggreement__entrance">已同意《慧创未来巡检用户协议》</string>
+
+    <string name="user_login_privacy_statement_entrance">及《关于慧创未来巡检与隐私的声明》</string>
 
     <string name="user_check_by_mobile_num">手机号验证</string>
     <string name="user_check_by_mobile_num_addition">验证手机号，你的设备在异常时，可以收到即时通知</string>

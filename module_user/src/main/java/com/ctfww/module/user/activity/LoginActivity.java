@@ -166,8 +166,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void initViews() {
         mTittleInPage = findViewById(R.id.user_tittle_in_page);
         String navigationName = getNavigationName();
-        if (navigationName.indexOf("keepwatch") != -1) {
-            mTittleInPage.setText("你好，\n欢迎使用慧创未来巡检系统");
+        if (navigationName.contains("keepwatch")) {
+            mTittleInPage.setText("你好，\n欢迎使用慧创未来巡检");
         }
 
         mPhoneNumEt = findViewById(R.id.user_mobile_edit);

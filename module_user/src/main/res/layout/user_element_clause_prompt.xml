@@ -1,17 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="42dp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_11sp"
+            />
+
+        <TextView
+            android:id="@+id/user_app_user_agreement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_login_user_aggreement__entrance"
+            android:textSize="@dimen/text_size_13sp"
+            />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/user_app_service_statement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:text="@string/user_login_privacy_statement_entrance"
-        android:textSize="@dimen/text_size_11sp"
-        android:gravity="bottom|center"
-        android:layout_marginBottom="28dp"
+        android:textSize="@dimen/text_size_13sp"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
         />
 
-</LinearLayout>
+</RelativeLayout>
